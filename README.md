@@ -60,60 +60,59 @@ working on).
 ```
 Scotty-Tattos/
 ├── README.md                     ← you are here
-├── contact.html                  ← the Contact / Booking page
+├── index.html                    ← Home
+├── about.html                    ← About / studio story
+├── portfolio.html                ← Filterable portfolio grid
+├── blog.html                     ← Journal index + featured post
+├── testimonials.html             ← Client letters + press
+├── contact.html                  ← Contact + booking form
 ├── partials/
 │   ├── header.html               ← top nav (loaded into every page)
 │   └── footer.html               ← site footer (loaded into every page)
 └── assets/
+    ├── css/
+    │   └── styles.css            ← all design tokens + component styles
     └── js/
-        ├── includes.js           ← partial loader + active-nav highlighter
-        ├── tattoo-gun.js         ← (optional) decorative gun SVG mount
-        ├── cursor-gun.js         ← (optional) custom cursor effect
-        ├── scroll-reveal.js      ← (optional) reveal-on-scroll observer
-        └── hero-geometry.js      ← (optional) extra hero animations
+        └── includes.js           ← partial loader + active-nav highlighter
 ```
 
-Files marked *(optional)* are referenced by the pages but degrade gracefully
-when missing — the `<script onerror="this.remove();">` handler keeps a
-missing file from polluting the console, and the init block guards every call
-behind a feature check (`if (MT.TattooGun) …`).
+Every page links a single shared stylesheet (`assets/css/styles.css`) and a
+single shared script (`assets/js/includes.js`). The page-specific markup is
+the only thing that varies file-to-file.
 
 ---
 
 ## Pages
 
-| Page          | File             | Status     | Description                                           |
-| ------------- | ---------------- | ---------- | ----------------------------------------------------- |
-| Contact       | `contact.html`   | ✅ Done    | Hero, info card, booking form, style strip, map, FAQ. |
-| Index         | `index.html`     | ⏳ Planned | Landing page with rotating geometry centerpiece.      |
-| Artists       | `artists/`       | ⏳ Planned | Artist roster with bios and links.                    |
-| Portfolio     | `portfolio/`     | ⏳ Planned | Filterable gallery of work.                           |
-| Studio        | `studio/`        | ⏳ Planned | Photos and description of the physical space.         |
-| Aftercare     | `aftercare/`     | ⏳ Planned | Healing instructions.                                 |
-| Deposits      | `deposits/`      | ⏳ Planned | Booking policy.                                       |
-| Privacy/Terms | `privacy/`, …   | ⏳ Planned | Legal pages.                                          |
+| Page          | File                 | Status  | Description                                                |
+| ------------- | -------------------- | ------- | ---------------------------------------------------------- |
+| Home          | `index.html`         | ✅ Done | Hero, manifesto, style strip, recent work, pull-quote, CTA |
+| About         | `about.html`         | ✅ Done | Manifesto, story timeline, team grid, process, stats       |
+| Portfolio     | `portfolio.html`     | ✅ Done | Filter bar, 9-tile geometric work grid, pull-quote, CTA    |
+| Blog          | `blog.html`          | ✅ Done | Featured essay, 6-card grid, newsletter sign-up            |
+| Testimonials  | `testimonials.html`  | ✅ Done | Featured quote, 6-card grid, press strip                   |
+| Contact       | `contact.html`       | ✅ Done | Info card, booking form, studio map, FAQ                   |
 
-The nav and footer link to all of the planned pages. Until they exist, those
-links will return a 404 — keep that in mind when QA'ing.
+All six pages share the same nav, footer, design tokens, and stylesheet.
 
 ---
 
 ## Partials & the include system
 
-To keep the global chrome (nav, footer) in one place, each page leaves a
-placeholder `<div>` and lets `assets/js/includes.js` fetch the partial at
-runtime:
+To keep the global chrome (nav, footer) in one place, each page sets a
+`data-nav-current` attribute on its `<body>` and leaves placeholder `<div>`s
+that `assets/js/includes.js` fetches at runtime:
 
 ```html
-<!-- top of <body> -->
-<div data-include="partials/header.html" data-nav-current="contact"></div>
+<body data-nav-current="contact">
+  <div data-include="partials/header.html"></div>
 
-<!-- page content here -->
+  <!-- page content -->
 
-<!-- bottom of <body> -->
-<div data-include="partials/footer.html"></div>
+  <div data-include="partials/footer.html"></div>
 
-<script src="assets/js/includes.js"></script>
+  <script src="assets/js/includes.js"></script>
+</body>
 ```
 
 ### What `includes.js` does
@@ -134,8 +133,8 @@ runtime:
 
 1. Create `<page>.html` (or `<page>/index.html`).
 2. Drop in the two `data-include` placeholders.
-3. Set `data-nav-current` to one of: `index`, `artists`, `portfolio`,
-   `studio`, `contact`.
+3. Set `data-nav-current` on `<body>` to one of: `home`, `about`,
+   `portfolio`, `blog`, `testimonials`, `contact`.
 4. Load `assets/js/includes.js` at the bottom of `<body>`.
 
 Done — the new page now shares the global header and footer.
@@ -144,10 +143,9 @@ Done — the new page now shares the global header and footer.
 
 ## Design system
 
-All design tokens live as CSS custom properties at the top of each page's
-`<style>` block. The intent is to eventually extract these into a shared
-`assets/css/tokens.css`; for now they're duplicated per page to keep each
-file self-contained.
+All design tokens live as CSS custom properties at the top of
+`assets/css/styles.css` (the `:root { … }` block). Every page links the same
+stylesheet, so changing a token updates the whole site at once.
 
 ### Palette
 
@@ -194,21 +192,18 @@ user has opted out.
 
 ## JavaScript modules
 
-`includes.js` is the only required script. The remaining modules are
-decorative and load defensively (`<script onerror="this.remove();">`):
+`assets/js/includes.js` is the only script loaded by every page. It:
 
-- **`tattoo-gun.js`** — mounts an animated tattoo-gun SVG into a host
-  element. Expected API: `window.MT.TattooGun.mount(selector, { width })`.
-- **`cursor-gun.js`** — replaces the cursor with a small gun SVG.
-  Expected API: `window.MT.CursorGun.init()`.
-- **`scroll-reveal.js`** — `IntersectionObserver`-based reveal animations.
-  Expected API: `window.MT.ScrollReveal.init()`.
-- **`hero-geometry.js`** — additional motion on the hero centerpiece.
-  Expected API: `window.MT.HeroGeometry.init()`.
+1. Snapshots `data-nav-current` from `<body>` before any DOM mutation.
+2. Fetches every `[data-include]` partial and replaces the placeholder
+   with the rendered nodes.
+3. Once all partials have settled, marks the matching `[data-nav]` link
+   in the nav as `is-active`, stamps the current year into `#year`, and
+   dispatches a `partials:loaded` event on `document`.
 
-None of these files exist yet — they're declared as no-ops so the page works
-without them. Add them by exposing `window.MT = window.MT || {}` and hanging
-your namespace off of it.
+The Portfolio page also ships a tiny inline script for filter-button
+state — it's purely visual, the tiles themselves don't filter yet. Hook
+it up to real data attributes when you're ready.
 
 ---
 
@@ -293,15 +288,17 @@ currently configured.
 
 ## Roadmap
 
-- [ ] Extract design tokens into `assets/css/tokens.css`.
-- [ ] Build the Index, Artists, Portfolio, Studio pages.
-- [ ] Implement the four decorative JS modules (`tattoo-gun`,
-      `cursor-gun`, `scroll-reveal`, `hero-geometry`).
-- [ ] Wire the booking form to a real submission endpoint
+- [x] Extract design tokens into a shared `assets/css/styles.css`.
+- [x] Build Home, About, Portfolio, Blog, Testimonials, Contact.
+- [ ] Replace the geometric SVG placeholders on Portfolio / Home / Blog
+      tiles with real photographs.
+- [ ] Wire the Portfolio filters to real `data-style` attributes.
+- [ ] Wire the booking form to a submission endpoint
       (Formspree / Netlify Forms / serverless function).
-- [ ] Add Open Graph and Twitter Card metadata to each page.
+- [ ] Wire the Blog newsletter sign-up to a list provider.
+- [ ] Add Open Graph + Twitter Card metadata to each page.
 - [ ] Add a `sitemap.xml` and `robots.txt`.
-- [ ] Lighthouse pass — target 100/100/100/100.
+- [ ] Lighthouse pass — target 100 / 100 / 100 / 100.
 
 ---
 

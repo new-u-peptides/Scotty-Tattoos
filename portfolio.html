@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio — Massa Tattoo · Geometric Studio</title>
+    <meta name="description" content="A gallery of recent geometric tattoo work — sacred geometry, dotwork, blackwork, fine line, mandala, and ornamental pieces." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body data-nav-current="portfolio">
+    <div class="page-orbit" aria-hidden="true">
+      <svg viewBox="0 0 200 200">
+        <g class="geo-rotate--rev">
+          <circle cx="100" cy="100" r="90" />
+          <circle cx="100" cy="100" r="76" />
+          <circle cx="100" cy="100" r="60" />
+          <circle cx="100" cy="100" r="44" />
+        </g>
+      </svg>
+    </div>
+
+    <div data-include="partials/header.html"></div>
+
+    <section class="hero">
+      <div class="container hero__inner">
+        <div>
+          <span class="eyebrow">§ 01 — Portfolio</span>
+          <h1 class="hero__title">Ten years, <em>line by line</em>.</h1>
+          <p class="hero__lede">
+            A working archive of recent pieces — sacred geometry, dotwork,
+            blackwork, fine line. Filter to find the work that lives closest to
+            the idea you're carrying.
+          </p>
+          <div class="hero__meta">
+            <div class="hero__meta-item">
+              <span class="hero__meta-label">Pieces shown</span>
+              <span class="hero__meta-value">9 / 1,200+</span>
+            </div>
+            <div class="hero__meta-item">
+              <span class="hero__meta-label">Styles</span>
+              <span class="hero__meta-value">Six</span>
+            </div>
+            <div class="hero__meta-item">
+              <span class="hero__meta-label">Updated</span>
+              <span class="hero__meta-value">Weekly</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__geo" aria-hidden="true">
+          <svg viewBox="-100 -100 200 200">
+            <g class="geo-rotate">
+              <circle r="80" class="ring" />
+              <circle r="68" class="ring ring--thin" />
+              <circle r="56" class="ring" />
+              <circle r="44" class="ring ring--thin" />
+              <circle r="32" class="ring" />
+              <circle r="20" class="ring ring--thin" />
+            </g>
+            <g class="geo-rotate--rev">
+              <polygon points="0,-82 71,41 -71,41" class="tri" />
+            </g>
+            <circle r="6" class="ring ring--accent" />
+            <circle r="1.6" class="dot" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar">
+          <span class="filter-bar__label">Filter →</span>
+          <button class="filter is-active" type="button">All</button>
+          <button class="filter" type="button">Sacred geometry</button>
+          <button class="filter" type="button">Dotwork</button>
+          <button class="filter" type="button">Blackwork</button>
+          <button class="filter" type="button">Fine line</button>
+          <button class="filter" type="button">Mandala</button>
+          <button class="filter" type="button">Ornamental</button>
+        </div>
+
+        <div class="work-grid">
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <circle cx="50" cy="50" r="40" />
+                  <circle cx="50" cy="50" r="32" />
+                  <circle cx="50" cy="50" r="24" />
+                  <polygon points="50,10 86,75 14,75" />
+                  <polygon points="50,90 14,25 86,25" />
+                  <circle cx="50" cy="50" r="6" fill="currentColor" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Star of David</span>
+              <span class="work-tile__tag">Sacred · Sternum</span>
+            </div>
+          </a>
+
+          <a class="work-tile work-tile--dark" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <circle cx="50" cy="50" r="36" />
+                  <path d="M50,14 L50,86 M14,50 L86,50 M24,24 L76,76 M76,24 L24,76" />
+                  <circle cx="50" cy="50" r="14" />
+                  <circle cx="50" cy="50" r="3" fill="currentColor" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Compass</span>
+              <span class="work-tile__tag">Blackwork · Forearm</span>
+            </div>
+          </a>
+
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="currentColor">
+                  <circle cx="50" cy="20" r="1.5"/><circle cx="50" cy="80" r="1.5"/>
+                  <circle cx="20" cy="50" r="1.5"/><circle cx="80" cy="50" r="1.5"/>
+                  <circle cx="30" cy="30" r="1.2"/><circle cx="70" cy="30" r="1.2"/>
+                  <circle cx="30" cy="70" r="1.2"/><circle cx="70" cy="70" r="1.2"/>
+                  <circle cx="50" cy="50" r="2.4"/>
+                  <circle cx="50" cy="35" r="1"/><circle cx="50" cy="65" r="1"/>
+                  <circle cx="35" cy="50" r="1"/><circle cx="65" cy="50" r="1"/>
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Constellation</span>
+              <span class="work-tile__tag">Dotwork · Spine</span>
+            </div>
+          </a>
+
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.5">
+                  <circle cx="50" cy="50" r="40" />
+                  <circle cx="50" cy="50" r="34" />
+                  <circle cx="50" cy="50" r="28" />
+                  <circle cx="50" cy="50" r="22" />
+                  <circle cx="50" cy="50" r="16" />
+                  <circle cx="50" cy="50" r="10" />
+                  <circle cx="50" cy="50" r="4" fill="currentColor" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Mandala VII</span>
+              <span class="work-tile__tag">Mandala · Thigh</span>
+            </div>
+          </a>
+
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <path d="M10,50 Q30,10 50,50 T90,50" />
+                  <path d="M10,58 Q30,18 50,58 T90,58" />
+                  <path d="M10,42 Q30,2 50,42 T90,42" />
+                  <line x1="10" y1="70" x2="90" y2="70" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">River study</span>
+              <span class="work-tile__tag">Fine line · Ribs</span>
+            </div>
+          </a>
+
+          <a class="work-tile work-tile--dark" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <polygon points="50,12 84,32 84,68 50,88 16,68 16,32" />
+                  <polygon points="50,24 72,38 72,62 50,76 28,62 28,38" />
+                  <polygon points="50,36 60,42 60,58 50,64 40,58 40,42" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Three hexagons</span>
+              <span class="work-tile__tag">Geometric · Calf</span>
+            </div>
+          </a>
+
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <circle cx="50" cy="50" r="38" />
+                  <path d="M50,12 L62,40 L92,40 L67,58 L77,86 L50,68 L23,86 L33,58 L8,40 L38,40 Z" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Pentacle</span>
+              <span class="work-tile__tag">Sacred · Forearm</span>
+            </div>
+          </a>
+
+          <a class="work-tile" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.5">
+                  <circle cx="50" cy="50" r="42" />
+                  <circle cx="50" cy="50" r="34" />
+                  <circle cx="50" cy="32" r="14" />
+                  <circle cx="50" cy="68" r="14" />
+                  <circle cx="32" cy="50" r="14" />
+                  <circle cx="68" cy="50" r="14" />
+                  <circle cx="50" cy="50" r="14" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Vesica Piscis</span>
+              <span class="work-tile__tag">Sacred · Sternum</span>
+            </div>
+          </a>
+
+          <a class="work-tile work-tile--dark" href="#">
+            <div class="work-tile__art">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="0.6">
+                  <rect x="20" y="20" width="60" height="60" />
+                  <rect x="28" y="28" width="44" height="44" />
+                  <rect x="36" y="36" width="28" height="28" />
+                  <line x1="20" y1="20" x2="80" y2="80" />
+                  <line x1="80" y1="20" x2="20" y2="80" />
+                  <line x1="50" y1="6" x2="50" y2="94" />
+                  <line x1="6" y1="50" x2="94" y2="50" />
+                </g>
+              </svg>
+            </div>
+            <div class="work-tile__meta">
+              <span class="work-tile__title">Field study</span>
+              <span class="work-tile__tag">Blackwork · Bicep</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">§ 02 — A note on the archive</span>
+          <h2>What you don't see is <em>most of it</em>.</h2>
+          <p>This page is a selection. We don't post every piece — some clients want their tattoos kept off the feed, and we honour that. If you'd like to see more of a specific style, ask in your booking request.</p>
+        </div>
+
+        <blockquote class="pull-quote">
+          "A good portfolio shows you what an artist <em>can</em> do. A great
+          one tells you what they keep coming back to. This is ours."
+          <cite>— from the studio notes</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div>
+            <span class="eyebrow">§ 03 — Your turn</span>
+            <h2>See a piece that <em>opens something up</em>?</h2>
+            <p>Send us a reference or just describe what drew you to it. We'll come back with a sketch direction.</p>
+          </div>
+          <div>
+            <a class="btn btn--primary" href="contact.html#book">Send a request →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div data-include="partials/footer.html"></div>
+
+    <script src="assets/js/includes.js"></script>
+    <script>
+      // Filter highlight (visual only — actual filtering would need data attrs on tiles)
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.filter');
+        if (!btn) return;
+        var siblings = btn.parentNode.querySelectorAll('.filter');
+        for (var i = 0; i < siblings.length; i++) siblings[i].classList.remove('is-active');
+        btn.classList.add('is-active');
+      });
+    </script>
+  </body>
+</html>
