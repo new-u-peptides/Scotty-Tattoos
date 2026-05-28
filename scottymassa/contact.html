@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact — Scotty Massa</title>
+    <meta name="description" content="Get in touch with Scotty Massa about a tattoo idea, consult, or booking." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body data-nav-current="contact">
+    <div data-include="partials/header.html"></div>
+
+    <section class="hero">
+      <div class="container">
+        <span class="eyebrow">Contact</span>
+        <h1 class="hero__title">Tell me your <em>idea</em>.</h1>
+        <p class="hero__lede" style="max-width: 56ch;">
+          The more detail you share, the better the first sketch will land.
+          I usually come back within two working days.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Reach me</span>
+          <h2>The <em>direct</em> way.</h2>
+          <div class="geo-rule"><span class="geo-rule__diamond"></span></div>
+          <p>For most things, the form is the fastest way to get a sketch and a date. For everything else — press, collabs, guest spots — email me directly.</p>
+
+          <ul class="info-list" style="margin-top: 30px;">
+            <li>
+              <span class="info-label">Email</span>
+              <span class="info-value"><a href="mailto:scotty@scottymassa.com">scotty@scottymassa.com</a></span>
+            </li>
+            <li>
+              <span class="info-label">Instagram</span>
+              <span class="info-value"><a href="https://instagram.com/" target="_blank" rel="noopener">@scottymassa</a></span>
+            </li>
+            <li>
+              <span class="info-label">Studio</span>
+              <span class="info-value"><a href="https://massatattoo.com" target="_blank" rel="noopener">Massa Tattoo</a><br />123 Atelier Lane, Your City</span>
+            </li>
+            <li>
+              <span class="info-label">Wait time</span>
+              <span class="info-value">Currently 4 — 8 weeks from request to chair</span>
+            </li>
+          </ul>
+        </div>
+
+        <form id="book" class="form-card" novalidate>
+          <span class="eyebrow">Booking request</span>
+          <h2 style="margin-top: 6px;">Send a <em>brief</em>.</h2>
+          <div class="form">
+            <div class="form__row">
+              <div class="field">
+                <label for="name">Your name</label>
+                <input id="name" name="name" type="text" placeholder="First & last" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@email.com" required />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="field">
+                <label for="placement">Placement</label>
+                <input id="placement" name="placement" type="text" placeholder="e.g. inner forearm" />
+              </div>
+              <div class="field">
+                <label for="size">Approx. size</label>
+                <input id="size" name="size" type="text" placeholder="e.g. 10 × 15 cm" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="idea">Your idea</label>
+              <textarea id="idea" name="idea" placeholder="Symbolism, references, story, anything that matters. Attach images via email after submitting." required></textarea>
+            </div>
+
+            <div class="form__actions">
+              <button type="submit" class="btn btn--primary">Send →</button>
+              <p class="form__note">By submitting you agree to my booking & deposit policy.</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Before you book</span>
+          <h2>The short version of my <em>process</em>.</h2>
+        </div>
+        <p style="max-width: 56ch;">
+          You send your idea. I send back a direction within two working days.
+          If we're a fit, you put down a deposit, I sketch, we revise, we book.
+          On the day: stencil, place, settle, ink, wrap. Aftercare instructions
+          in your inbox before you've left the chair.
+        </p>
+        <div style="margin-top: 30px;">
+          <a class="btn btn--primary" href="#book">Send your brief →</a>
+        </div>
+      </div>
+    </section>
+
+    <div data-include="partials/footer.html"></div>
+
+    <script src="assets/js/includes.js"></script>
+  </body>
+</html>
