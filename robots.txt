@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /assets/seo/
+Disallow: /.git/
+Disallow: /.well-known/
+
+Sitemap: https://scottymassa.com/sitemap.xml

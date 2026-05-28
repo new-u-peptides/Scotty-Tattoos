@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="ogTitle ogDesc">
+  <title id="ogTitle">Scotty Massa — Tattoo Artist, Malta &amp; Worldwide</title>
+  <desc id="ogDesc">Open Graph share card for scottymassa.com. Dark ink background with rust-red and gold radial accents, serif name "SCOTTY MASSA" centered in bone, hairline divider, and tracked subtitle "TATTOO ARTIST · MALTA · WORLDWIDE".</desc>
+
+  <defs>
+    <radialGradient id="rustCorner" cx="0%" cy="0%" r="75%" fx="0%" fy="0%">
+      <stop offset="0%" stop-color="#b1311c" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#b1311c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#b1311c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="goldCorner" cx="100%" cy="100%" r="75%" fx="100%" fy="100%">
+      <stop offset="0%" stop-color="#c89b4a" stop-opacity="0.40"/>
+      <stop offset="55%" stop-color="#c89b4a" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#c89b4a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hairline" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f3ede1" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#f3ede1" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f3ede1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base dark ink background -->
+  <rect width="1200" height="630" fill="#0a0908"/>
+
+  <!-- Radial overlays: rust top-left, gold bottom-right -->
+  <rect width="1200" height="630" fill="url(#rustCorner)"/>
+  <rect width="1200" height="630" fill="url(#goldCorner)"/>
+
+  <!-- Subtle film-grain feel: faint inner border -->
+  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#f3ede1" stroke-opacity="0.06" stroke-width="1"/>
+
+  <!-- Top-left rust-red glyph -->
+  <text x="72" y="92"
+        font-family="Cinzel, 'Trajan Pro', 'Times New Roman', serif"
+        font-size="42"
+        fill="#b1311c"
+        fill-opacity="0.92">✦</text>
+
+  <!-- Centered serif wordmark -->
+  <text x="600" y="305"
+        text-anchor="middle"
+        font-family="Cinzel, 'Trajan Pro', 'Times New Roman', serif"
+        font-weight="600"
+        font-size="116"
+        letter-spacing="-2"
+        fill="#f3ede1">SCOTTY MASSA</text>
+
+  <!-- Hairline divider beneath the wordmark -->
+  <line x1="380" y1="362" x2="820" y2="362" stroke="url(#hairline)" stroke-width="1"/>
+
+  <!-- Tracked-out subtitle -->
+  <text x="600" y="412"
+        text-anchor="middle"
+        font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
+        font-size="22"
+        letter-spacing="8"
+        fill="#d8cfbf">TATTOO ARTIST · MALTA · WORLDWIDE</text>
+
+  <!-- Bottom-right URL -->
+  <text x="1128" y="582"
+        text-anchor="end"
+        font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
+        font-size="18"
+        letter-spacing="2"
+        fill="#d8cfbf"
+        fill-opacity="0.6">scottymassa.com</text>
+</svg>
