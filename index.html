@@ -16,6 +16,7 @@
   <meta name="twitter:title" content="Scotty Massa — Tattoo Artist Malta &amp; Worldwide" />
   <meta name="twitter:description" content="Custom tattoos by Scotty Massa — geometric, traditional and Japanese work from a Birkirkara, Malta studio with guest spots worldwide. Book a session." />
   <meta name="twitter:image" content="/assets/seo/og-default.svg" />
+  <meta name="theme-color" content="#0a0706" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
@@ -97,29 +98,69 @@
   </header>
 
   <!-- =========================================================
-       HERO
+       HERO — cinematic ember canvas, layered sparks, dual-tone title
   ========================================================= -->
-  <section class="hero">
+  <section class="hero grain">
     <div class="hero__bg"></div>
+    <div class="hero__sparks" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
     <div class="container hero__content">
-      <p class="eyebrow">Tattoo Artist — Malta · Est. 2014</p>
-      <h1 class="hero__name">Scotty<span>Massa</span></h1>
-      <p class="hero__tagline">Ink that travels.</p>
-      <p class="lead">Custom tattoo artist in Malta — geometric, traditional, blackwork and Japanese tattooing handcrafted from Birkirkara and carried to studios across the world. Booking guest spots in Tokyo, Berlin, Lisbon &amp; New York.</p>
+      <!-- Decorative ornament (teal, the cut) -->
+      <svg class="hero__ornament" viewBox="0 0 64 24" fill="none" aria-hidden="true">
+        <path d="M0 12 H22" stroke="currentColor" stroke-width="1"/>
+        <path d="M42 12 H64" stroke="currentColor" stroke-width="1"/>
+        <circle cx="32" cy="12" r="6" stroke="currentColor" stroke-width="1.2"/>
+        <circle cx="32" cy="12" r="1.4" fill="currentColor"/>
+        <path d="M26 6 L38 18 M38 6 L26 18" stroke="currentColor" stroke-width="0.6" opacity="0.6"/>
+      </svg>
+
+      <p class="eyebrow eyebrow--teal">Tattoo Artist · Malta · Est. 2014</p>
+
+      <h1 class="hero__name">
+        <span class="line-1">Scotty</span>
+        <span class="line-2">Massa</span>
+      </h1>
+
+      <p class="hero__tagline">Ink that travels</p>
+
+      <p class="lead">Custom tattoo artist working from Birkirkara, Malta — bold traditional, blackwork, Japanese irezumi and sacred geometry, carried by guest spots through Tokyo, Berlin, Lisbon &amp; New York.</p>
+
       <div class="hero__actions mt-2">
-        <a href="booking.html" class="btn btn--primary">Book a Session</a>
+        <a href="booking.html" class="btn btn--primary">Book a Session <span class="arrow">→</span></a>
         <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
+        <span class="hero__status hide-sm" aria-label="Currently booking">
+          <span class="dot"></span> 2026 books open
+        </span>
       </div>
+
       <div class="hero__meta">
         <div><strong>10+</strong> Years inking</div>
-        <div><strong>4</strong> Continents</div>
+        <div><strong>2,400</strong> Pieces</div>
+        <div><strong>28</strong> Cities</div>
         <div><strong>2026</strong> Tour open</div>
+      </div>
+    </div>
+
+    <a href="#story" class="hero__scroll" aria-label="Scroll to story">Scroll</a>
+
+    <!-- Press strip pinned to base of hero -->
+    <div class="hero__press">
+      <div class="container hero__press-inner">
+        <span>As seen in</span>
+        <em>Inked</em>
+        <em>Tattoo Life</em>
+        <em>Things&amp;Ink</em>
+        <em>Skin Deep</em>
+        <em>Total Tattoo</em>
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-       MARQUEE
+       MARQUEE — cities ticker with teal sparkles
   ========================================================= -->
   <div class="marquee">
     <div class="marquee__track">
@@ -129,42 +170,50 @@
   </div>
 
   <!-- =========================================================
-       INTRO
+       INTRO — asymmetric split with framed visual + script signature
   ========================================================= -->
-  <section class="section">
+  <section class="section" id="story">
     <div class="container">
-      <div class="split split--narrow">
+      <div class="intro-split">
+        <div class="intro-split__visual ph-3 reveal">
+          <div class="intro-split__signature">Scotty</div>
+          <span class="intro-split__badge">Studio · Birkirkara</span>
+        </div>
         <div class="reveal">
           <p class="eyebrow">The Artist</p>
-          <h2>A decade of ink, a passport full of stamps.</h2>
+          <div class="headline-split">
+            <span class="headline-split__small">A decade of ink,</span>
+            <h2 class="headline-split__big">a passport full of stamps.</h2>
+          </div>
           <p class="lead">Scotty Massa has been tattooing professionally since 2014, building a body of work rooted in the bold lines and saturated colour of American traditional — and refined through years of guest spots across Europe, Asia and the Americas.</p>
           <p>Every piece begins with a conversation. Your story, your placement, your style. The needle comes last.</p>
           <p>Follow the <a href="journal.html">journal</a> for field notes from the studio and the road.</p>
-          <a href="about.html" class="btn btn--ghost mt-2">Read his story</a>
-        </div>
-        <div class="split__media ph-3 reveal">
-          <span class="badge">Studio · Birkirkara, MT</span>
+          <div class="hero__actions mt-2">
+            <a href="about.html" class="btn btn--ghost">Read his story</a>
+            <a href="https://www.instagram.com/scottymassa" class="btn btn--teal" rel="noopener">Instagram →</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-       FEATURED WORK
+       FEATURED WORK — portfolio grid with corner accents
   ========================================================= -->
-  <section class="section section--tight">
+  <section class="section section--tight section--ember">
     <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:3rem; flex-wrap:wrap; gap:1rem;">
+      <div class="section-head">
         <div>
           <p class="eyebrow">Selected Work</p>
-          <h2 class="mb-0">Recent pieces</h2>
+          <h2 class="mb-0">Recent pieces from the chair</h2>
         </div>
-        <a href="portfolio.html" class="btn btn--ghost">Full Portfolio →</a>
+        <a href="portfolio.html" class="btn btn--ghost">Full Portfolio <span class="arrow">→</span></a>
       </div>
 
       <div class="grid grid--portfolio">
         <div class="tile tile--wide reveal">
           <div class="tile__img ph-1"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Traditional · Full sleeve</span>
             <h4>Snake &amp; Dagger</h4>
@@ -172,6 +221,7 @@
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-2"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Blackwork · Forearm</span>
             <h4>Reaper's Hand</h4>
@@ -179,6 +229,7 @@
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-3"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Japanese · Back piece</span>
             <h4>Koi Ascending</h4>
@@ -186,6 +237,7 @@
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-4"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Traditional · Chest</span>
             <h4>Swallow Pair</h4>
@@ -193,6 +245,7 @@
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-5"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Decorative · Thigh</span>
             <h4>Ornamental Lace</h4>
@@ -200,6 +253,7 @@
         </div>
         <div class="tile tile--wide reveal">
           <div class="tile__img ph-6"></div>
+          <span class="tile__corner">+</span>
           <div class="tile__overlay">
             <span>Cover-up · Full back</span>
             <h4>Hannya Mask</h4>
@@ -210,9 +264,45 @@
   </section>
 
   <!-- =========================================================
-       STYLES
+       PROCESS — four-step timeline with ember numbered nodes
   ========================================================= -->
   <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 4.5rem;">
+        <p class="eyebrow" style="justify-content:center;">The Process</p>
+        <h2>From conversation to closing line.</h2>
+        <p class="lead mx-auto">A relaxed, considered approach. No surprises, no rushed designs — just careful work, made for you.</p>
+      </div>
+
+      <div class="process">
+        <div class="process__step reveal">
+          <h3>Consultation</h3>
+          <p>We meet — in person at the studio or online if you're abroad. We talk through ideas, references, placement &amp; sizing.</p>
+          <span class="process__step__tag">30–60 min · Free</span>
+        </div>
+        <div class="process__step reveal">
+          <h3>Custom Design</h3>
+          <p>I take your story away and come back with a one-of-one design. Two rounds of refinement included, no two pieces alike.</p>
+          <span class="process__step__tag">1–3 weeks lead</span>
+        </div>
+        <div class="process__step reveal">
+          <h3>The Session</h3>
+          <p>You arrive, we trace, we ink. Single or multi-session work, sterile single-use needles, vegan inks.</p>
+          <span class="process__step__tag">2–8 hours per sit</span>
+        </div>
+        <div class="process__step reveal">
+          <h3>Aftercare</h3>
+          <p>You leave with a wrap, a written plan, and direct contact. I check in at day 3 and day 14 — healing is part of the work.</p>
+          <span class="process__step__tag">14-day support</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       STYLES — 6 disciplines with ember accent + teal arrow
+  ========================================================= -->
+  <section class="section section--tight">
     <div class="container">
       <div class="text-center" style="margin-bottom: 4rem;">
         <p class="eyebrow" style="justify-content:center;">Style</p>
@@ -256,7 +346,7 @@
   </section>
 
   <!-- =========================================================
-       STATS
+       STATS — ember gradient numbers, dividers
   ========================================================= -->
   <section class="section section--tight">
     <div class="container">
@@ -282,16 +372,66 @@
   </section>
 
   <!-- =========================================================
+       TESTIMONIALS — three cards, ember stars, teal accents
+  ========================================================= -->
+  <section class="section section--ember">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--teal">Word of Mouth</p>
+          <h2 class="mb-0">From the people wearing the ink.</h2>
+        </div>
+      </div>
+
+      <div class="testimonials">
+        <div class="testimonial reveal">
+          <div class="testimonial__stars" aria-label="5 out of 5">★ ★ ★ ★ ★</div>
+          <blockquote>Scotty took a half-baked idea I'd had for three years and turned it into a full Japanese sleeve that flows with my arm like it grew there. Every line, every colour — he just knew.</blockquote>
+          <div class="testimonial__person">
+            <div class="testimonial__avatar">EM</div>
+            <div>
+              <div class="testimonial__name">Elena M.</div>
+              <div class="testimonial__role">Berlin · Sleeve</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial__stars" aria-label="5 out of 5">★ ★ ★ ★ ★</div>
+          <blockquote>Flew to Malta from London for a single sitting and it was worth every minute. The studio is calm, the process is the calmest I've ever experienced, and the work is exceptional.</blockquote>
+          <div class="testimonial__person">
+            <div class="testimonial__avatar">JK</div>
+            <div>
+              <div class="testimonial__name">James K.</div>
+              <div class="testimonial__role">London · Back piece</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial__stars" aria-label="5 out of 5">★ ★ ★ ★ ★</div>
+          <blockquote>My third tattoo with Scotty and he keeps getting better. He listens, he draws, he commits. There's a reason he books out a year ahead.</blockquote>
+          <div class="testimonial__person">
+            <div class="testimonial__avatar">SR</div>
+            <div>
+              <div class="testimonial__name">Sara R.</div>
+              <div class="testimonial__role">Valletta · Geometric</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
        UPCOMING TOUR PREVIEW
   ========================================================= -->
   <section class="section">
     <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:3rem; flex-wrap:wrap; gap:1rem;">
+      <div class="section-head">
         <div>
           <p class="eyebrow">2026 World Tour</p>
           <h2 class="mb-0">Upcoming guest spots</h2>
         </div>
-        <a href="tour.html" class="btn btn--ghost">All Dates →</a>
+        <a href="tour.html" class="btn btn--ghost">All Dates <span class="arrow">→</span></a>
       </div>
 
       <ul class="tour-list">
@@ -318,7 +458,86 @@
   </section>
 
   <!-- =========================================================
-       QUOTE
+       INSTAGRAM STRIP — 6-up grid with hover lift
+  ========================================================= -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 2.4rem;">
+        <p class="eyebrow eyebrow--teal" style="justify-content:center;">Latest from the studio</p>
+        <h2 class="mb-0">@scottymassa</h2>
+      </div>
+
+      <div class="insta-strip">
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-1"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-7"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-3"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-8"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-5"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/scottymassa" class="insta-tile reveal" rel="noopener" aria-label="Instagram post">
+          <div class="insta-tile__img ph-9"></div>
+          <div class="insta-tile__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="insta-cta">
+        <a href="https://www.instagram.com/scottymassa" class="btn btn--teal" rel="noopener">Follow @scottymassa →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       QUOTE — on bone background for contrast
   ========================================================= -->
   <section class="section section--bone">
     <div class="container">
@@ -330,15 +549,15 @@
   </section>
 
   <!-- =========================================================
-       CTA
+       CTA — molten ember finisher
   ========================================================= -->
   <section class="section">
     <div class="container">
-      <div class="cta-block">
-        <p class="eyebrow" style="color: var(--bone); justify-content:center;">Ready when you are</p>
+      <div class="cta-block grain">
+        <p class="eyebrow" style="color: var(--teal-glow); justify-content:center;">Ready when you are</p>
         <h2>Let's make something permanent.</h2>
         <p class="lead mx-auto">Bookings are open for Malta &amp; the 2026 world tour. Tell me your idea — I'll take it from there.</p>
-        <a href="booking.html" class="btn btn--dark">Book a Session</a>
+        <a href="booking.html" class="btn btn--dark">Book a Session <span class="arrow">→</span></a>
       </div>
     </div>
   </section>
