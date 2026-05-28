@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Scotty Massa</title>
+  <meta name="description" content="Get in touch with Scotty Massa — studio in Birkirkara, Malta. Bookings, press, collaborations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
+      <nav>
+        <ul class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="tour.html">World Tour</a></li>
+          <li><a href="aftercare.html">Aftercare</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav__cta">
+        <a href="booking.html" class="btn btn--primary">Book a Session</a>
+        <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="container">
+      <p class="eyebrow" style="justify-content:center;">Contact</p>
+      <h1>Say hello</h1>
+      <p class="lead mx-auto">For bookings, use the booking form. For everything else — press, collaboration, studio enquiries — drop a line here.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="split">
+        <div>
+          <p class="eyebrow">Direct</p>
+          <h2>Get in touch.</h2>
+
+          <div style="display:grid; gap:2.4rem; margin-top:2rem;">
+            <div>
+              <h4>Studio</h4>
+              <p style="margin:0;">11 Triq Il-Knisja Il-Qadima<br>Birkirkara, Malta</p>
+            </div>
+            <div>
+              <h4>Hours</h4>
+              <p style="margin:0;">Tuesday – Friday · 11:00 – 19:00<br>Saturday · 11:00 – 16:00<br>Sunday &amp; Monday · Closed</p>
+            </div>
+            <div>
+              <h4>Email</h4>
+              <p style="margin:0;"><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></p>
+            </div>
+            <div>
+              <h4>Phone</h4>
+              <p style="margin:0;"><a href="tel:+35699685949">+356 9968 5949</a></p>
+            </div>
+            <div>
+              <h4>Social</h4>
+              <p style="margin:0;"><a href="#">Instagram</a> · <a href="#">Facebook</a> · <a href="#">YouTube</a></p>
+            </div>
+          </div>
+        </div>
+
+        <form class="form" onsubmit="event.preventDefault(); alert('Thanks — message received.');">
+          <p class="eyebrow">Message</p>
+          <h2 style="margin-bottom:2rem;">Send a note.</h2>
+
+          <div class="form__row">
+            <div class="field">
+              <label for="cname">Name</label>
+              <input id="cname" name="name" type="text" required />
+            </div>
+            <div class="field">
+              <label for="cemail">Email</label>
+              <input id="cemail" name="email" type="email" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="topic">Topic</label>
+            <select id="topic" name="topic">
+              <option>General enquiry</option>
+              <option>Press / interview</option>
+              <option>Studio collaboration</option>
+              <option>Guest-spot invitation</option>
+              <option>Aftercare question</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="msg">Message</label>
+            <textarea id="msg" name="message" rows="6" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div style="aspect-ratio: 21/8; background: linear-gradient(135deg, #1c1a17 0%, #2a2521 100%); border: var(--line); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image: repeating-linear-gradient(45deg, rgba(243,237,225,0.02) 0 1px, transparent 1px 24px), repeating-linear-gradient(-45deg, rgba(243,237,225,0.02) 0 1px, transparent 1px 24px);"></div>
+        <div style="text-align:center; position:relative;">
+          <p class="eyebrow" style="justify-content:center;">Find us</p>
+          <h3 style="margin:0;">Birkirkara · Malta</h3>
+          <p style="color: var(--smoke); font-size:0.9rem; margin-top:1rem;">[ Embed map here in production ]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">Scotty <span>Massa</span></div>
+          <p style="color: var(--bone-2); max-width: 38ch;">Tattoo artist working out of Malta and travelling worldwide. Custom traditional, blackwork &amp; Japanese.</p>
+        </div>
+        <div><h4>Explore</h4>
+          <ul>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="tour.html">World Tour</a></li>
+            <li><a href="aftercare.html">Aftercare</a></li>
+          </ul></div>
+        <div><h4>Studio</h4>
+          <ul>
+            <li>11 Triq Il-Knisja Il-Qadima</li>
+            <li>Birkirkara, Malta</li>
+            <li>Tue–Fri 11–7</li>
+            <li>Sat 11–4</li>
+          </ul></div>
+        <div><h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
+            <li><a href="tel:+35699685949">+356 9968 5949</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+          </ul></div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Scotty Massa. All rights reserved.</span>
+        <div class="footer__social"><a href="#">IG</a><a href="#">FB</a><a href="#">YT</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
