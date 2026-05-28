@@ -16,7 +16,7 @@
   position: absolute;
   top: -120px; right: -120px;
   width: 420px; height: 420px;
-  background: radial-gradient(circle, rgba(184, 149, 106, 0.35), transparent 65%);
+  background: radial-gradient(circle, var(--gold-35), transparent 65%);
   pointer-events: none;
 }
 .quote-feature > * { position: relative; z-index: 1; }

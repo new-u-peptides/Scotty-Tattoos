@@ -41,7 +41,7 @@
 
 /* Slight visibility for tile captions even at rest, in addition to hover */
 .tile__overlay {
-  background: linear-gradient(180deg, transparent 30%, rgba(10, 9, 8, 0.92) 100%);
+  background: linear-gradient(180deg, transparent 30%, var(--ink-92) 100%);
 }
 
 /* 3-up policy block on booking.html with sane mobile collapse */

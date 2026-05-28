@@ -2,7 +2,7 @@
 .page-header {
   padding: clamp(6rem, 12vw, 9rem) 0 clamp(3rem, 6vw, 5rem);
   background:
-    radial-gradient(ellipse at 50% 20%, rgba(200, 16, 46, 0.18), transparent 60%),
+    radial-gradient(ellipse at 50% 20%, var(--red-18), transparent 60%),
     var(--ink);
   text-align: center;
   border-bottom: var(--line);

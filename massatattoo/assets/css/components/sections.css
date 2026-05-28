@@ -5,7 +5,7 @@
 .section--dark h2,
 .section--dark h3,
 .section--dark h4 { color: var(--cream); }
-.section--dark p { color: rgba(234, 223, 203, 0.72); }
+.section--dark p { color: var(--linen-72); }
 .section--dark .eyebrow { color: var(--gold); }
 .section--dark .eyebrow::before { background: var(--gold); }
 .section--dark em { color: var(--gold); }

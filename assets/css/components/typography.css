@@ -45,6 +45,6 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
 .divider {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(243, 237, 225, 0.25), transparent);
+  background: linear-gradient(to right, transparent, rgba(var(--bone-rgb), 0.25), transparent);
   margin: 4rem 0;
 }

@@ -20,6 +20,14 @@ with `git filter-repo`.
 Scotty-Tattos/
 ├── README.md
 │
+│  ─── shared by both sites
+├── shared/
+│   ├── README.md
+│   └── js/
+│       ├── main.js          Nav toggle, reveal-on-scroll, chips, active-nav marker
+│       ├── mandala.js       Animated canvas mandala — dotwork → lotus → linework → shading
+│       └── includes.js      HTML partial loader for the `<div data-include="...">` pattern
+│
 │  ─── scottymassa.com (lives at the root)
 ├── index.html              Home
 ├── about.html              Bio, story, stats, press, testimonial
@@ -28,9 +36,15 @@ Scotty-Tattos/
 ├── booking.html            Booking enquiry form
 ├── aftercare.html          Healing guide
 ├── contact.html            Studio info + contact form
+├── geometric-tattoos.html  Geometric-tattoo SEO hub
+├── journal.html            Journal index
+├── journal/                Long-form articles
+├── partials/
+│   ├── header.html
+│   └── footer.html
 ├── assets/
-│   ├── css/styles.css      Full design system
-│   ├── js/main.js          Nav toggle, reveal-on-scroll, chip filters
+│   ├── css/styles.css      Component index — see assets/css/components/
+│   ├── seo/                OG image + favicon
 │   └── images/             Photography
 │
 │  ─── massatattoo.com (subdirectory)
@@ -45,9 +59,14 @@ Scotty-Tattos/
     │   ├── header.html
     │   └── footer.html
     └── assets/
-        ├── css/styles.css
-        └── js/includes.js
+        ├── css/styles.css   Component index — see assets/css/components/
+        └── favicon.svg
 ```
+
+Both sites load the shared JS modules from `shared/js/...` (scotty
+root) or `../shared/js/...` (massatattoo). For production, each
+deployment must include `shared/` above its own site root — see
+`shared/README.md` for the long version.
 
 ---
 
@@ -209,11 +228,15 @@ Safari). Key gates: CSS custom properties, `clip-path: polygon()`,
 
 - [x] scottymassa.com — design files in place (pages, styles, JS).
 - [x] massatattoo.com — six pages built in `massatattoo/`.
+- [x] Hoist `main.js`, `mandala.js`, `includes.js` into the `shared/` tree.
+- [x] Lotus-petal arches woven into the mandala animation.
+- [x] Open Graph + Twitter Card meta, canonical and favicon on every page.
+- [x] Alpha tokens (`--bone-12`, `--gold-15`, etc.) replace literal `rgba()`.
+- [x] 880–980 px tightening on massatattoo so the layout doesn't read airless once the nav collapses.
 - [ ] Drop real photography into `assets/images/` (scottymassa) and
       replace SVG placeholders in `massatattoo/portfolio.html`.
 - [ ] Wire booking forms on both sites to a real submission endpoint.
-- [ ] Add Open Graph + Twitter Card metadata to every page.
-- [ ] Add per-site `sitemap.xml` and `robots.txt`.
+- [ ] Per-site `sitemap.xml` for massatattoo (scottymassa already has one).
 - [ ] Lighthouse pass on both sites — target 100/100/100/100.
 - [ ] When ready, split into two GitHub repositories.
 
