@@ -1,0 +1,35 @@
+/* Process steps (About) */
+.process {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 900px) { .process { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .process { grid-template-columns: 1fr; } }
+.process__step {
+  padding: 40px 28px 36px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  background: transparent;
+  transition: background var(--t-fast);
+}
+.process__step:hover { background: var(--surface); }
+.process__step:last-child { border-right: 0; }
+@media (max-width: 900px) {
+  .process__step:nth-child(2n) { border-right: 0; }
+}
+@media (max-width: 560px) {
+  .process__step { border-right: 0; }
+}
+.process__num {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-style: italic;
+  color: var(--walnut);
+  line-height: 1;
+  margin-bottom: 18px;
+}
+.process__step h3 { font-size: 1.25rem; margin: 0 0 10px; }
+.process__step p { font-size: 0.95rem; margin: 0; }

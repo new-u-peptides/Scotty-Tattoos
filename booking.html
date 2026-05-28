@@ -48,34 +48,17 @@
   }
   </script>
 </head>
-<body>
+<body data-nav-current="booking">
 
-  <header class="nav">
-    <div class="container nav__inner">
-      <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
-      <nav>
-        <ul class="nav__menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="geometric-tattoos.html">Geometric</a></li>
-          <li><a href="journal.html">Journal</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="tour.html">World Tour</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-      <div class="nav__cta">
-        <a href="booking.html" class="btn btn--primary">Book a Session</a>
-        <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
-      </div>
-    </div>
-  </header>
+    <div data-include="partials/header.html"></div>
 
+
+    <main id="main">
   <section class="page-header">
     <div class="container">
       <p class="eyebrow" style="justify-content:center;">Booking</p>
-      <h1>Book a Tattoo — Malta &amp; 2026 Tour Dates</h1>
-      <p class="lead mx-auto">Tell me what you're thinking. Real answer in 2–5 days. Booking <a href="geometric-tattoos.html">geometric</a>, blackwork, traditional, Japanese or cover-up work — tell me what you're thinking.</p>
+      <h1>Start a session</h1>
+      <p class="lead mx-auto">Tell me what you're thinking. Real answer in 2–5 days.</p>
     </div>
   </section>
 
@@ -173,7 +156,7 @@
 
   <section class="section section--bone section--tight">
     <div class="container">
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;">
+      <div class="policy-grid">
         <div>
           <h4>Deposits</h4>
           <p style="margin:0; font-size:0.95rem;">30% deposit confirms your slot. Non-refundable, but transferable once with 14+ days notice.</p>
@@ -189,45 +172,13 @@
       </div>
     </div>
   </section>
+    </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div>
-          <div class="footer__brand">Scotty <span>Massa</span></div>
-          <p style="color: var(--bone-2); max-width: 38ch;">Tattoo artist working out of Malta and travelling worldwide. Custom traditional, blackwork &amp; Japanese.</p>
-        </div>
-        <div><h4>Explore</h4>
-          <ul>
-            <li><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="geometric-tattoos.html">Geometric</a></li>
-            <li><a href="journal.html">Journal</a></li>
-            <li><a href="tour.html">World Tour</a></li>
-            <li><a href="aftercare.html">Aftercare</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul></div>
-        <div><h4>Studio</h4>
-          <ul>
-            <li>11 Triq Il-Knisja Il-Qadima</li>
-            <li>Birkirkara, Malta</li>
-            <li>Tue–Fri 11–7</li>
-            <li>Sat 11–4</li>
-          </ul></div>
-        <div><h4>Contact</h4>
-          <ul>
-            <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
-            <li><a href="tel:+35699685949">+356 9968 5949</a></li>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">Facebook</a></li>
-          </ul></div>
-      </div>
-      <div class="footer__bottom">
-        <span>© 2026 Scotty Massa. All rights reserved.</span>
-        <div class="footer__social"><a href="#">IG</a><a href="#">FB</a><a href="#">YT</a></div>
-      </div>
-    </div>
-  </footer>
 
+    <div data-include="partials/footer.html"></div>
+
+  <script src="assets/js/includes.js"></script>
+  <script src="assets/js/mandala.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

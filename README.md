@@ -149,6 +149,44 @@ similarly with `git filter-repo --path <file> --invert-paths` to remove
 
 ---
 
+## Photography
+
+The first batch of photos is now wired into both sites:
+- 6 tattoo pieces across both portfolios + featured-work grids
+- 4 studio interior shots in About / Aftercare / split-media blocks
+- 2 Scotty working portraits + 2 B&W lifestyle / atmospheric shots
+  (the B&W chair shot is the scottymassa.com hero backdrop)
+
+To add more: drop new files into `/public/` on the
+`claude/keen-rubin-DMDXL-design` branch (or any branch) and I'll sort,
+rename, optimise, and wire them in. The image asset layout is:
+
+```
+assets/images/                          ← scottymassa.com
+├── tattoos/    chest-mandala.jpg, leg-sleeve-mandala.jpg, …
+├── artist/     scotty-tattooing.jpg, portrait-bw-chair.webp, …
+└── studio/     entrance-lounge.webp, treatment-room.jpg, …
+
+massatattoo/assets/images/              ← massatattoo.com (same layout)
+```
+
+### Still-wanted shots
+
+- **More Scotty portraits** — the current set is two working shots and
+  two B&W lifestyle frames. We could use: a clean studio headshot, a wide
+  environmental (full body, studio behind), a hands / detail shot, a
+  candid lifestyle / on-tour shot.
+- **3 distinct team portraits** for massatattoo.com — Massa (founder),
+  Iris (resident dotwork), Tomas (resident fine-line). Currently the
+  team grid still shows SVG illustrations because we can't mix-and-match
+  1 photo with 2 SVGs without it looking lopsided.
+- **More tattoo work** — particularly traditional / Japanese / colour
+  pieces if Scotty has them, to broaden the portfolio beyond mandala /
+  dotwork.
+- **Tour city photos** — one per upcoming city for `tour.html` (optional).
+
+---
+
 ## Browser support
 
 Targets the last two versions of evergreen browsers (Chrome, Edge, Firefox,

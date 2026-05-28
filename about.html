@@ -65,33 +65,16 @@
   }
   </script>
 </head>
-<body>
+<body data-nav-current="about">
 
-  <header class="nav">
-    <div class="container nav__inner">
-      <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
-      <nav>
-        <ul class="nav__menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="geometric-tattoos.html">Geometric</a></li>
-          <li><a href="journal.html">Journal</a></li>
-          <li><a href="about.html" class="is-active">About</a></li>
-          <li><a href="tour.html">World Tour</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-      <div class="nav__cta">
-        <a href="booking.html" class="btn btn--primary">Book a Session</a>
-        <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
-      </div>
-    </div>
-  </header>
+    <div data-include="partials/header.html"></div>
 
+
+    <main id="main">
   <section class="page-header">
     <div class="container">
       <p class="eyebrow" style="justify-content:center;">About</p>
-      <h1>About Scotty Massa — Tattoo Artist in Malta</h1>
+      <h1>The Artist</h1>
       <p class="lead mx-auto">Born in Malta. Trained on tradition. Sharpened by the road.</p>
     </div>
   </section>
@@ -99,15 +82,14 @@
   <section class="section">
     <div class="container">
       <div class="split">
-        <div class="split__media ph-2 reveal">
+        <div class="split__media ph-portrait-tattooing reveal">
           <span class="badge">Scotty Massa</span>
         </div>
         <div class="reveal">
           <p class="eyebrow">Bio</p>
           <h2>Ten years, one needle, one obsession.</h2>
           <p>Scotty Massa picked up a tattoo machine in his early twenties and never put it down. A decade later, his work has been carried on bodies across four continents — built on a foundation of American traditional and shaped by mentorships from Berlin to Tokyo.</p>
-          <p>His practice lives at the intersection of bold and quiet. Saturated colour and confident lines that read from across the room, paired with the patience to sit for hours on the smallest piece. The <a href="geometric-tattoos.html">geometric tattoo work</a> — sacred geometry, mandalas, dotwork and ornamental pieces — has become a signature alongside the traditional and Japanese commissions.</p>
-          <p>Follow the <a href="journal.html">journal</a> for studio notes, process shots and reflections from the road.</p>
+          <p>His practice lives at the intersection of bold and quiet. Saturated colour and confident lines that read from across the room, paired with the patience to sit for hours on the smallest piece.</p>
           <p class="script" style="margin-top: 2rem;">— Carved by hand, carried by you.</p>
         </div>
       </div>
@@ -135,7 +117,7 @@
           <p>If you can't make it to Malta, watch the tour page. Odds are I'm coming close.</p>
           <a href="tour.html" class="btn btn--ghost mt-2">2026 Tour →</a>
         </div>
-        <div class="split__media ph-5 reveal"></div>
+        <div class="split__media ph-studio-flash-color reveal"></div>
       </div>
     </div>
   </section>
@@ -173,45 +155,13 @@
       </div>
     </div>
   </section>
+    </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div>
-          <div class="footer__brand">Scotty <span>Massa</span></div>
-          <p style="color: var(--bone-2); max-width: 38ch;">Tattoo artist working out of Malta and travelling worldwide. Custom traditional, blackwork &amp; Japanese.</p>
-        </div>
-        <div><h4>Explore</h4>
-          <ul>
-            <li><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="geometric-tattoos.html">Geometric</a></li>
-            <li><a href="journal.html">Journal</a></li>
-            <li><a href="tour.html">World Tour</a></li>
-            <li><a href="aftercare.html">Aftercare</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul></div>
-        <div><h4>Studio</h4>
-          <ul>
-            <li>11 Triq Il-Knisja Il-Qadima</li>
-            <li>Birkirkara, Malta</li>
-            <li>Tue–Fri 11–7</li>
-            <li>Sat 11–4</li>
-          </ul></div>
-        <div><h4>Contact</h4>
-          <ul>
-            <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
-            <li><a href="tel:+35699685949">+356 9968 5949</a></li>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">Facebook</a></li>
-          </ul></div>
-      </div>
-      <div class="footer__bottom">
-        <span>© 2026 Scotty Massa. All rights reserved.</span>
-        <div class="footer__social"><a href="#">IG</a><a href="#">FB</a><a href="#">YT</a></div>
-      </div>
-    </div>
-  </footer>
 
+    <div data-include="partials/footer.html"></div>
+
+  <script src="assets/js/includes.js"></script>
+  <script src="assets/js/mandala.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

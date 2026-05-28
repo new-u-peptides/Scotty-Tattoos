@@ -1,0 +1,55 @@
+/* Forms */
+.form {
+  display: grid;
+  gap: 1.6rem;
+}
+.form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+@media (max-width: 720px) { .form__row { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 0.5rem; }
+.field label {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bone-2);
+}
+.field input,
+.field select,
+.field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(243, 237, 225, 0.25);
+  color: var(--bone);
+  padding: 0.8rem 0;
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--rust-soft);
+}
+.field textarea { resize: vertical; min-height: 120px; }
+.field select option { background: var(--ink-2); }
+
+.section--bone .field input,
+.section--bone .field select,
+.section--bone .field textarea {
+  border-bottom-color: rgba(10, 9, 8, 0.2);
+  color: var(--ink);
+}
+.section--bone .field label { color: var(--ink); }
+
+.field--check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+.field--check input { width: 18px; height: 18px; }
+.field--check label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9rem;
+}

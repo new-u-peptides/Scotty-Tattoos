@@ -1,0 +1,90 @@
+/* Featured work grid (Home, Portfolio) */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+}
+.work-tile {
+  position: relative;
+  overflow: hidden;
+  background: var(--linen);
+  border: 1px solid var(--rule);
+  aspect-ratio: 4 / 5;
+  transition: transform var(--t-base), box-shadow var(--t-base);
+  cursor: pointer;
+}
+.work-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.work-tile--wide { aspect-ratio: 5 / 4; }
+.work-tile--tall { aspect-ratio: 3 / 5; }
+
+.work-tile__art {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(184, 149, 106, 0.35), transparent 55%),
+    linear-gradient(135deg, var(--sand) 0%, var(--linen) 60%, var(--taupe) 100%);
+}
+.work-tile__art svg { width: 70%; height: 70%; color: var(--bark); }
+.work-tile--dark .work-tile__art {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(184, 149, 106, 0.35), transparent 60%),
+    linear-gradient(135deg, var(--bark) 0%, var(--ink) 100%);
+}
+.work-tile--dark .work-tile__art svg { color: var(--gold); }
+
+/* Photo-backed art (replaces the SVG placeholder on portfolio + featured tiles) */
+.work-tile__art[class*=" photo-"],
+.work-tile__art[class^="photo-"] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.photo-chest-mandala    { background-image: url('../images/tattoos/chest-mandala.jpg'); }
+.photo-leg-sleeve       { background-image: url('../images/tattoos/leg-sleeve-mandala.jpg'); }
+.photo-back-mandala     { background-image: url('../images/tattoos/back-mandala.jpg'); }
+.photo-chrysanthemum    { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); }
+.photo-hip-leopard      { background-image: url('../images/tattoos/hip-leopard.jpg'); }
+.photo-back-in-progress { background-image: url('../images/tattoos/back-in-progress.jpg'); }
+
+.work-tile__meta {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 16px 18px;
+  background: linear-gradient(0deg, rgba(31, 20, 11, 0.78), transparent);
+  color: var(--cream);
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 10px;
+}
+.work-tile__title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+.work-tile__tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Default layout patterns */
+.work-grid .work-tile:nth-child(1) { grid-column: span 5; }
+.work-grid .work-tile:nth-child(2) { grid-column: span 4; }
+.work-grid .work-tile:nth-child(3) { grid-column: span 3; }
+.work-grid .work-tile:nth-child(4) { grid-column: span 3; }
+.work-grid .work-tile:nth-child(5) { grid-column: span 5; }
+.work-grid .work-tile:nth-child(6) { grid-column: span 4; }
+.work-grid .work-tile:nth-child(7) { grid-column: span 4; }
+.work-grid .work-tile:nth-child(8) { grid-column: span 4; }
+.work-grid .work-tile:nth-child(9) { grid-column: span 4; }
+
+@media (max-width: 900px) {
+  .work-grid .work-tile { grid-column: span 6 !important; }
+}
+@media (max-width: 560px) {
+  .work-grid .work-tile { grid-column: span 12 !important; }
+}

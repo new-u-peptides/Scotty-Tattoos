@@ -1,0 +1,24 @@
+/* Filter chips */
+.chips {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 0 3rem;
+}
+.chip {
+  background: transparent;
+  border: 1px solid rgba(243, 237, 225, 0.2);
+  color: var(--bone-2);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 99px;
+  transition: all 0.2s ease;
+}
+.chip:hover, .chip.is-active {
+  background: var(--rust);
+  border-color: var(--rust);
+  color: var(--bone);
+}

@@ -1,0 +1,29 @@
+/* Featured / story split */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+.split--narrow { grid-template-columns: 1.2fr 1fr; }
+@media (max-width: 880px) {
+  .split, .split--narrow { grid-template-columns: 1fr; }
+}
+.split__media {
+  aspect-ratio: 4 / 5;
+  background: var(--ink-3);
+  border: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.split__media .badge {
+  position: absolute;
+  top: 1.4rem;
+  left: 1.4rem;
+  background: var(--rust);
+  color: var(--bone);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}

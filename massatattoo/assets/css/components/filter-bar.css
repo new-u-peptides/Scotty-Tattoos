@@ -1,0 +1,35 @@
+/* Portfolio filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 40px;
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  align-items: center;
+}
+.filter-bar__label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-right: 14px;
+}
+.filter {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--espresso);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+.filter:hover { color: var(--bark); border-color: var(--walnut); }
+.filter.is-active { background: var(--bark); color: var(--cream); border-color: var(--bark); }

@@ -1,0 +1,111 @@
+/* a11y.css — accessibility helpers + mobile menu */
+
+/* Skip-to-main link. Hidden until focused. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--cream);
+  color: var(--jet);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--gold);
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Group the CTA + toggle so they share the right slot of the nav */
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Mobile menu toggle — hidden on desktop, shown ≤ 980px alongside the CTA */
+.nav__toggle {
+  display: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--rule-jet);
+  color: var(--jet);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+.nav__toggle:hover { background: var(--linen); }
+.nav__toggle[aria-expanded="true"] { background: var(--jet); color: var(--cream); border-color: var(--jet); }
+
+@media (max-width: 980px) {
+  .nav__toggle { display: inline-flex; align-items: center; justify-content: center; }
+  /* Hidden by default on mobile, sheet drops down when open */
+  .nav__links.is-open {
+    display: flex !important;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    gap: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--jet);
+    padding: 14px 28px 22px;
+    box-shadow: var(--shadow);
+  }
+  .nav__links.is-open li { width: 100%; }
+  .nav__links.is-open a {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    min-height: 44px;
+  }
+  .nav__links.is-open li:last-child a { border-bottom: 0; }
+}
+
+/* Tap-target bump for the CTA on small screens */
+@media (max-width: 600px) {
+  .nav__cta { padding: 14px 18px; font-size: 11px; }
+}
+
+/* Reset the default fieldset / legend chrome so they read as a regular field */
+.field[class~="field"] { /* no-op tag to bump specificity over .field */ }
+fieldset.field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: auto;
+}
+fieldset.field > legend {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+/* Touch-accessible work tiles: caption visible by default on touch */
+@media (hover: none) {
+  .work-tile__meta { opacity: 1; }
+}
+.work-tile:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* Honour prefers-reduced-motion for the remaining decorative animations */
+@media (prefers-reduced-motion: reduce) {
+  .geo-rotate, .geo-rotate--rev, .geo-pulse,
+  .studio__pin-vesica { animation: none !important; }
+}

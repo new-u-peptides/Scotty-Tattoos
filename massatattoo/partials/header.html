@@ -1,3 +1,4 @@
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="nav">
   <div class="container nav__inner">
     <a href="index.html" class="brand">
@@ -9,8 +10,8 @@
       </svg>
       <span>Massa Tattoo</span>
     </a>
-    <nav>
-      <ul class="nav__links">
+    <nav aria-label="Primary">
+      <ul class="nav__links" id="nav-menu">
         <li><a href="index.html" data-nav="home">Home</a></li>
         <li><a href="about.html" data-nav="about">About</a></li>
         <li><a href="portfolio.html" data-nav="portfolio">Portfolio</a></li>
@@ -18,6 +19,9 @@
         <li><a href="testimonials.html" data-nav="testimonials">Testimonials</a></li>
       </ul>
     </nav>
-    <a class="nav__cta" href="contact.html">Book a Consult</a>
+    <div class="nav__actions">
+      <a class="nav__cta" href="contact.html">Book a Consult</a>
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">☰</button>
+    </div>
   </div>
 </header>

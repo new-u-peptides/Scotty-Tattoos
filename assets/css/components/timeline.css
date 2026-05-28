@@ -1,0 +1,23 @@
+/* Aftercare timeline */
+.timeline { display: grid; gap: 0; counter-reset: step; }
+.timeline__step {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 2rem;
+  padding: 2.4rem 0;
+  border-bottom: var(--line);
+}
+.timeline__step:last-child { border-bottom: none; }
+.timeline__step::before {
+  counter-increment: step;
+  content: "0" counter(step);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--rust-soft);
+}
+.timeline__step h3 { margin: 0 0 0.6em; }
+.timeline__step p { color: var(--bone-2); margin: 0; }
+
+@media (max-width: 560px) {
+  .timeline__step { grid-template-columns: 1fr; gap: 0.6rem; }
+}

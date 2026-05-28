@@ -1,0 +1,21 @@
+/* Layout */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: clamp(4rem, 10vw, 8rem) 0;
+  position: relative;
+}
+
+.section--tight { padding: clamp(3rem, 6vw, 5rem) 0; }
+
+.section--bone {
+  background: var(--bone);
+  color: var(--ink);
+}
+.section--bone a { color: var(--ink); }
+.section--bone a:hover { color: var(--rust); }
