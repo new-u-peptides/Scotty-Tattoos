@@ -11,7 +11,7 @@ details.faq__item {
   transition: background var(--t-fast);
 }
 details.faq__item[open] { background: var(--surface); }
-.section--dark details.faq__item[open] { background: rgba(245, 239, 230, 0.04); }
+.section--dark details.faq__item[open] { background: var(--cream-04); }
 details.faq__item summary {
   list-style: none;
   cursor: pointer;
@@ -44,7 +44,7 @@ details.faq__item .faq__body {
   color: var(--muted);
   max-width: 70ch;
 }
-.section--dark details.faq__item .faq__body { color: rgba(234, 223, 203, 0.72); }
+.section--dark details.faq__item .faq__body { color: var(--linen-72); }
 
 .form-gun {
   position: absolute;

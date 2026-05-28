@@ -12,8 +12,8 @@
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 30% 20%, rgba(200, 16, 46, 0.25), transparent 60%),
-    linear-gradient(180deg, rgba(10, 10, 10, 0.85) 0%, rgba(10, 10, 10, 0.95) 100%),
+    radial-gradient(ellipse at 30% 20%, var(--red-25), transparent 60%),
+    linear-gradient(180deg, rgba(var(--ink-rgb), 0.85) 0%, rgba(var(--ink-rgb), 0.95) 100%),
     url('../images/artist/portrait-bw-chair.webp') 30% center / cover no-repeat,
     var(--ink);
 }
@@ -44,8 +44,8 @@
       0deg,
       transparent 0,
       transparent 2px,
-      rgba(243, 237, 225, 0.012) 2px,
-      rgba(243, 237, 225, 0.012) 3px
+      rgba(var(--bone-rgb), 0.012) 2px,
+      rgba(var(--bone-rgb), 0.012) 3px
     );
   pointer-events: none;
 }

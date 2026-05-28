@@ -16,4 +16,4 @@
   pointer-events: none;
 }
 .cta-block h2 { color: var(--bone); position: relative; }
-.cta-block p { color: rgba(243, 237, 225, 0.85); margin: 0 auto 2rem; position: relative; }
+.cta-block p { color: rgba(var(--bone-rgb), 0.85); margin: 0 auto 2rem; position: relative; }

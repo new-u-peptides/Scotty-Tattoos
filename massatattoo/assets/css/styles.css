@@ -23,3 +23,6 @@
 @import url('./components/cta-banner.css');
 @import url('./components/footer.css');
 @import url('./components/a11y.css');
+
+/* tightening.css imported last so it wins against earlier breakpoints. */
+@import url('./components/tightening.css');

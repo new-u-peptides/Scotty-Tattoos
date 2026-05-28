@@ -18,17 +18,56 @@
   --surface:    #FBF7EF;
   --text:       var(--bark);
   --muted:      #6B5644;
-  --rule:       rgba(92, 64, 51, 0.18);
-  --rule-jet:   rgba(10, 10, 10, 0.22);
-  --line:       rgba(92, 64, 51, 0.55);
 
-  --radius-sm:  4px;
-  --radius:     14px;
-  --radius-lg:  22px;
+  /* RGB triplets — feed rgba() when an alpha-only token isn't pre-baked. */
+  --bark-rgb:     61, 40, 23;
+  --espresso-rgb: 92, 64, 51;
+  --ink-rgb:      31, 20, 11;
+  --jet-rgb:      10, 10, 10;
+  --cream-rgb:    245, 239, 230;
+  --linen-rgb:    234, 223, 203;
+  --gold-rgb:     184, 149, 106;
+  --paper-rgb:    242, 234, 219;
+  --shadow-rgb:   60, 40, 24;
 
-  --shadow-sm:  0 1px 2px rgba(60, 40, 24, 0.06);
-  --shadow:     0 12px 30px -16px rgba(60, 40, 24, 0.25);
-  --shadow-lg:  0 30px 60px -28px rgba(60, 40, 24, 0.4);
+  /* Alpha tokens — drop-in replacements for the literal rgba() values
+     across the component sheets. Naming: <base>-<two-digit-percent>. */
+  --gold-08:     rgba(var(--gold-rgb), 0.08);
+  --gold-15:     rgba(var(--gold-rgb), 0.15);
+  --gold-18:     rgba(var(--gold-rgb), 0.18);
+  --gold-25:     rgba(var(--gold-rgb), 0.25);
+  --gold-35:     rgba(var(--gold-rgb), 0.35);
+  --gold-45:     rgba(var(--gold-rgb), 0.45);
+  --espresso-10: rgba(var(--espresso-rgb), 0.10);
+  --espresso-18: rgba(var(--espresso-rgb), 0.18);
+  --espresso-55: rgba(var(--espresso-rgb), 0.55);
+  --cream-04:    rgba(var(--cream-rgb), 0.04);
+  --cream-15:    rgba(var(--cream-rgb), 0.15);
+  --cream-18:    rgba(var(--cream-rgb), 0.18);
+  --cream-25:    rgba(var(--cream-rgb), 0.25);
+  --cream-40:    rgba(var(--cream-rgb), 0.40);
+  --cream-50:    rgba(var(--cream-rgb), 0.50);
+  --cream-72:    rgba(var(--cream-rgb), 0.72);
+  --cream-78:    rgba(var(--cream-rgb), 0.78);
+  --linen-50:    rgba(var(--linen-rgb), 0.50);
+  --linen-65:    rgba(var(--linen-rgb), 0.65);
+  --linen-72:    rgba(var(--linen-rgb), 0.72);
+  --paper-82:    rgba(var(--paper-rgb), 0.82);
+  --paper-86:    rgba(var(--paper-rgb), 0.86);
+  --ink-78:      rgba(var(--ink-rgb), 0.78);
+  --jet-22:      rgba(var(--jet-rgb), 0.22);
+
+  --rule:        var(--espresso-18);
+  --rule-jet:    var(--jet-22);
+  --line:        var(--espresso-55);
+
+  --radius-sm:   4px;
+  --radius:      14px;
+  --radius-lg:   22px;
+
+  --shadow-sm:   0 1px 2px rgba(var(--shadow-rgb), 0.06);
+  --shadow:      0 12px 30px -16px rgba(var(--shadow-rgb), 0.25);
+  --shadow-lg:   0 30px 60px -28px rgba(var(--shadow-rgb), 0.40);
 
   --serif: "Cormorant Garamond", Georgia, serif;
   --sans:  "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -57,8 +96,8 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(184, 149, 106, 0.18), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(92, 64, 51, 0.10), transparent 60%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, var(--gold-18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, var(--espresso-10), transparent 60%);
   background-attachment: fixed;
 }
 

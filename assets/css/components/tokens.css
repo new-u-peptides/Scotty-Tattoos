@@ -31,7 +31,38 @@
 
   /* Misc */
   --radius:    0px;        /* sharp edges only */
-  --line:      1px solid rgba(245, 242, 236, 0.14);
+
+  /* RGB triplets — feed rgba() when an alpha-only token isn't pre-baked. */
+  --bone-rgb:   245, 242, 236;
+  --ink-rgb:    10, 10, 10;
+  --red-rgb:    200, 16, 46;
+
+  /* Alpha tokens — drop-in replacements for the literal rgba() values
+     used across the component sheets. Naming: <base>-<two-digit-percent>. */
+  --bone-06:  rgba(var(--bone-rgb), 0.06);
+  --bone-08:  rgba(var(--bone-rgb), 0.08);
+  --bone-10:  rgba(var(--bone-rgb), 0.10);
+  --bone-12:  rgba(var(--bone-rgb), 0.12);
+  --bone-14:  rgba(var(--bone-rgb), 0.14);
+  --bone-18:  rgba(var(--bone-rgb), 0.18);
+  --bone-22:  rgba(var(--bone-rgb), 0.22);
+  --bone-30:  rgba(var(--bone-rgb), 0.30);
+  --bone-40:  rgba(var(--bone-rgb), 0.40);
+  --bone-72:  rgba(var(--bone-rgb), 0.72);
+  --bone-92:  rgba(var(--bone-rgb), 0.92);
+  --ink-60:   rgba(var(--ink-rgb), 0.60);
+  --ink-70:   rgba(var(--ink-rgb), 0.70);
+  --ink-82:   rgba(var(--ink-rgb), 0.82);
+  --ink-92:   rgba(var(--ink-rgb), 0.92);
+  --red-08:   rgba(var(--red-rgb), 0.08);
+  --red-12:   rgba(var(--red-rgb), 0.12);
+  --red-18:   rgba(var(--red-rgb), 0.18);
+  --red-25:   rgba(var(--red-rgb), 0.25);
+  --red-35:   rgba(var(--red-rgb), 0.35);
+  --red-45:   rgba(var(--red-rgb), 0.45);
+  --red-55:   rgba(var(--red-rgb), 0.55);
+
+  --line:      1px solid var(--bone-14);
   --line-red:  1px solid var(--red);
   --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.7);
 }

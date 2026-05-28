@@ -25,7 +25,7 @@
 .featured-post__art {
   aspect-ratio: 4 / 3;
   background:
-    radial-gradient(circle at 20% 30%, rgba(184, 149, 106, 0.45), transparent 60%),
+    radial-gradient(circle at 20% 30%, var(--gold-45), transparent 60%),
     linear-gradient(135deg, var(--bark) 0%, var(--ink) 100%);
   display: grid; place-items: center;
   color: var(--gold);
@@ -63,14 +63,14 @@
   aspect-ratio: 5 / 3;
   display: grid; place-items: center;
   background:
-    radial-gradient(circle at 30% 20%, rgba(184, 149, 106, 0.35), transparent 55%),
+    radial-gradient(circle at 30% 20%, var(--gold-35), transparent 55%),
     linear-gradient(135deg, var(--sand) 0%, var(--linen) 60%, var(--taupe) 100%);
   color: var(--bark);
 }
 .post-card__art svg { width: 60%; height: 60%; }
 .post-card__art--dark {
   background:
-    radial-gradient(circle at 30% 20%, rgba(184, 149, 106, 0.45), transparent 60%),
+    radial-gradient(circle at 30% 20%, var(--gold-45), transparent 60%),
     linear-gradient(135deg, var(--bark) 0%, var(--ink) 100%);
   color: var(--gold);
 }

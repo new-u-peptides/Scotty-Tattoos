@@ -1,13 +1,14 @@
 /* =============================================================
    mandala.js — animated sacred-geometry mandala that morphs
-   between dotwork, linework, and shading.
+   between dotwork, lotus, linework, and shading.
    -------------------------------------------------------------
-   Renders a layered mandala on any <canvas data-mandala>. Three
+   Renders a layered mandala on any <canvas data-mandala>. Four
    visual phases cross-fade in a continuous cycle:
 
-     Phase 0 — DOTWORK    (stippled rings, polygons faded out)
-     Phase 1 — LINEWORK   (polygons + star + vesica, dots faded out)
-     Phase 2 — SHADING    (concentric radial stipple, density gradient)
+     Phase 0 — DOTWORK    (stippled rings)
+     Phase 1 — LOTUS      (radial lotus-petal arches — Scotty's signature ornament)
+     Phase 2 — LINEWORK   (polygons + star + vesica)
+     Phase 3 — SHADING    (concentric radial stipple, density gradient)
 
    Each layer's opacity is a smoothstep bump centred on its peak.
    Peaks are spaced evenly around the cycle, with overlap so the
@@ -114,6 +115,34 @@
     }
   }
 
+  /* A ring of lotus-petal arches at radius R. Each petal is two
+     quadratic curves meeting at the outer tip, mirroring Scotty's
+     ornamental linework. */
+  function lotusArches(ctx, R, n, rotation, color) {
+    ctx.strokeStyle = color;
+    var inner = R * 0.42;
+    var outer = R * 0.92;
+    var halfAngle = Math.PI / n;
+    for (var i = 0; i < n; i++) {
+      var a = rotation + (i / n) * Math.PI * 2;
+      var ix = Math.cos(a - halfAngle) * inner;
+      var iy = Math.sin(a - halfAngle) * inner;
+      var jx = Math.cos(a + halfAngle) * inner;
+      var jy = Math.sin(a + halfAngle) * inner;
+      var tx = Math.cos(a) * outer;
+      var ty = Math.sin(a) * outer;
+      var cax = Math.cos(a - halfAngle * 0.5) * outer * 1.05;
+      var cay = Math.sin(a - halfAngle * 0.5) * outer * 1.05;
+      var cbx = Math.cos(a + halfAngle * 0.5) * outer * 1.05;
+      var cby = Math.sin(a + halfAngle * 0.5) * outer * 1.05;
+      ctx.beginPath();
+      ctx.moveTo(ix, iy);
+      ctx.quadraticCurveTo(cax, cay, tx, ty);
+      ctx.quadraticCurveTo(cbx, cby, jx, jy);
+      ctx.stroke();
+    }
+  }
+
   function vesicaPiscis(ctx, r, color) {
     ctx.strokeStyle = color;
     ctx.beginPath();
@@ -181,15 +210,17 @@
       var rot = t * 0.0001 * speed;
       var phase = (t % cycle) / cycle;
 
-      // Three bumps spaced evenly around the cycle. Width 0.42 gives generous
+      // Four bumps spaced evenly around the cycle. Width 0.34 gives
       // overlap so transitions feel continuous, never empty.
-      var aDot  = smoothPulse(phase, 0.00, 0.42);
-      var aLine = smoothPulse(phase, 0.33, 0.42);
-      var aShade = smoothPulse(phase, 0.66, 0.42);
+      var aDot   = smoothPulse(phase, 0.00, 0.34);
+      var aLotus = smoothPulse(phase, 0.25, 0.34);
+      var aLine  = smoothPulse(phase, 0.50, 0.34);
+      var aShade = smoothPulse(phase, 0.75, 0.34);
 
       // Always-on baseline so it never goes completely flat between peaks
-      aDot  = Math.max(aDot,  0.18);
-      aLine = Math.max(aLine, 0.18);
+      aDot   = Math.max(aDot,   0.18);
+      aLotus = Math.max(aLotus, 0.14);
+      aLine  = Math.max(aLine,  0.18);
       aShade = Math.max(aShade, 0.10);
 
       // ---- SHADING (drawn first so other layers sit on top) ----
@@ -202,6 +233,13 @@
         var dotPulse = Math.max(0.7, R * 0.005);
         dottedRing(ctx, R, dots, rot * 0.5, dotPulse * (0.6 + aDot * 0.6),
                    setAlpha(theme.dot, aDot));
+      }
+
+      // ---- LOTUS petal arches — Scotty's ornamental signature ----
+      if (aLotus > 0.01) {
+        var petals = Math.max(6, Math.floor(rings * 3));
+        ctx.lineWidth = Math.max(0.6, R * 0.0038) * (0.7 + aLotus);
+        lotusArches(ctx, R, petals, rot * 0.4, setAlpha(theme.stroke, aLotus));
       }
 
       // ---- LINEWORK polygons + star + vesica ----
@@ -264,7 +302,7 @@
     }
 
     if (prefersReducedMotion) {
-      draw(cycle * 0.5);   // a still frame mid-cycle (mid-linework)
+      draw(cycle * 0.25);   // a still frame mid-lotus, Scotty's signature
     } else {
       start();
     }
