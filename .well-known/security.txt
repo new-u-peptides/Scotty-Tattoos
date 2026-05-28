@@ -1,0 +1,5 @@
+Contact: mailto:studio@scottymassa.com
+Expires: 2027-05-28T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://scottymassa.com/.well-known/security.txt
+Policy: https://scottymassa.com/contact.html

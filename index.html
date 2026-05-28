@@ -3,12 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scotty Massa — Tattoo Artist | Worldwide</title>
-  <meta name="description" content="Scotty Massa — traditional, blackwork, and Japanese tattooing. Based in Malta, travelling the world for clients." />
+  <title>Scotty Massa — Tattoo Artist Malta &amp; Worldwide</title>
+  <meta name="description" content="Custom tattoos by Scotty Massa — geometric, traditional and Japanese work from a Birkirkara, Malta studio with guest spots worldwide. Book a session." />
+  <link rel="canonical" href="https://scottymassa.com/index.html" />
+  <meta property="og:title" content="Scotty Massa — Tattoo Artist Malta &amp; Worldwide" />
+  <meta property="og:description" content="Custom tattoos by Scotty Massa — geometric, traditional and Japanese work from a Birkirkara, Malta studio with guest spots worldwide. Book a session." />
+  <meta property="og:url" content="https://scottymassa.com/index.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/seo/og-default.svg" />
+  <meta property="og:site_name" content="Scotty Massa" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Scotty Massa — Tattoo Artist Malta &amp; Worldwide" />
+  <meta name="twitter:description" content="Custom tattoos by Scotty Massa — geometric, traditional and Japanese work from a Birkirkara, Malta studio with guest spots worldwide. Book a session." />
+  <meta name="twitter:image" content="/assets/seo/og-default.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["LocalBusiness", "TattooParlor"],
+        "@id": "https://scottymassa.com/#studio",
+        "name": "Massa Tattoo Studio",
+        "url": "https://scottymassa.com/",
+        "image": "https://scottymassa.com/assets/seo/og-default.svg",
+        "telephone": "+35699685949",
+        "email": "studio@scottymassa.com",
+        "priceRange": "€€",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "11 Triq Il-Knisja Il-Qadima",
+          "addressLocality": "Birkirkara",
+          "addressCountry": "MT"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "11:00",
+            "closes": "19:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "11:00",
+            "closes": "16:00"
+          }
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://scottymassa.com/#scotty",
+        "name": "Scotty Massa",
+        "jobTitle": "Tattoo Artist",
+        "url": "https://scottymassa.com/about.html",
+        "worksFor": { "@id": "https://scottymassa.com/#studio" },
+        "sameAs": [
+          "https://www.instagram.com/scottymassa",
+          "https://www.facebook.com/scottymassa"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -20,11 +80,12 @@
       <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
       <nav>
         <ul class="nav__menu">
-          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html" class="is-active">Home</a></li>
           <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="geometric-tattoos.html">Geometric</a></li>
+          <li><a href="journal.html">Journal</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="tour.html">World Tour</a></li>
-          <li><a href="aftercare.html">Aftercare</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
@@ -41,10 +102,10 @@
   <section class="hero">
     <div class="hero__bg"></div>
     <div class="container hero__content">
-      <p class="eyebrow">Tattoo Artist — Est. 2014</p>
+      <p class="eyebrow">Tattoo Artist — Malta · Est. 2014</p>
       <h1 class="hero__name">Scotty<span>Massa</span></h1>
       <p class="hero__tagline">Ink that travels.</p>
-      <p class="lead">Traditional, blackwork, and Japanese tattooing — handcrafted from Malta and carried to studios across the world. Booking guest spots in Tokyo, Berlin, Lisbon &amp; New York.</p>
+      <p class="lead">Custom tattoo artist in Malta — geometric, traditional, blackwork and Japanese tattooing handcrafted from Birkirkara and carried to studios across the world. Booking guest spots in Tokyo, Berlin, Lisbon &amp; New York.</p>
       <div class="hero__actions mt-2">
         <a href="booking.html" class="btn btn--primary">Book a Session</a>
         <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
@@ -78,6 +139,7 @@
           <h2>A decade of ink, a passport full of stamps.</h2>
           <p class="lead">Scotty Massa has been tattooing professionally since 2014, building a body of work rooted in the bold lines and saturated colour of American traditional — and refined through years of guest spots across Europe, Asia and the Americas.</p>
           <p>Every piece begins with a conversation. Your story, your placement, your style. The needle comes last.</p>
+          <p>Follow the <a href="journal.html">journal</a> for field notes from the studio and the road.</p>
           <a href="about.html" class="btn btn--ghost mt-2">Read his story</a>
         </div>
         <div class="split__media ph-3 reveal">
@@ -155,7 +217,7 @@
       <div class="text-center" style="margin-bottom: 4rem;">
         <p class="eyebrow" style="justify-content:center;">Style</p>
         <h2>What I tattoo.</h2>
-        <p class="lead mx-auto">Specialised in bold, lasting work — built to age well on skin.</p>
+        <p class="lead mx-auto">Specialised in bold, lasting work — built to age well on skin. From American traditional to sacred <a href="geometric-tattoos.html">geometric</a> pieces, every tattoo is custom-built for the wearer.</p>
       </div>
 
       <div class="styles">
@@ -176,7 +238,7 @@
         </div>
         <div class="style-card reveal">
           <div class="style-card__num">04 / 06</div>
-          <h3>Decorative</h3>
+          <h3><a href="geometric-tattoos.html">Decorative &amp; Geometric</a></h3>
           <p>Ornamental, geometric and pattern-led pieces. Mandala, lace, sacred geometry.</p>
         </div>
         <div class="style-card reveal">
@@ -295,9 +357,11 @@
           <h4>Explore</h4>
           <ul>
             <li><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="about.html">About</a></li>
+            <li><a href="geometric-tattoos.html">Geometric</a></li>
+            <li><a href="journal.html">Journal</a></li>
             <li><a href="tour.html">World Tour</a></li>
             <li><a href="aftercare.html">Aftercare</a></li>
+            <li><a href="about.html">About</a></li>
           </ul>
         </div>
         <div>
