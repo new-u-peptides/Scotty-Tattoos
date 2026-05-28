@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Session — Scotty Massa</title>
+  <meta name="description" content="Start a tattoo booking with Scotty Massa — Malta studio or upcoming tour dates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
+      <nav>
+        <ul class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="tour.html">World Tour</a></li>
+          <li><a href="aftercare.html">Aftercare</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav__cta">
+        <a href="booking.html" class="btn btn--primary">Book a Session</a>
+        <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="container">
+      <p class="eyebrow" style="justify-content:center;">Booking</p>
+      <h1>Start a session</h1>
+      <p class="lead mx-auto">Tell me what you're thinking. Real answer in 2–5 days.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="split">
+        <div>
+          <p class="eyebrow">Booking form</p>
+          <h2>Your idea.</h2>
+          <p>The more detail the better — references, placement, rough size and timing all help me give you a real answer fast.</p>
+          <p class="script" style="font-size:2rem;">— Looking forward.</p>
+        </div>
+
+        <form class="form" onsubmit="event.preventDefault(); alert('Thanks — we\\'ll be in touch.');">
+          <div class="form__row">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required placeholder="Your full name" />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" required placeholder="you@email.com" />
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="field">
+              <label for="phone">Phone / Instagram</label>
+              <input id="phone" name="phone" type="text" placeholder="@handle or number" />
+            </div>
+            <div class="field">
+              <label for="city">Preferred location</label>
+              <select id="city" name="city">
+                <option>Malta (Birkirkara studio)</option>
+                <option>Berlin — Jun 2026</option>
+                <option>Lisbon — Jul 2026</option>
+                <option>Tokyo — Aug 2026</option>
+                <option>New York — Sep 2026</option>
+                <option>Mexico City — Oct 2026</option>
+                <option>London — Nov 2026</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="field">
+              <label for="style">Style</label>
+              <select id="style" name="style">
+                <option>Traditional</option>
+                <option>Blackwork</option>
+                <option>Japanese</option>
+                <option>Decorative</option>
+                <option>Portrait</option>
+                <option>Cover-up</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="size">Size</label>
+              <select id="size" name="size">
+                <option>Small (under 10cm)</option>
+                <option>Medium (10–20cm)</option>
+                <option>Large (20cm+)</option>
+                <option>Sleeve / Back piece</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="placement">Placement</label>
+            <input id="placement" name="placement" type="text" placeholder="Forearm, ribs, thigh, full back…" />
+          </div>
+
+          <div class="field">
+            <label for="idea">Your idea</label>
+            <textarea id="idea" name="idea" rows="6" placeholder="Tell me about the piece. References, story, anything that helps." required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="refs">Reference images (links)</label>
+            <input id="refs" name="refs" type="text" placeholder="Drive / Dropbox / IG post links" />
+          </div>
+
+          <div class="field field--check">
+            <input id="age" name="age" type="checkbox" required />
+            <label for="age">I confirm I'm 18 or over.</label>
+          </div>
+
+          <button type="submit" class="btn btn--primary">Send Request</button>
+          <p style="font-size:0.85rem; color: var(--smoke); margin:0;">A 30% deposit is required to lock in a date. You'll get a link once we've confirmed your idea.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bone section--tight">
+    <div class="container">
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;">
+        <div>
+          <h4>Deposits</h4>
+          <p style="margin:0; font-size:0.95rem;">30% deposit confirms your slot. Non-refundable, but transferable once with 14+ days notice.</p>
+        </div>
+        <div>
+          <h4>Pricing</h4>
+          <p style="margin:0; font-size:0.95rem;">Hourly rate or flat-rate per piece, depending on size and style. Quoted after consultation.</p>
+        </div>
+        <div>
+          <h4>Cancellations</h4>
+          <p style="margin:0; font-size:0.95rem;">Two reschedules max. No-shows forfeit deposit. Be kind to artists who travel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">Scotty <span>Massa</span></div>
+          <p style="color: var(--bone-2); max-width: 38ch;">Tattoo artist working out of Malta and travelling worldwide. Custom traditional, blackwork &amp; Japanese.</p>
+        </div>
+        <div><h4>Explore</h4>
+          <ul>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="tour.html">World Tour</a></li>
+            <li><a href="aftercare.html">Aftercare</a></li>
+          </ul></div>
+        <div><h4>Studio</h4>
+          <ul>
+            <li>11 Triq Il-Knisja Il-Qadima</li>
+            <li>Birkirkara, Malta</li>
+            <li>Tue–Fri 11–7</li>
+            <li>Sat 11–4</li>
+          </ul></div>
+        <div><h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
+            <li><a href="tel:+35699685949">+356 9968 5949</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+          </ul></div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Scotty Massa. All rights reserved.</span>
+        <div class="footer__social"><a href="#">IG</a><a href="#">FB</a><a href="#">YT</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
