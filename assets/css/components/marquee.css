@@ -1,0 +1,28 @@
+/* Marquee */
+.marquee {
+  background: var(--ink-2);
+  border-top: var(--line);
+  border-bottom: var(--line);
+  overflow: hidden;
+  padding: 1.4rem 0;
+}
+.marquee__track {
+  display: flex;
+  gap: 4rem;
+  white-space: nowrap;
+  animation: scroll 40s linear infinite;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--bone-2);
+}
+.marquee__track span { display: inline-flex; gap: 4rem; }
+.marquee__track span::after {
+  content: "✦";
+  margin-left: 4rem;
+  color: var(--rust-soft);
+}
+@keyframes scroll {
+  to { transform: translateX(-50%); }
+}

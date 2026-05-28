@@ -1,8 +1,9 @@
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="nav">
   <div class="container nav__inner">
     <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
-    <nav>
-      <ul class="nav__menu">
+    <nav aria-label="Primary">
+      <ul class="nav__menu" id="nav-menu">
         <li><a href="index.html" data-nav="home">Home</a></li>
         <li><a href="portfolio.html" data-nav="portfolio">Portfolio</a></li>
         <li><a href="about.html" data-nav="about">About</a></li>
@@ -13,7 +14,7 @@
     </nav>
     <div class="nav__cta">
       <a href="booking.html" class="btn btn--primary">Book a Session</a>
-      <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">☰</button>
     </div>
   </div>
 </header>

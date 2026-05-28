@@ -26,6 +26,8 @@
 
     <div data-include="partials/header.html"></div>
 
+
+    <main id="main">
     <section class="hero">
       <div class="container hero__inner">
         <div>
@@ -202,8 +204,8 @@
               </div>
             </div>
 
-            <div class="field">
-              <label>Style direction</label>
+            <fieldset class="field">
+              <legend>Style direction</legend>
               <div class="chip-group">
                 <label class="chip"><input type="checkbox" name="style" value="sacred-geometry" /><span>Sacred geometry</span></label>
                 <label class="chip"><input type="checkbox" name="style" value="dotwork" /><span>Dotwork</span></label>
@@ -212,7 +214,7 @@
                 <label class="chip"><input type="checkbox" name="style" value="mandala" /><span>Mandala</span></label>
                 <label class="chip"><input type="checkbox" name="style" value="ornamental" /><span>Ornamental</span></label>
               </div>
-            </div>
+            </fieldset>
 
             <div class="form__row">
               <div class="field">
@@ -312,10 +314,13 @@
         </div>
       </div>
     </section>
+    </main>
+
 
     <div data-include="partials/footer.html"></div>
 
     <script src="assets/js/includes.js"></script>
     <script src="assets/js/mandala.js"></script>
+    <script src="assets/js/main.js"></script>
   </body>
 </html>

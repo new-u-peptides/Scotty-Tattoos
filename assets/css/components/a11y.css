@@ -1,0 +1,73 @@
+/* a11y.css — accessibility helpers shared across pages */
+
+/* Skip-to-main link. Hidden until focused, then visible top-left. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--red);
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+/* Bump nav__toggle to 44x44 tap target on touch */
+.nav__toggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.5rem;
+  display: none;
+}
+
+/* Touch-accessible portfolio tiles: caption visible by default, hover lift */
+@media (hover: none) {
+  .tile__overlay { opacity: 1 !important; }
+}
+.tile:focus-within .tile__overlay { opacity: 1; }
+.tile:focus-within { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* Slight visibility for tile captions even at rest, in addition to hover */
+.tile__overlay {
+  background: linear-gradient(180deg, transparent 30%, rgba(10, 9, 8, 0.92) 100%);
+}
+
+/* 3-up policy block on booking.html with sane mobile collapse */
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+}
+@media (max-width: 720px) {
+  .policy-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+/* Screen-reader-only labels for inputs that are visually unlabelled */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Honour prefers-reduced-motion across animated decorations */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track,
+  .reveal { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}

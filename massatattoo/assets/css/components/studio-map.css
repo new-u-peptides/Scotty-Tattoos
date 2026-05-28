@@ -1,0 +1,41 @@
+/* Studio map block (Contact page) */
+.studio {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 60px;
+  align-items: center;
+}
+@media (max-width: 980px) { .studio { grid-template-columns: 1fr; } }
+
+.studio__map {
+  aspect-ratio: 5 / 4;
+  background: var(--linen);
+  position: relative;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+}
+.studio__map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.studio__map svg .road { fill: none; stroke: var(--clay); stroke-width: 0.5; opacity: 0.55; }
+.studio__map svg .block { fill: var(--sand); stroke: var(--taupe); stroke-width: 0.4; }
+.studio__pin {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  z-index: 2;
+}
+.studio__pin-vesica { width: 60px; height: 60px; animation: pulse 4s ease-in-out infinite; }
+.studio__pin-vesica circle { fill: none; stroke: var(--bark); stroke-width: 1.2; }
+.studio__pin-vesica circle.fill { fill: var(--bark); opacity: 0.9; }
+.studio__pin-label {
+  margin-top: 14px;
+  background: var(--bark);
+  color: var(--cream);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}

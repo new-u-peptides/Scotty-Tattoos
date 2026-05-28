@@ -1,0 +1,52 @@
+/* Tour / dates list */
+.tour-list { list-style: none; padding: 0; margin: 0; }
+.tour-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 0;
+  border-bottom: var(--line);
+  transition: padding-left 0.3s ease;
+}
+.tour-item:hover { padding-left: 1rem; }
+.tour-item:first-child { border-top: var(--line); }
+
+.tour-item__date {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--rust-soft);
+}
+.tour-item__city {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+.tour-item__city small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  margin-top: 0.4rem;
+}
+.tour-item__studio { color: var(--bone-2); }
+.tour-item__status {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid;
+}
+.status--open    { color: var(--bone);  border-color: var(--bone); }
+.status--limited { color: var(--red);   border-color: var(--red); }
+.status--full    { color: var(--smoke); border-color: var(--smoke); }
+
+@media (max-width: 880px) {
+  .tour-item {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    padding: 1.6rem 0;
+  }
+}

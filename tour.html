@@ -14,6 +14,8 @@
 
     <div data-include="partials/header.html"></div>
 
+
+    <main id="main">
   <section class="page-header">
     <div class="container">
       <p class="eyebrow" style="justify-content:center;">2026 Tour</p>
@@ -118,13 +120,16 @@
         <p class="lead mx-auto">Drop your email — you'll hear about new cities and open slots before the public.</p>
         <form class="form" style="max-width: 480px; margin: 0 auto;" onsubmit="event.preventDefault();">
           <div class="field">
-            <input type="email" required placeholder="you@email.com" style="text-align:center; border-bottom-color: rgba(243, 237, 225, 0.4);" />
+            <label for="tour-email" class="visually-hidden">Email address</label>
+            <input id="tour-email" name="email" type="email" required placeholder="you@email.com" style="text-align:center; border-bottom-color: rgba(243, 237, 225, 0.4);" />
           </div>
           <button type="submit" class="btn btn--dark mx-auto">Subscribe</button>
         </form>
       </div>
     </div>
   </section>
+    </main>
+
 
     <div data-include="partials/footer.html"></div>
 

@@ -1,0 +1,101 @@
+/* Portfolio grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.2rem;
+}
+.grid--portfolio .tile { aspect-ratio: 4 / 5; }
+
+.tile {
+  grid-column: span 4;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-3);
+  border: var(--line);
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+.tile:hover { transform: translateY(-4px); }
+.tile:hover .tile__overlay { opacity: 1; }
+.tile:hover .tile__img { transform: scale(1.04); }
+
+.tile__img {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+.tile__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(10, 9, 8, 0.85) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.6rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.tile__overlay h4 { color: var(--bone); margin: 0 0 0.3em; }
+.tile__overlay span {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rust-soft);
+}
+
+.tile--wide { grid-column: span 8; }
+.tile--full { grid-column: span 12; aspect-ratio: 21 / 9; }
+.tile--portrait { aspect-ratio: 3 / 4; }
+
+@media (max-width: 880px) {
+  .tile, .tile--wide { grid-column: span 6; }
+  .tile--full { grid-column: span 12; }
+}
+@media (max-width: 560px) {
+  .tile, .tile--wide, .tile--full { grid-column: span 12; aspect-ratio: 4 / 5; }
+}
+
+/* Photo tile classes — used by the portfolio grid, featured-work blocks, and
+   split-media boxes. Use a separate ph-portrait-* / ph-studio-* namespace
+   for non-tattoo photos. All photos use object-fit:cover via background-size. */
+.ph-1, .ph-2, .ph-3, .ph-4, .ph-5, .ph-6, .ph-7, .ph-8, .ph-9,
+[class*="ph-portrait-"], [class*="ph-studio-"] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Tattoo photos */
+.ph-1 { background-image: url('../images/tattoos/chest-mandala.jpg'); }
+.ph-2 { background-image: url('../images/tattoos/leg-sleeve-mandala.jpg'); }
+.ph-3 { background-image: url('../images/tattoos/back-mandala.jpg'); }
+.ph-4 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); }
+.ph-5 { background-image: url('../images/tattoos/hip-leopard.jpg'); }
+.ph-6 { background-image: url('../images/tattoos/back-in-progress.jpg'); }
+/* Additional distinct shots + alt focal-point repeats further down the grid */
+.ph-7 { background-image: url('../images/tattoos/wrist-mandala.jpg'); }
+.ph-8 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); background-position: bottom center; }
+.ph-9 { background-image: url('../images/tattoos/back-mandala.jpg'); background-position: bottom center; }
+
+/* Portraits */
+.ph-portrait-tattooing  { background-image: url('../images/artist/scotty-tattooing.jpg'); }
+.ph-portrait-vondutch   { background-image: url('../images/artist/scotty-vondutch.jpg'); background-position: top center; }
+.ph-portrait-bw-stool   { background-image: url('../images/artist/portrait-bw-stool.webp'); }
+.ph-portrait-bw-chair   { background-image: url('../images/artist/portrait-bw-chair.webp'); }
+
+/* Studio interiors */
+.ph-studio-entrance     { background-image: url('../images/studio/entrance-lounge.webp'); }
+.ph-studio-reception    { background-image: url('../images/studio/reception.webp'); }
+.ph-studio-flash        { background-image: url('../images/studio/flash-wall.webp'); }
+.ph-studio-flash-color  { background-image: url('../images/studio/flash-wall-color.jpg'); }
+.ph-studio-consultation { background-image: url('../images/studio/consultation-room.webp'); }
+.ph-studio-treatment    { background-image: url('../images/studio/treatment-room.jpg'); }
+.ph-studio-piano        { background-image: url('../images/studio/piano-flash.jpg'); }
+
+/* Hip/leopard tile is a tall image; in wide layouts shift focus up so the
+   leopard face stays in frame instead of cropping to a hip patch. */
+.tile--wide .ph-5 { background-position: top center; }
+

@@ -1,0 +1,40 @@
+/* Style strip (4 cells: practice icons) */
+.style-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-top: 60px;
+}
+@media (max-width: 800px) {
+  .style-strip { grid-template-columns: repeat(2, 1fr); }
+}
+.style-cell {
+  padding: 36px 28px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: background var(--t-fast);
+  position: relative;
+}
+.style-cell:last-child { border-right: 0; }
+.style-cell:hover { background: var(--surface); }
+.style-cell svg { width: 56px; height: 56px; color: var(--bark); }
+.style-cell svg .stroke { fill: none; stroke: currentColor; stroke-width: 1.2; }
+.style-cell svg .fill { fill: currentColor; }
+.style-cell h3 { margin: 6px 0 0; font-size: 1.3rem; }
+.style-cell p { margin: 0; font-size: 0.95rem; }
+.style-cell__num {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--clay);
+}
+@media (max-width: 800px) {
+  .style-cell:nth-child(2) { border-right: 0; }
+  .style-cell:nth-child(1), .style-cell:nth-child(2) { border-bottom: 1px solid var(--rule); }
+}

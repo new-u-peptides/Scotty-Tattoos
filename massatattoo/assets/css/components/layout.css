@@ -1,0 +1,64 @@
+/* Layout primitives */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--clay);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--clay);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  color: var(--bark);
+  margin: 0 0 0.5em;
+  letter-spacing: -0.012em;
+}
+h1 { font-size: clamp(2.8rem, 6.5vw, 5.4rem); line-height: 1.02; }
+h2 { font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.1; }
+h3 { font-size: 1.4rem; line-height: 1.25; }
+
+p { margin: 0 0 1em; color: var(--muted); }
+
+em { font-style: italic; color: var(--walnut); }
+
+.geo-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 28px;
+}
+.geo-rule::before,
+.geo-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.geo-rule__diamond {
+  width: 10px;
+  height: 10px;
+  background: var(--walnut);
+  transform: rotate(45deg);
+}
+.geo-rule--left::before { display: none; }
+.geo-rule--left { justify-content: flex-start; }
+.geo-rule--left::after { flex: 0 0 64px; }

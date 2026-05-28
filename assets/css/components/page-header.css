@@ -1,0 +1,22 @@
+/* Page header */
+.page-header {
+  padding: clamp(6rem, 12vw, 9rem) 0 clamp(3rem, 6vw, 5rem);
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(200, 16, 46, 0.18), transparent 60%),
+    var(--ink);
+  text-align: center;
+  border-bottom: var(--line);
+  position: relative;
+}
+.page-header::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 2px;
+  background: var(--red);
+}
+.page-header h1 { margin: 0 0 0.6em; }
+.page-header p { color: var(--bone-2); margin: 0 auto; }

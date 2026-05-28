@@ -1,0 +1,30 @@
+/* Reset */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+a {
+  color: var(--bone);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--rust-soft); }
+
+button { font: inherit; cursor: pointer; }
+
+::selection { background: var(--rust); color: var(--bone); }

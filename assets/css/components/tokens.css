@@ -1,0 +1,37 @@
+/* =========================================================
+   ScottyMassa.com — Design System
+   Black, white, blood red. Traditional-tattoo flash aesthetic.
+   ========================================================= */
+
+:root {
+  /* Palette — pure black, near-white, vivid red */
+  --ink:        #0A0A0A;   /* near-pure black */
+  --ink-2:      #141414;
+  --ink-3:      #1F1F1F;
+  --bone:       #F5F2EC;   /* warm-leaning near-white */
+  --bone-2:     #C8C5BF;
+  --bone-3:     #8C8A85;
+  --smoke:      #6E6C68;
+  --red:        #C8102E;   /* bold blood red */
+  --red-deep:   #8C0A1F;
+  --red-soft:   #E04D5A;
+
+  /* Back-compat aliases (older selectors still reference these) */
+  --rust:       var(--red);
+  --rust-soft:  var(--red-soft);
+
+  /* Type */
+  --font-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+  --font-script:  "Tangerine", "Brush Script MT", cursive;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Spacing */
+  --container: 1280px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+
+  /* Misc */
+  --radius:    0px;        /* sharp edges only */
+  --line:      1px solid rgba(245, 242, 236, 0.14);
+  --line-red:  1px solid var(--red);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.7);
+}
