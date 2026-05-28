@@ -4,7 +4,7 @@
    ============================================================ */
 
 /* ------------------------------------------------------------
-   Design tokens — warm beige/brown + geometric system
+   Design tokens — warm beige/brown + black accents + geometric system
    ------------------------------------------------------------ */
 :root {
   --paper:      #F2EADB;
@@ -16,7 +16,9 @@
   --walnut:     #8B6F47;
   --espresso:   #5C4033;
   --bark:       #3D2817;
-  --ink:        #1F140B;
+  --ink:        #1F140B;   /* deep warm brown-black */
+  --jet:        #0A0A0A;   /* true black accent */
+  --jet-2:      #161616;
   --gold:       #B8956A;
 
   --bg:         var(--paper);
@@ -24,6 +26,7 @@
   --text:       var(--bark);
   --muted:      #6B5644;
   --rule:       rgba(92, 64, 51, 0.18);
+  --rule-jet:   rgba(10, 10, 10, 0.22);
   --line:       rgba(92, 64, 51, 0.55);
 
   --radius-sm:  4px;
@@ -167,10 +170,10 @@ em { font-style: italic; color: var(--walnut); }
 .btn--primary:hover { background: var(--cream); transform: translateY(-2px); }
 
 .btn--dark {
-  background: var(--bark);
+  background: var(--jet);
   color: var(--cream);
 }
-.btn--dark:hover { background: var(--walnut); color: var(--cream); transform: translateY(-2px); }
+.btn--dark:hover { background: var(--bark); color: var(--cream); transform: translateY(-2px); }
 
 .btn--ghost {
   background: transparent;
@@ -186,10 +189,10 @@ em { font-style: italic; color: var(--walnut); }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(242, 234, 219, 0.82);
+  background: rgba(242, 234, 219, 0.86);
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--jet);
 }
 .nav__inner {
   display: flex;
@@ -213,7 +216,7 @@ em { font-style: italic; color: var(--walnut); }
 .brand__mark path,
 .brand__mark polygon {
   fill: none;
-  stroke: var(--bark);
+  stroke: var(--jet);
   stroke-width: 1.2;
 }
 
@@ -234,6 +237,7 @@ em { font-style: italic; color: var(--walnut); }
   position: relative;
   padding: 6px 0;
 }
+.nav__links a.is-active { color: var(--jet); }
 .nav__links a.is-active::after {
   content: "";
   position: absolute;
@@ -242,11 +246,11 @@ em { font-style: italic; color: var(--walnut); }
   transform: translateX(-50%) rotate(45deg);
   width: 6px;
   height: 6px;
-  background: var(--walnut);
+  background: var(--jet);
 }
 .nav__cta {
   padding: 11px 22px;
-  background: var(--bark);
+  background: var(--jet);
   color: var(--cream);
   font-family: var(--mono);
   font-size: 11px;
@@ -266,7 +270,7 @@ em { font-style: italic; color: var(--walnut); }
    ------------------------------------------------------------ */
 .section { padding: 100px 0; position: relative; }
 .section--alt { background: var(--sand); }
-.section--dark { background: var(--ink); color: var(--linen); }
+.section--dark { background: var(--jet); color: var(--linen); }
 .section--dark h2,
 .section--dark h3,
 .section--dark h4 { color: var(--cream); }
@@ -506,12 +510,13 @@ em { font-style: italic; color: var(--walnut); }
    Booking form (dark card)
    ------------------------------------------------------------ */
 .form-card {
-  background: var(--ink);
+  background: var(--jet);
   color: var(--cream);
   padding: 52px;
   box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
+  border-top: 3px solid var(--gold);
 }
 .form-card::before {
   content: "";
@@ -1353,7 +1358,7 @@ details.faq__item .faq__body {
    ------------------------------------------------------------ */
 .cta-banner {
   padding: 80px 60px;
-  background: var(--bark);
+  background: var(--jet);
   color: var(--cream);
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -1361,6 +1366,7 @@ details.faq__item .faq__body {
   align-items: center;
   position: relative;
   overflow: hidden;
+  border-top: 3px solid var(--gold);
 }
 .cta-banner::before {
   content: "";
@@ -1417,7 +1423,7 @@ details.faq__item .faq__body {
    Footer
    ------------------------------------------------------------ */
 .footer {
-  background: var(--ink);
+  background: var(--jet);
   color: var(--linen);
   padding: 80px 0 32px;
   position: relative;
