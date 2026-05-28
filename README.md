@@ -151,39 +151,39 @@ similarly with `git filter-repo --path <file> --invert-paths` to remove
 
 ## Photography
 
-Drop everything into `/public/` on GitHub (multi-select works) and I'll
-sort, rename, optimise, and wire it in. See `public/README.md` for the full
-shot list and `public/<category>/README.md` for category-specific guidance.
+The first batch of photos is now wired into both sites:
+- 6 tattoo pieces across both portfolios + featured-work grids
+- 4 studio interior shots in About / Aftercare / split-media blocks
+- 2 Scotty working portraits + 2 B&W lifestyle / atmospheric shots
+  (the B&W chair shot is the scottymassa.com hero backdrop)
 
-**The short version of what each site needs:**
+To add more: drop new files into `/public/` on the
+`claude/keen-rubin-DMDXL-design` branch (or any branch) and I'll sort,
+rename, optimise, and wire them in. The image asset layout is:
 
-### scottymassa.com (root)
-Single-artist, personal voice. Photography should feel close to the artist.
-- **1× hero image** — wide-format studio or portrait shot for the home hero
-- **3–5 Scotty portraits** — see below, this is the gap right now
-- **9 tattoo pieces** — to replace `.ph-1` … `.ph-9` gradient placeholders
-- **3–4 studio interior shots** — for About / split-media blocks and Aftercare
-- **Tour city photos** — one per upcoming city (optional, falls back to type)
+```
+assets/images/                          ← scottymassa.com
+├── tattoos/    chest-mandala.jpg, leg-sleeve-mandala.jpg, …
+├── artist/     scotty-tattooing.jpg, portrait-bw-chair.webp, …
+└── studio/     entrance-lounge.webp, treatment-room.jpg, …
 
-### massatattoo.com (`massatattoo/`)
-Studio brand, multi-artist. Photography should feel polished and architectural.
-- **9–12 tattoo pieces** — for the portfolio grid (replaces inline SVG tiles)
-- **6 featured pieces** — for the home page's "recent work" grid
-- **3 artist portraits** — for the About team grid (Massa + 2 residents)
-- **3–4 studio interior shots** — for the Studio / About page
+massatattoo/assets/images/              ← massatattoo.com (same layout)
+```
 
-### Scotty portraits (priority — we don't have enough)
-The current set is light on portraits. We need more, varied:
-- A **clean headshot** — studio light, eye contact, used in About hero
-- A **working shot** — Scotty tattooing, gloves on, machine in hand
-- A **wide environmental** — Scotty in the studio, full body or 3/4
-- A **casual / lifestyle** — outside the studio, on tour, off-duty
-- A **detail shot** — hands, ink pots, sketchbook, the desk
-- **Black-and-white variants** of any of the above are useful for the
-  dark-themed sections
+### Still-wanted shots
 
-Submit drafts first if you're not sure which will be used — we can pick
-the best 3–5 once they're in `public/artist/`.
+- **More Scotty portraits** — the current set is two working shots and
+  two B&W lifestyle frames. We could use: a clean studio headshot, a wide
+  environmental (full body, studio behind), a hands / detail shot, a
+  candid lifestyle / on-tour shot.
+- **3 distinct team portraits** for massatattoo.com — Massa (founder),
+  Iris (resident dotwork), Tomas (resident fine-line). Currently the
+  team grid still shows SVG illustrations because we can't mix-and-match
+  1 photo with 2 SVGs without it looking lopsided.
+- **More tattoo work** — particularly traditional / Japanese / colour
+  pieces if Scotty has them, to broaden the portfolio beyond mandala /
+  dotwork.
+- **Tour city photos** — one per upcoming city for `tour.html` (optional).
 
 ---
 

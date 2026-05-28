@@ -261,9 +261,10 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 30% 20%, rgba(200, 16, 46, 0.22), transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(255, 255, 255, 0.04), transparent 50%),
-    linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
+    radial-gradient(ellipse at 30% 20%, rgba(200, 16, 46, 0.25), transparent 60%),
+    linear-gradient(180deg, rgba(10, 10, 10, 0.85) 0%, rgba(10, 10, 10, 0.95) 100%),
+    url('../images/artist/portrait-bw-chair.webp') 30% center / cover no-repeat,
+    var(--ink);
 }
 .hero__bg::after {
   content: "";
@@ -405,16 +406,42 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
   .tile, .tile--wide, .tile--full { grid-column: span 12; aspect-ratio: 4 / 5; }
 }
 
-/* Placeholder tile styles (greyscale + flash red so the design previews offline) */
-.ph-1 { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); }
-.ph-2 { background: linear-gradient(135deg, #2a2a2a 0%, #141414 100%); }
-.ph-3 { background: linear-gradient(135deg, #1f1f1f 0%, #0a0a0a 60%), radial-gradient(circle at 70% 30%, rgba(200,16,46,0.28), transparent 55%); }
-.ph-4 { background: linear-gradient(135deg, #161616 0%, #2c2c2c 100%); }
-.ph-5 { background: linear-gradient(135deg, #232323 0%, #0e0e0e 100%); }
-.ph-6 { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%), radial-gradient(circle at 30% 70%, rgba(200,16,46,0.25), transparent 50%); }
-.ph-7 { background: linear-gradient(135deg, #141414 0%, #262626 100%); }
-.ph-8 { background: linear-gradient(135deg, #1c1c1c 0%, #0a0a0a 100%); }
-.ph-9 { background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%), radial-gradient(circle at 50% 50%, rgba(200,16,46,0.15), transparent 60%); }
+/* Photo tile classes — used by the portfolio grid, featured-work blocks, and
+   split-media boxes. Use a separate ph-portrait-* / ph-studio-* namespace
+   for non-tattoo photos. All photos use object-fit:cover via background-size. */
+.ph-1, .ph-2, .ph-3, .ph-4, .ph-5, .ph-6, .ph-7, .ph-8, .ph-9,
+[class*="ph-portrait-"], [class*="ph-studio-"] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Tattoo photos */
+.ph-1 { background-image: url('../images/tattoos/chest-mandala.jpg'); }
+.ph-2 { background-image: url('../images/tattoos/leg-sleeve-mandala.jpg'); }
+.ph-3 { background-image: url('../images/tattoos/back-mandala.jpg'); }
+.ph-4 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); }
+.ph-5 { background-image: url('../images/tattoos/hip-leopard.jpg'); }
+.ph-6 { background-image: url('../images/tattoos/back-in-progress.jpg'); }
+/* Alt focal points for repeats further down the portfolio grid */
+.ph-7 { background-image: url('../images/tattoos/chest-mandala.jpg'); background-position: top center; }
+.ph-8 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); background-position: bottom center; }
+.ph-9 { background-image: url('../images/tattoos/back-mandala.jpg'); background-position: bottom center; }
+
+/* Portraits */
+.ph-portrait-tattooing  { background-image: url('../images/artist/scotty-tattooing.jpg'); }
+.ph-portrait-vondutch   { background-image: url('../images/artist/scotty-vondutch.jpg'); background-position: top center; }
+.ph-portrait-bw-stool   { background-image: url('../images/artist/portrait-bw-stool.webp'); }
+.ph-portrait-bw-chair   { background-image: url('../images/artist/portrait-bw-chair.webp'); }
+
+/* Studio interiors */
+.ph-studio-entrance     { background-image: url('../images/studio/entrance-lounge.webp'); }
+.ph-studio-reception    { background-image: url('../images/studio/reception.webp'); }
+.ph-studio-flash        { background-image: url('../images/studio/flash-wall.webp'); }
+.ph-studio-flash-color  { background-image: url('../images/studio/flash-wall-color.jpg'); }
+.ph-studio-consultation { background-image: url('../images/studio/consultation-room.webp'); }
+.ph-studio-treatment    { background-image: url('../images/studio/treatment-room.jpg'); }
+.ph-studio-piano        { background-image: url('../images/studio/piano-flash.jpg'); }
 
 /* ---------- Featured / story split ---------- */
 .split {
