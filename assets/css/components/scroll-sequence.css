@@ -1,0 +1,295 @@
+/* scroll-sequence.css — sticky-scroll reveal panel on the home page */
+
+/* ============================================================
+   Hero — split into LEFT (animated mandala) + RIGHT (portrait)
+   Replaces the legacy full-bleed hero on the home page.
+   ============================================================ */
+.hero--split {
+  min-height: 92vh;
+  padding: 6rem 0 4rem;
+  display: grid;
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+}
+.hero--split .hero__bg {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(200, 16, 46, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
+}
+.hero--split .hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero__left {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+.hero__left canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero__right {
+  position: relative;
+}
+.hero__portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--ink-3);
+  border: 1px solid rgba(245, 242, 236, 0.08);
+  margin-bottom: 1.5rem;
+}
+.hero__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.15) contrast(1.05);
+}
+.hero__portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 10, 0.65) 100%);
+  pointer-events: none;
+}
+.hero__right h1.hero__name {
+  font-size: clamp(2.5rem, 5.5vw, 4.4rem);
+  margin: 0 0 0.4rem;
+}
+.hero__right .hero__tagline {
+  margin: 0 0 1.4rem;
+}
+.hero__right .hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 880px) {
+  .hero--split { padding: 4rem 0 3rem; }
+  .hero--split .hero__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .hero__left { max-width: 380px; }
+}
+
+/* ============================================================
+   Reveal sequence — sticky-scroll panel after the hero
+   ============================================================ */
+.reveal-sequence {
+  /* Section height drives the scroll length. 1 viewport per slot gives a
+     comfortable scroll pace; 4 slots = 400vh of vertical scroll. */
+  position: relative;
+  height: 400vh;
+  background: var(--ink);
+}
+.reveal-sequence__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* Background ornament: faint radial gradient anchored to the right, so the
+   stage has depth as the mandala travels across it. */
+.reveal-sequence__sticky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(200, 16, 46, 0.10), transparent 60%);
+  pointer-events: none;
+}
+
+/* Image stack — sits on the left half of the stage. Slots cross-fade. */
+.reveal-sequence__images {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38%;
+  aspect-ratio: 4 / 5;
+  max-height: 80vh;
+  z-index: 1;
+}
+.reveal-sequence__images > [data-slot] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1),
+              transform 0.8s cubic-bezier(.2,.7,.2,1);
+  background: var(--ink-3);
+  border: 1px solid rgba(245, 242, 236, 0.08);
+  overflow: hidden;
+}
+.reveal-sequence__images > [data-slot] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.reveal-sequence__images > [data-slot].is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* The traveling mandala — translated by scroll-sequence.js. */
+.reveal-sequence__mandala {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate3d(0, -50%, 0);
+  width: 42vw;
+  max-width: 560px;
+  aspect-ratio: 1;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  /* JS replaces the transform; keep margin-translate via top:50% margin-top: */
+  margin-top: 0;
+}
+
+/* Captions — right side of the stage. Cross-fade with the images. */
+.reveal-sequence__captions {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30%;
+  z-index: 3;
+}
+.reveal-sequence__captions > [data-slot] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-sequence__captions > [data-slot].is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-sequence__caption-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--rust-soft);
+  margin: 0 0 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.reveal-sequence__caption-eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: var(--rust-soft);
+}
+.reveal-sequence__captions h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 1.05;
+  margin: 0 0 1rem;
+  color: var(--bone);
+}
+.reveal-sequence__captions p {
+  color: var(--bone-2);
+  margin: 0 0 1.4rem;
+  max-width: 36ch;
+}
+.reveal-sequence__captions .btn {
+  margin-top: 0.6rem;
+}
+
+/* Progress dots — small visual indicator of where you are in the sequence */
+.reveal-sequence__dots {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 4;
+}
+.reveal-sequence__dots span {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: rgba(245, 242, 236, 0.18);
+  transition: background 0.4s ease, transform 0.4s ease;
+}
+.reveal-sequence__dots span.is-active {
+  background: var(--red);
+  transform: scaleY(2);
+}
+
+/* Smaller screens: stack vertically, drop the sticky scroll trick. */
+@media (max-width: 880px) {
+  .reveal-sequence { height: auto; }
+  .reveal-sequence__sticky {
+    position: static;
+    height: auto;
+    padding: 4rem 0;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .reveal-sequence__images,
+  .reveal-sequence__captions {
+    position: relative;
+    inset: auto;
+    transform: none;
+    width: auto;
+    margin: 0 var(--gutter);
+  }
+  .reveal-sequence__images {
+    aspect-ratio: 4 / 5;
+    max-width: 480px;
+  }
+  .reveal-sequence__captions { padding-top: 1.5rem; }
+  .reveal-sequence__captions > [data-slot] {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    transform: none;
+    padding-bottom: 3rem;
+  }
+  .reveal-sequence__images > [data-slot] {
+    opacity: 1;
+    transform: none;
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .reveal-sequence__mandala,
+  .reveal-sequence__dots { display: none; }
+}
+
+/* Reduced motion: stack like the mobile version, no movement, all visible. */
+.reveal-sequence.is-reduced-motion {
+  height: auto;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__sticky {
+  position: static;
+  height: auto;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__mandala,
+.reveal-sequence.is-reduced-motion .reveal-sequence__dots {
+  display: none;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__images > [data-slot],
+.reveal-sequence.is-reduced-motion .reveal-sequence__captions > [data-slot] {
+  opacity: 1;
+  transform: none;
+}

@@ -78,24 +78,102 @@
 
     <main id="main">
   <!-- =========================================================
-       HERO
+       HERO — animations LEFT, portrait RIGHT
   ========================================================= -->
-  <section class="hero">
+  <section class="hero hero--split">
     <div class="hero__bg"></div>
-    <canvas class="mandala mandala--hero" data-mandala data-mandala-theme="red" data-mandala-rings="5" data-mandala-dots="120" data-mandala-speed="0.7" aria-hidden="true"></canvas>
-    <div class="container hero__content">
-      <p class="eyebrow">Tattoo Artist — Est. 2014</p>
-      <h1 class="hero__name">Scotty<span>Massa</span></h1>
-      <p class="hero__tagline">Ink that travels.</p>
-      <p class="lead">Traditional, blackwork, and Japanese tattooing — handcrafted from Malta and carried to studios across the world. Booking guest spots in Tokyo, Berlin, Lisbon &amp; New York.</p>
-      <div class="hero__actions mt-2">
-        <a href="booking.html" class="btn btn--primary">Book a Session</a>
-        <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
+    <div class="container hero__inner">
+      <div class="hero__left" aria-hidden="true">
+        <canvas data-mandala
+                data-mandala-theme="red"
+                data-mandala-rings="5"
+                data-mandala-dots="120"
+                data-mandala-speed="0.7"
+                data-mandala-cycle="22000"></canvas>
       </div>
-      <div class="hero__meta">
-        <div><strong>10+</strong> Years inking</div>
-        <div><strong>4</strong> Continents</div>
-        <div><strong>2026</strong> Tour open</div>
+      <div class="hero__right">
+        <div class="hero__portrait">
+          <img src="assets/images/artist/portrait-bw-chair.webp" alt="Scotty Massa in the Malta studio" loading="eager" />
+        </div>
+        <p class="eyebrow">Tattoo Artist — Est. 2014</p>
+        <h1 class="hero__name">Scotty<span>Massa</span></h1>
+        <p class="hero__tagline">Ink that travels.</p>
+        <p class="lead">Geometric, dotwork, traditional, blackwork and Japanese tattooing — handcrafted from Malta and carried to studios across the world.</p>
+        <div class="hero__actions mt-2">
+          <a href="booking.html" class="btn btn--primary">Book a Session</a>
+          <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
+        </div>
+        <div class="hero__meta">
+          <div><strong>10+</strong> Years inking</div>
+          <div><strong>4</strong> Continents</div>
+          <div><strong>2026</strong> Tour open</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       REVEAL SEQUENCE — mandala translates left→right as you
+       scroll, revealing a portfolio piece per slot.
+  ========================================================= -->
+  <section class="reveal-sequence" data-sequence aria-label="Selected work">
+    <div class="reveal-sequence__sticky">
+      <div class="reveal-sequence__images">
+        <div data-slot="0">
+          <img src="assets/images/tattoos/chest-mandala.jpg" alt="Chest mandala — dotwork tattoo on sternum" />
+        </div>
+        <div data-slot="1">
+          <img src="assets/images/tattoos/back-mandala.jpg" alt="Back mandala — dotwork tattoo on shoulder" />
+        </div>
+        <div data-slot="2">
+          <img src="assets/images/tattoos/leg-sleeve-mandala.jpg" alt="Mandala sleeve — geometric tattoo on full leg" />
+        </div>
+        <div data-slot="3">
+          <img src="assets/images/tattoos/wrist-mandala.jpg" alt="Wrist mandala — dotwork on wrist" />
+        </div>
+      </div>
+
+      <canvas class="reveal-sequence__mandala"
+              data-mandala
+              data-mandala-theme="white"
+              data-mandala-rings="4"
+              data-mandala-dots="96"
+              data-mandala-speed="0.9"
+              data-mandala-cycle="18000"
+              aria-hidden="true"></canvas>
+
+      <div class="reveal-sequence__captions">
+        <div data-slot="0">
+          <p class="reveal-sequence__caption-eyebrow">Piece 01 — Sternum</p>
+          <h2>Chest Mandala</h2>
+          <p>A dotwork lotus across the collarbone. Three sittings, twenty-four hours of stipple.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more dotwork →</a>
+        </div>
+        <div data-slot="1">
+          <p class="reveal-sequence__caption-eyebrow">Piece 02 — Shoulder</p>
+          <h2>Back Mandala</h2>
+          <p>Eight-fold symmetry, density grading edge-to-centre. The piece reads from across the room.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more mandalas →</a>
+        </div>
+        <div data-slot="2">
+          <p class="reveal-sequence__caption-eyebrow">Piece 03 — Full leg</p>
+          <h2>Mandala Sleeve</h2>
+          <p>Hip to ankle. Five sessions. A study in proportion across a moving canvas.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more sleeves →</a>
+        </div>
+        <div data-slot="3">
+          <p class="reveal-sequence__caption-eyebrow">Piece 04 — Wrist</p>
+          <h2>Wrist Mandala</h2>
+          <p>Small, dense, exacting. Single sitting. The kind of piece that takes ten years to learn how to do.</p>
+          <a class="btn btn--ghost" href="portfolio.html">Browse the archive →</a>
+        </div>
+      </div>
+
+      <div class="reveal-sequence__dots" aria-hidden="true">
+        <span data-slot="0"></span>
+        <span data-slot="1"></span>
+        <span data-slot="2"></span>
+        <span data-slot="3"></span>
       </div>
     </div>
   </section>
@@ -330,6 +408,7 @@
 
   <script src="assets/js/includes.js"></script>
   <script src="assets/js/mandala.js"></script>
+  <script src="assets/js/scroll-sequence.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>
