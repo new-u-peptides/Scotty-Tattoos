@@ -718,7 +718,7 @@ def faq(items):
 FAQ_MANDALA = [
     ("What does a mandala tattoo mean?", "Traditionally a mandala stands for wholeness and balance — a center with everything ordered around it. In practice it means whatever you bring to it; we start from your symbolism and build the geometry to match."),
     ("Do mandala tattoos hurt?", "It depends on placement. Flat, fleshy areas (outer arm, thigh) are easier; ribs, sternum, spine and hands are sharper. Larger mandalas run over several sittings, paced so you're not pushed past your limit."),
-    ("What does a custom mandala cost?", "Price follows size, detail and chair time, so we quote after a short consult rather than off a list. A deposit secures your date and comes off the final price. <em>(Replace with your real rates.)</em>"),
+    ("What does a custom mandala cost?", "Most custom pieces run <strong>€3,000–€7,000</strong>, depending on the hours in the chair, the number of sessions, the design work, and delivery. We quote your piece after a short consult; a deposit secures the date and comes off the final price."),
     ("How long does a mandala take to heal?", "The surface settles in about two weeks; the skin fully recovers over six to eight. You leave with an aftercare sheet and a number to text — we check in after two weeks."),
 ]
 FAQ_HOME = faq(FAQ_MANDALA)

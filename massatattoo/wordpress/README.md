@@ -23,8 +23,10 @@ how it works → the studio → FAQ → visit → book.
   pages were behind a captcha and couldn't be read, so the course copy is a
   sensible draft. Swap in your real curriculum, dates, duration, and pricing
   (search `set per intake`, `Replace with your live`).
-- **FAQ pricing / studio details** — the cost answers and address/hours are
-  placeholders (search `Replace with your real rates`, `Atelier Lane`).
+- **Studio contact details** — address, phone, email, hours, and social links
+  are placeholders (search `Atelier Lane`, `555`, `instagram.com`). Piece
+  pricing is now set (€3,000–€7,000 in the FAQ) — change the currency symbol
+  if you bill in £/$.
 
 ## What's inside each file
 
