@@ -1,25 +1,19 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>About — Massa Tattoo · Geometric Studio</title>
-    <meta name="description" content="The story behind Massa Tattoo — a private appointment-only studio for sacred geometry, dotwork, blackwork, and fine line." />
-    <link rel="canonical" href="https://massatattoo.com/about.html" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Massa Tattoo" />
-    <meta property="og:title" content="About — Massa Tattoo · Geometric Studio" />
-    <meta property="og:description" content="The story behind Massa Tattoo — a private appointment-only studio for sacred geometry, dotwork, blackwork, and fine line." />
-    <meta property="og:url" content="https://massatattoo.com/about.html" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="About — Massa Tattoo · Geometric Studio" />
-    <meta name="twitter:description" content="The story behind Massa Tattoo — a private appointment-only studio for sacred geometry, dotwork, blackwork, and fine line." />
-    <meta name="theme-color" content="#0E0B07" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <style>
+#!/usr/bin/env python3
+"""Assemble self-contained, WordPress-paste-ready HTML for massatattoo.com.
 
+Takes the existing massatattoo/*.html pages, keeps every element/section, and
+re-skins them into a refined dark + antique-gold theme with all CSS inlined,
+header/footer inlined, and the only external dependency being Google Fonts.
+"""
+import re, json, pathlib, html
+
+SRC = pathlib.Path("/home/user/Scotty-Tattoos/massatattoo")
+OUT = SRC / "wordpress"
+OUT.mkdir(exist_ok=True)
+photos = json.load(open("/tmp/build/photos.json"))
+
+# ---------------------------------------------------------------- dark theme CSS
+CSS = r"""
 :root{
   --bg:#0E0B07;--bg-alt:#14100A;--bg-deep:#080605;
   --surface:#19130C;--surface-2:#221A10;--panel:#0C0907;
@@ -156,7 +150,7 @@ em{font-style:italic;color:var(--gold-bright)}
 .work-tile--dark .work-tile__art{background:radial-gradient(circle at 70% 30%,rgba(198,160,107,.30),transparent 60%),linear-gradient(135deg,#161009 0%,#0c0805 100%)}
 .work-tile--dark .work-tile__art svg{color:var(--gold)}
 .work-tile__art[class*=" photo-"],.work-tile__art[class^="photo-"]{background-size:cover;background-position:center;background-repeat:no-repeat}
-
+/*PHOTOS*/
 .work-tile__meta{position:absolute;left:0;right:0;bottom:0;padding:16px 18px;background:linear-gradient(0deg,rgba(8,6,4,.88),transparent);color:var(--cream);display:flex;justify-content:space-between;align-items:end;gap:10px}
 .work-tile__title{font-family:var(--serif);font-size:1.15rem;line-height:1.1;color:var(--cream)}
 .work-tile__tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);flex-shrink:0}
@@ -410,23 +404,26 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
   .post-grid{gap:22px}.about-grid{gap:44px}.team-grid{gap:22px}
   .footer{padding-top:60px}.footer__grid{gap:36px}
 }
+"""
 
-    </style>
-  </head>
-  <body data-nav-current="about">
-    <div class="page-orbit" aria-hidden="true">
-      <svg viewBox="0 0 200 200">
-        <g class="geo-rotate--rev">
-          <circle cx="100" cy="100" r="90" />
-          <circle cx="100" cy="100" r="76" />
-          <circle cx="100" cy="100" r="60" />
-          <circle cx="100" cy="100" r="44" />
-          <circle cx="100" cy="100" r="28" />
-        </g>
-      </svg>
-    </div>
+# ------------------------------------------------------------------- chrome
+NAV = [
+    ("home", "index.html", "Home"),
+    ("portfolio", "portfolio.html", "Portfolio"),
+    ("mandala", "mandala-tattoos.html", "Mandala"),
+    ("courses", "tattoo-course.html", "Courses"),
+    ("about", "about.html", "About"),
+    ("blog", "blog.html", "Blog"),
+    ("testimonials", "testimonials.html", "Testimonials"),
+]
 
-    <a class="skip-link" href="#main">Skip to content</a>
+def header(current):
+    links = []
+    for slug, href, label in NAV:
+        active = ' class="is-active" aria-current="page"' if slug == current else ""
+        links.append(f'        <li><a href="{href}" data-nav="{slug}"{active}>{label}</a></li>')
+    links = "\n".join(links)
+    return f"""    <a class="skip-link" href="#main">Skip to content</a>
     <header class="nav">
       <div class="container nav__inner">
         <a href="index.html" class="brand">
@@ -440,13 +437,7 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         </a>
         <nav aria-label="Primary">
           <ul class="nav__links" id="nav-menu">
-        <li><a href="index.html" data-nav="home">Home</a></li>
-        <li><a href="portfolio.html" data-nav="portfolio">Portfolio</a></li>
-        <li><a href="mandala-tattoos.html" data-nav="mandala">Mandala</a></li>
-        <li><a href="tattoo-course.html" data-nav="courses">Courses</a></li>
-        <li><a href="about.html" data-nav="about" class="is-active" aria-current="page">About</a></li>
-        <li><a href="blog.html" data-nav="blog">Blog</a></li>
-        <li><a href="testimonials.html" data-nav="testimonials">Testimonials</a></li>
+{links}
           </ul>
         </nav>
         <div class="nav__actions">
@@ -454,260 +445,9 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
           <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">&#9776;</button>
         </div>
       </div>
-    </header>
+    </header>"""
 
-    <main id="main">
-    <section class="hero">
-      <div class="container hero__inner">
-        <div>
-          <span class="eyebrow">§ 01 — About</span>
-          <h1 class="hero__title">A small studio, <em>quiet on purpose</em>.</h1>
-          <p class="hero__lede">
-            Massa Tattoo is a private, appointment-only studio. We take a handful of
-            clients each week so every piece gets the attention it needs — from the
-            first conversation to the last line.
-          </p>
-          <div class="hero__actions">
-            <a class="btn btn--dark" href="contact.html#book">Book a consult →</a>
-          </div>
-        </div>
-
-        <div class="hero__geo" aria-hidden="true">
-          <svg viewBox="-100 -100 200 200">
-            <g class="geo-rotate">
-              <circle r="80" class="ring ring--thin" />
-              <circle r="64" class="ring" />
-              <circle r="48" class="ring ring--thin" />
-              <circle r="32" class="ring" />
-              <circle r="16" class="ring ring--accent" />
-            </g>
-            <g class="geo-rotate--rev">
-              <polygon points="0,-72 62,36 -62,36" class="tri" />
-              <polygon points="0,72 -62,-36 62,-36" class="tri" />
-            </g>
-            <g>
-              <circle cx="0"   cy="-72" r="2.6" class="dot--accent" />
-              <circle cx="62"  cy="36"  r="2.6" class="dot--accent" />
-              <circle cx="-62" cy="36"  r="2.6" class="dot--accent" />
-              <circle cx="0"   cy="72"  r="2.6" class="dot--accent" />
-              <circle cx="-62" cy="-36" r="2.6" class="dot--accent" />
-              <circle cx="62"  cy="-36" r="2.6" class="dot--accent" />
-            </g>
-            <circle r="3" class="dot" />
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <p class="manifesto">
-          We believe a tattoo should outlast a trend. Most of what we draw is
-          drawn slow — sketched, set down, picked back up — until the line
-          finds its <em>final shape</em>.
-        </p>
-      </div>
-    </section>
-
-    <section class="section section--alt">
-      <div class="container about-grid">
-        <div>
-          <span class="eyebrow">§ 02 — Story</span>
-          <h2>How the studio <em>came together</em>.</h2>
-          <div class="geo-rule geo-rule--left"><span class="geo-rule__diamond"></span></div>
-          <p>What started in a back room with a hand-poke kit and a stack of geometry books grew into a quiet, full-time studio. The brief never changed: do fewer pieces, do them well, and treat every client like they brought you something worth getting right.</p>
-          <p>Today the studio works out of a small space on Atelier Lane — natural light, warm wood, three chairs, and a portfolio that keeps a single thread through ten years of work.</p>
-        </div>
-
-        <ol class="timeline">
-          <li>
-            <span class="timeline__dot" aria-hidden="true"></span>
-            <div>
-              <span class="timeline__year">2014</span>
-              <h3>Hand-poked beginnings</h3>
-              <p>Massa apprentices under a hand-poke artist in Lisbon, taking her first appointments at twenty-two.</p>
-            </div>
-          </li>
-          <li>
-            <span class="timeline__dot" aria-hidden="true"></span>
-            <div>
-              <span class="timeline__year">2017</span>
-              <h3>First machine work</h3>
-              <p>Transitions to machine work; develops the dotwork style the studio is now known for.</p>
-            </div>
-          </li>
-          <li>
-            <span class="timeline__dot" aria-hidden="true"></span>
-            <div>
-              <span class="timeline__year">2019</span>
-              <h3>Studio opens</h3>
-              <p>Massa Tattoo opens on Atelier Lane — two chairs, a guest spot, and a waitlist that fills three months out.</p>
-            </div>
-          </li>
-          <li>
-            <span class="timeline__dot" aria-hidden="true"></span>
-            <div>
-              <span class="timeline__year">2022</span>
-              <h3>Two residents join</h3>
-              <p>Two residents join — one specialising in fine line, one in blackwork — broadening the studio's range without diluting its voice.</p>
-            </div>
-          </li>
-          <li>
-            <span class="timeline__dot" aria-hidden="true"></span>
-            <div>
-              <span class="timeline__year">Today</span>
-              <h3>1,200+ pieces in</h3>
-              <p>Still small, still booked out, still drawing every piece by hand before it ever sees a stencil.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">§ 03 — The team</span>
-          <h2>Three artists. <em>One voice</em>.</h2>
-          <p>We share a portfolio and a process — but each artist brings their own line.</p>
-        </div>
-
-        <div class="team-grid">
-          <article class="team-card">
-            <div class="team-card__art">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="0.6">
-                  <circle cx="50" cy="50" r="38" />
-                  <circle cx="50" cy="50" r="28" />
-                  <circle cx="50" cy="50" r="18" />
-                  <polygon points="50,12 82,68 18,68" />
-                  <circle cx="50" cy="50" r="4" fill="currentColor" />
-                </g>
-              </svg>
-            </div>
-            <div class="team-card__body">
-              <div class="team-card__role">Founder · Sacred geometry</div>
-              <h3>Massa</h3>
-              <p>Ten years in. Draws every piece by hand. Books out four to eight weeks ahead.</p>
-            </div>
-          </article>
-          <article class="team-card">
-            <div class="team-card__art">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <g fill="currentColor">
-                  <circle cx="20" cy="20" r="1.5"/><circle cx="35" cy="20" r="1.5"/><circle cx="50" cy="20" r="1.5"/><circle cx="65" cy="20" r="1.5"/><circle cx="80" cy="20" r="1.5"/>
-                  <circle cx="20" cy="35" r="1.5"/><circle cx="35" cy="35" r="2"/><circle cx="50" cy="35" r="2.5"/><circle cx="65" cy="35" r="2"/><circle cx="80" cy="35" r="1.5"/>
-                  <circle cx="20" cy="50" r="1.5"/><circle cx="35" cy="50" r="2.5"/><circle cx="50" cy="50" r="3.5"/><circle cx="65" cy="50" r="2.5"/><circle cx="80" cy="50" r="1.5"/>
-                  <circle cx="20" cy="65" r="1.5"/><circle cx="35" cy="65" r="2"/><circle cx="50" cy="65" r="2.5"/><circle cx="65" cy="65" r="2"/><circle cx="80" cy="65" r="1.5"/>
-                  <circle cx="20" cy="80" r="1.5"/><circle cx="35" cy="80" r="1.5"/><circle cx="50" cy="80" r="1.5"/><circle cx="65" cy="80" r="1.5"/><circle cx="80" cy="80" r="1.5"/>
-                </g>
-              </svg>
-            </div>
-            <div class="team-card__body">
-              <div class="team-card__role">Resident · Dotwork & ornamental</div>
-              <h3>Iris</h3>
-              <p>Eight years in. Brings stippled gradients and Eastern-European ornamental work to the studio.</p>
-            </div>
-          </article>
-          <article class="team-card">
-            <div class="team-card__art">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="0.6">
-                  <path d="M10,50 Q30,15 50,50 T90,50" />
-                  <path d="M10,42 Q30,7 50,42 T90,42" />
-                  <path d="M10,58 Q30,23 50,58 T90,58" />
-                  <path d="M10,66 Q30,31 50,66 T90,66" />
-                  <line x1="10" y1="78" x2="90" y2="78" />
-                  <line x1="10" y1="86" x2="90" y2="86" />
-                </g>
-              </svg>
-            </div>
-            <div class="team-card__body">
-              <div class="team-card__role">Resident · Fine line</div>
-              <h3>Tomas</h3>
-              <p>Six years in. Single-needle, restrained palette, work that reads quietly across a room.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">§ 04 — Process</span>
-          <h2>Four steps from <em>idea to ink</em>.</h2>
-        </div>
-
-        <div class="process">
-          <div class="process__step">
-            <div class="process__num">01</div>
-            <h3>Conversation</h3>
-            <p>You send the idea through the form — symbolism, placement, scale. We come back with the right artist and a draft direction.</p>
-          </div>
-          <div class="process__step">
-            <div class="process__num">02</div>
-            <h3>Sketch</h3>
-            <p>The artist sketches your piece by hand, then refines until the composition feels resolved. Two rounds of revisions are baked in.</p>
-          </div>
-          <div class="process__step">
-            <div class="process__num">03</div>
-            <h3>Sitting</h3>
-            <p>You come in, we stencil, we tweak placement until it lives right on the body. Then we make the marks.</p>
-          </div>
-          <div class="process__step">
-            <div class="process__num">04</div>
-            <h3>Aftercare</h3>
-            <p>You leave with a wrap, an aftercare sheet, and a number to text if anything looks off. We check in after two weeks.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--dark">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">§ 05 — Numbers</span>
-          <h2>A decade of <em>small numbers</em>, on purpose.</h2>
-        </div>
-        <div class="stats">
-          <div class="stat">
-            <div class="stat__num"><em>10</em>+</div>
-            <div class="stat__label">Years in practice</div>
-          </div>
-          <div class="stat">
-            <div class="stat__num"><em>1.2</em>k</div>
-            <div class="stat__label">Pieces completed</div>
-          </div>
-          <div class="stat">
-            <div class="stat__num"><em>3</em></div>
-            <div class="stat__label">Resident artists</div>
-          </div>
-          <div class="stat">
-            <div class="stat__num"><em>4 — 8</em></div>
-            <div class="stat__label">Week wait, on average</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="cta-banner">
-          <div>
-            <span class="eyebrow">§ 06 — Visit</span>
-            <h2>Come see <em>the studio</em>.</h2>
-            <p>Open Tuesday — Saturday. Walk in to flip through the portfolio, pick up aftercare, or talk through an idea.</p>
-          </div>
-          <div>
-            <a class="btn btn--primary" href="contact.html">Get in touch →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    </main>
-
-    <footer class="footer">
+FOOTER = """    <footer class="footer">
       <div class="container">
         <div class="footer__grid">
           <div>
@@ -761,9 +501,9 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
           <span>Lat 00.0000&deg; &middot; Lng 00.0000&deg;</span>
         </div>
       </div>
-    </footer>
+    </footer>"""
 
-    <script>
+JS = """    <script>
     (function(){
       function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
       ready(function(){
@@ -814,6 +554,606 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         });
       }
     })();
-    </script>
+    </script>"""
+
+# Prefix with .work-tile__art so the photo wins specificity over the
+# .work-tile--dark .work-tile__art gradient (both 0,2,0 -> later rule wins).
+PHOTO_CSS = "\n".join(
+    f'.work-tile__art.{cls}{{background-image:url("{uri}")}}' for cls, uri in photos.items()
+)
+
+def grab(pattern, text, default=""):
+    m = re.search(pattern, text, re.S)
+    return m.group(1).strip() if m else default
+
+# ---------------------------------------------------------------- reusable parts
+ORBIT = """<div class="page-orbit" aria-hidden="true">
+      <svg viewBox="0 0 200 200"><g class="geo-rotate--rev">
+        <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="76"/><circle cx="100" cy="100" r="60"/>
+        <circle cx="100" cy="100" r="44"/><circle cx="100" cy="100" r="28"/><circle cx="100" cy="100" r="14"/>
+      </g></svg>
+    </div>"""
+
+GEO_STAR = """<div class="hero__geo" aria-hidden="true">
+          <svg viewBox="-100 -100 200 200">
+            <defs><circle id="floc" r="18" class="ring"/></defs>
+            <g class="geo-pulse"><circle r="92" class="ring ring--thin"/><circle r="86" class="ring"/></g>
+            <g class="geo-rotate">
+              <use href="#floc"/><use href="#floc" x="18" y="-31.18"/><use href="#floc" x="36" y="0"/>
+              <use href="#floc" x="18" y="31.18"/><use href="#floc" x="-18" y="31.18"/><use href="#floc" x="-36" y="0"/>
+              <use href="#floc" x="-18" y="-31.18"/><use href="#floc" x="0" y="-62.36"/><use href="#floc" x="54" y="-31.18"/>
+              <use href="#floc" x="54" y="31.18"/><use href="#floc" x="0" y="62.36"/><use href="#floc" x="-54" y="31.18"/>
+              <use href="#floc" x="-54" y="-31.18"/>
+            </g>
+            <g class="geo-rotate--rev">
+              <polygon points="0,-62 54,31 -54,31" class="tri"/><polygon points="0,62 -54,-31 54,-31" class="tri"/>
+              <circle cx="0" cy="-62" r="2.6" class="dot--accent"/><circle cx="54" cy="31" r="2.6" class="dot--accent"/>
+              <circle cx="-54" cy="31" r="2.6" class="dot--accent"/><circle cx="0" cy="62" r="2.6" class="dot--accent"/>
+              <circle cx="-54" cy="-31" r="2.6" class="dot--accent"/><circle cx="54" cy="-31" r="2.6" class="dot--accent"/>
+            </g>
+            <circle r="6" class="ring ring--accent"/><circle r="1.6" class="dot"/>
+          </svg>
+        </div>"""
+
+GEO_RINGS = """<div class="hero__geo" aria-hidden="true">
+          <svg viewBox="-100 -100 200 200">
+            <g class="geo-rotate">
+              <circle r="80" class="ring"/><circle r="68" class="ring ring--thin"/><circle r="56" class="ring"/>
+              <circle r="44" class="ring ring--thin"/><circle r="32" class="ring"/><circle r="20" class="ring ring--thin"/>
+            </g>
+            <g class="geo-rotate--rev"><polygon points="0,-82 71,41 -71,41" class="tri"/></g>
+            <circle r="6" class="ring ring--accent"/><circle r="1.6" class="dot"/>
+          </svg>
+        </div>"""
+
+HERO_WAVES = """<div class="hero__waves" aria-hidden="true">
+        <svg viewBox="0 0 200 200"><g>
+          <path d="M0,160 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0"/>
+          <path d="M-20,140 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0"/>
+          <path d="M0,120 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0"/>
+          <path d="M-20,100 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0 a20,20 0 0 0 40,0"/>
+        </g></svg>
+      </div>"""
+
+def tile(cls, title, tag, dark=False, style=""):
+    d = " work-tile--dark" if dark else ""
+    s = f' data-style="{style}"' if style else ""
+    return (f'<a class="work-tile{d}" href="portfolio.html"{s}>'
+            f'<div class="work-tile__art {cls}" aria-hidden="true"></div>'
+            f'<div class="work-tile__meta"><span class="work-tile__title">{title}</span>'
+            f'<span class="work-tile__tag">{tag}</span></div></a>')
+
+WORK_6 = "\n          ".join([
+    tile("photo-chest-mandala", "Chest Mandala", "Dotwork · Sternum"),
+    tile("photo-leg-sleeve", "Mandala Sleeve", "Geometric · Full leg"),
+    tile("photo-back-mandala", "Back Mandala", "Dotwork · Shoulder"),
+    tile("photo-chrysanthemum", "Chrysanthemum Sleeve", "Decorative · Full leg"),
+    tile("photo-hip-leopard", "Leopard &amp; Mandala", "Blackwork · Hip &amp; thigh", dark=True),
+    tile("photo-back-in-progress", "Mid-Session", "In progress · Back", dark=True),
+])
+
+PORTFOLIO_GRID = "\n          ".join([
+    tile("photo-chest-mandala", "Chest Mandala", "Dotwork · Sternum", style="dotwork mandala"),
+    tile("photo-leg-sleeve", "Mandala Sleeve", "Geometric · Full leg", style="sacred-geometry mandala"),
+    tile("photo-back-mandala", "Back Mandala", "Dotwork · Shoulder", style="dotwork mandala"),
+    tile("photo-chrysanthemum", "Chrysanthemum Sleeve", "Decorative · Full leg", style="ornamental"),
+    tile("photo-hip-leopard", "Leopard &amp; Mandala", "Blackwork · Hip &amp; thigh", dark=True, style="blackwork mandala"),
+    tile("photo-back-in-progress", "Mid-Session", "In progress · Back", dark=True, style="blackwork mandala"),
+    tile("photo-chest-mandala", "Chest Mandala", "Dotwork · Sternum", style="dotwork mandala"),
+    tile("photo-leg-sleeve", "Mandala Sleeve", "Geometric · Full leg", style="sacred-geometry mandala"),
+    tile("photo-back-mandala", "Back Mandala", "Dotwork · Shoulder", style="dotwork mandala"),
+])
+
+STYLE_STRIP = """<div class="style-strip">
+          <div class="style-cell"><span class="style-cell__num">01</span>
+            <svg viewBox="0 0 56 56" aria-hidden="true"><g class="stroke">
+              <circle cx="28" cy="28" r="22"/><circle cx="28" cy="28" r="16"/><circle cx="28" cy="28" r="10"/>
+              <polygon points="28,6 50,40 6,40"/><polygon points="28,50 50,16 6,16"/></g></svg>
+            <h3>Sacred geometry</h3><p>Metatron's cube, Sri Yantra, Vesica Piscis, the Flower of Life.</p></div>
+          <div class="style-cell"><span class="style-cell__num">02</span>
+            <svg viewBox="0 0 56 56" aria-hidden="true"><g class="fill">
+              <circle cx="14" cy="14" r="2"/><circle cx="28" cy="14" r="2"/><circle cx="42" cy="14" r="2"/>
+              <circle cx="14" cy="28" r="2"/><circle cx="28" cy="28" r="3"/><circle cx="42" cy="28" r="2"/>
+              <circle cx="14" cy="42" r="2"/><circle cx="28" cy="42" r="2"/><circle cx="42" cy="42" r="2"/>
+              <circle cx="21" cy="21" r="1.3"/><circle cx="35" cy="21" r="1.3"/><circle cx="21" cy="35" r="1.3"/><circle cx="35" cy="35" r="1.3"/></g></svg>
+            <h3>Dotwork</h3><p>Stippled gradients, shading by density, soft transitions on hard form.</p></div>
+          <div class="style-cell"><span class="style-cell__num">03</span>
+            <svg viewBox="0 0 56 56" aria-hidden="true"><g class="stroke">
+              <polygon points="28,4 52,18 52,38 28,52 4,38 4,18"/><polygon points="28,14 44,22 44,34 28,42 12,34 12,22"/>
+              <line x1="28" y1="4" x2="28" y2="52"/><line x1="4" y1="18" x2="52" y2="38"/><line x1="52" y1="18" x2="4" y2="38"/></g></svg>
+            <h3>Blackwork</h3><p>Bold negative space, solid fills, architectural composition.</p></div>
+          <div class="style-cell"><span class="style-cell__num">04</span>
+            <svg viewBox="0 0 56 56" aria-hidden="true"><g class="stroke">
+              <path d="M4 28 Q 16 4, 28 28 T 52 28"/><path d="M4 36 Q 16 12, 28 36 T 52 36"/>
+              <path d="M4 20 Q 16 -4, 28 20 T 52 20"/><line x1="4" y1="44" x2="52" y2="44"/></g></svg>
+            <h3>Fine line</h3><p>Delicate single-needle work, hairline detail, restrained palette.</p></div>
+        </div>"""
+
+def star(): return '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9"/></svg>'
+STARS = star() * 5
+
+def testimonial(quote, name, date, src):
+    return (f'<article class="testimonial"><div class="testimonial__stars" aria-hidden="true">{STARS}</div>'
+            f'<blockquote>{quote}</blockquote><div class="testimonial__attr"><div>'
+            f'<div class="testimonial__name">{name}</div><div class="testimonial__date">{date}</div></div>'
+            f'<span class="testimonial__src">{src}</span></div></article>')
+
+TESTIMONIALS = f"""<div class="quote-feature">
+          <div><div class="quote-feature__mark" aria-hidden="true">"</div><span class="eyebrow" style="color: var(--gold);">Featured</span></div>
+          <div><blockquote>Massa drew the design over three sittings. By the time the machine started, it already felt like mine — like she'd surfaced something I'd been carrying around for years and finally put a line around it.</blockquote>
+            <div class="quote-feature__attr"><div class="quote-feature__avatar">M</div>
+              <div><div class="quote-feature__name">Mara K.</div><div class="quote-feature__sub">Tucson · Half-sleeve · 2024</div></div></div>
+          </div>
+        </div>
+        <div class="testimonial-grid" style="margin-top: 56px;">
+          {testimonial("I came in with a Pinterest board and walked out with a sketch I would never have thought to ask for. Iris saw what I was actually after.", "Daniel R.", "Feb 2026", "via Email")}
+          {testimonial("Five hours in the chair felt like one. The studio is quiet, the music is right, and they treat the appointment like a piece of work, not a transaction.", "Priya S.", "Jan 2026", "via Google")}
+          {testimonial("Tomas's fine line is the best I've found anywhere on the continent. Three months in and the hair-thin work has held up beautifully.", "Sofie L.", "Dec 2025", "via Instagram")}
+        </div>"""
+
+def proc(steps):
+    cells = "".join(f'<div class="process__step"><div class="process__num">{n}</div><h3>{h}</h3><p>{p}</p></div>'
+                    for n, h, p in steps)
+    return f'<div class="process">{cells}</div>'
+
+PROCESS_IDEA = proc([
+    ("01", "Conversation", "You send the idea through the form — symbolism, placement, scale. We come back with the right artist and a draft direction."),
+    ("02", "Sketch", "The artist draws your piece by hand, then refines until the composition feels resolved. Two rounds of revisions are baked in."),
+    ("03", "Sitting", "You come in, we stencil, and tweak placement until it lives right on the body. Then we make the marks."),
+    ("04", "Aftercare", "You leave with a wrap, an aftercare sheet, and a number to text. We check in after two weeks."),
+])
+
+STATS = """<div class="stats">
+          <div class="stat"><div class="stat__num"><em>10</em>+</div><div class="stat__label">Years in practice</div></div>
+          <div class="stat"><div class="stat__num"><em>1.2</em>k</div><div class="stat__label">Pieces completed</div></div>
+          <div class="stat"><div class="stat__num"><em>3</em></div><div class="stat__label">Resident artists</div></div>
+          <div class="stat"><div class="stat__num"><em>4 — 8</em></div><div class="stat__label">Week wait, on average</div></div>
+        </div>"""
+
+def faq(items):
+    rows = "".join(f'<details class="faq__item"><summary>{q} <span class="faq__icon" aria-hidden="true"></span></summary>'
+                   f'<div class="faq__body">{a}</div></details>' for q, a in items)
+    return f'<div class="faq">{rows}</div>'
+
+FAQ_MANDALA = [
+    ("What does a mandala tattoo mean?", "Traditionally a mandala stands for wholeness and balance — a center with everything ordered around it. In practice it means whatever you bring to it; we start from your symbolism and build the geometry to match."),
+    ("Do mandala tattoos hurt?", "It depends on placement. Flat, fleshy areas (outer arm, thigh) are easier; ribs, sternum, spine and hands are sharper. Larger mandalas run over several sittings, paced so you're not pushed past your limit."),
+    ("What does a custom mandala cost?", "Price follows size, detail and chair time, so we quote after a short consult rather than off a list. A deposit secures your date and comes off the final price. <em>(Replace with your real rates.)</em>"),
+    ("How long does a mandala take to heal?", "The surface settles in about two weeks; the skin fully recovers over six to eight. You leave with an aftercare sheet and a number to text — we check in after two weeks."),
+]
+FAQ_HOME = faq(FAQ_MANDALA)
+FAQ_FULL = faq(FAQ_MANDALA + [
+    ("How big should a mandala be?", "Geometry needs room to breathe — very small mandalas lose detail as they heal. Most pieces sit palm-sized or larger; sleeves and backs run multiple sessions. We'll advise honestly at the consult."),
+])
+
+VISIT = """<div class="contact-grid">
+          <div class="info-card">
+            <span class="eyebrow">The studio</span><h3 style="margin-top:8px;">Find us</h3>
+            <div class="geo-rule geo-rule--left"><span class="geo-rule__diamond"></span></div>
+            <ul class="info-list">
+              <li><span class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+                <div><span class="info-label">Address</span><span class="info-value">123 Atelier Lane · Suite 4<br/>Your City, ST 00000</span></div></li>
+              <li><span class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg></span>
+                <div><span class="info-label">Email</span><span class="info-value"><a href="mailto:hello@massatattoo.com">hello@massatattoo.com</a></span></div></li>
+              <li><span class="info-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/></svg></span>
+                <div><span class="info-label">Instagram</span><span class="info-value"><a href="https://instagram.com/" target="_blank" rel="noopener">@massatattoo</a></span></div></li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <span class="eyebrow">Open hours</span><h3 style="margin-top:8px;">When you can stop by</h3>
+            <div class="geo-rule geo-rule--left"><span class="geo-rule__diamond"></span></div>
+            <dl class="hours">
+              <dt>Mon</dt><dd class="is-closed">— Closed</dd><dt>Tue</dt><dd>12:00 — 20:00</dd>
+              <dt>Wed</dt><dd>12:00 — 20:00</dd><dt>Thu</dt><dd>12:00 — 20:00</dd>
+              <dt>Fri</dt><dd>12:00 — 21:00</dd><dt>Sat</dt><dd>11:00 — 19:00</dd>
+              <dt>Sun</dt><dd class="is-closed">— By appointment</dd>
+            </dl>
+          </div>
+        </div>"""
+
+# ------------------------------------------------------------------ home (journey)
+HOME_MAIN = f"""<main id="main">
+    <section class="hero">
+      <canvas class="mandala mandala--hero" data-mandala data-mandala-theme="gold" data-mandala-rings="6" data-mandala-dots="144" data-mandala-speed="0.55" data-mandala-opacity="0.7" aria-hidden="true"></canvas>
+      <div class="container hero__inner">
+        <div>
+          <span class="eyebrow">§ 00 — Mandala &amp; Sacred-Geometry Tattoo · Est. 2014</span>
+          <h1 class="hero__title">Mandala tattoos, made <em>with intention</em>.</h1>
+          <p class="hero__lede">A small, private studio for custom mandala and sacred-geometry work — dotwork, blackwork, and fine line. Composed for the body, drawn for the person.</p>
+          <div class="hero__actions">
+            <a class="btn btn--dark" href="contact.html#book">Book a consult →</a>
+            <a class="btn btn--ghost" href="portfolio.html">See the portfolio</a>
+          </div>
+          <div class="hero__meta">
+            <div class="hero__meta-item"><span class="hero__meta-label">Studio</span><span class="hero__meta-value">By appointment</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Pieces shipped</span><span class="hero__meta-value">1,200+</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Wait time</span><span class="hero__meta-value">4 — 8 weeks</span></div>
+          </div>
+        </div>
+        {GEO_STAR}
+      </div>
+      {HERO_WAVES}
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 01 — The work</span><h2>See the <em>work</em> first.</h2>
+          <p>Most people choosing an artist want one thing up front: the pieces. A few recent ones — the full archive goes deeper.</p></div>
+        <div class="work-grid">
+          {WORK_6}
+        </div>
+        <div style="margin-top: 40px;"><a class="btn btn--ghost" href="portfolio.html">See the whole portfolio →</a></div>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 02 — What we specialise in</span><h2>A studio built around <em>mandala &amp; geometry</em>.</h2>
+          <p>A mandala is a circle that stands for wholeness — a center, and everything ordered around it. We start every piece from that idea, then build the geometry out by hand.</p></div>
+        {STYLE_STRIP}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 03 — How we work</span><h2>Composed for the <em>body</em>. Drawn for the <em>person</em>.</h2></div>
+        <p style="max-width: 60ch; font-size: 1.1rem;">Every piece begins with a conversation — what drew you to the symbolism, where it lives on your body, how you want to feel walking out of the chair. From there we sketch, refine, and only ink when the design feels resolved.</p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 04 — In their words</span><h2>What clients say <em>after</em>.</h2></div>
+        {TESTIMONIALS}
+        <div style="margin-top: 40px;"><a class="btn btn--ghost" href="testimonials.html">Read more testimonials →</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 05 — How it works</span><h2>Four steps from <em>idea to ink</em>.</h2></div>
+        {PROCESS_IDEA}
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 06 — The studio</span><h2>Ten years, <em>still small on purpose</em>.</h2>
+          <p>A private, appointment-only studio. We take a handful of clients each week so every piece gets the attention it needs.</p></div>
+        {STATS}
+        <div style="margin-top: 36px;"><a class="btn btn--ghost" href="about.html">Meet the studio →</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 07 — Common questions</span><h2>Mandala tattoos, <em>answered</em>.</h2></div>
+        {FAQ_HOME}
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 08 — Visit</span><h2>Private studio, <em>by appointment</em>.</h2>
+          <p>Walk in during open hours to browse the portfolio or talk through an idea; sittings are booked ahead.</p></div>
+        {VISIT}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div><span class="eyebrow">§ 09 — Booking</span><h2>Ready to start a <em>mandala</em>?</h2>
+            <p>Send us your idea — symbolism, placement, scale — and we'll come back with the right artist, a sketch direction, and a date for the chair.</p></div>
+          <div><a class="btn btn--primary" href="contact.html#book">Send a request →</a></div>
+        </div>
+      </div>
+    </section>
+    </main>"""
+
+# ------------------------------------------------------------------ portfolio
+PORTFOLIO_MAIN = f"""<main id="main">
+    <section class="hero">
+      <div class="container hero__inner">
+        <div>
+          <span class="eyebrow">§ 01 — Portfolio</span>
+          <h1 class="hero__title">Ten years, <em>line by line</em>.</h1>
+          <p class="hero__lede">A working archive of recent pieces — mandala, sacred geometry, dotwork, blackwork, fine line. Filter to find the work closest to the idea you're carrying.</p>
+          <div class="hero__meta">
+            <div class="hero__meta-item"><span class="hero__meta-label">Pieces shown</span><span class="hero__meta-value">9 / 1,200+</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Styles</span><span class="hero__meta-value">Five</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Updated</span><span class="hero__meta-value">Weekly</span></div>
+          </div>
+        </div>
+        {GEO_RINGS}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar">
+          <span class="filter-bar__label">Filter →</span>
+          <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter" type="button" data-filter="mandala" aria-pressed="false">Mandala</button>
+          <button class="filter" type="button" data-filter="sacred-geometry" aria-pressed="false">Sacred geometry</button>
+          <button class="filter" type="button" data-filter="dotwork" aria-pressed="false">Dotwork</button>
+          <button class="filter" type="button" data-filter="blackwork" aria-pressed="false">Blackwork</button>
+          <button class="filter" type="button" data-filter="ornamental" aria-pressed="false">Ornamental</button>
+        </div>
+        <div class="work-grid">
+          {PORTFOLIO_GRID}
+        </div>
+        <p class="work-empty" hidden>No pieces in this style yet — ask in your booking request and we'll show you more.</p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 02 — A note on the archive</span><h2>What you don't see is <em>most of it</em>.</h2>
+          <p>This page is a selection. We don't post every piece — some clients keep their tattoos off the feed, and we honour that. If you'd like to see more of a specific style, ask in your booking request.</p></div>
+        <blockquote class="pull-quote">"A good portfolio shows you what an artist <em>can</em> do. A great one tells you what they keep coming back to. This is ours."<cite>— from the studio notes</cite></blockquote>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div><span class="eyebrow">§ 03 — Your turn</span><h2>See a piece that <em>opens something up</em>?</h2>
+            <p>Send us a reference or just describe what drew you to it. We'll come back with a sketch direction.</p></div>
+          <div><a class="btn btn--primary" href="contact.html#book">Send a request →</a></div>
+        </div>
+      </div>
+    </section>
+    </main>"""
+
+# ------------------------------------------------------------------ mandala pillar
+MANDALA_MAIN = f"""<main id="main">
+    <section class="hero">
+      <canvas class="mandala mandala--hero" data-mandala data-mandala-rings="6" data-mandala-dots="150" data-mandala-speed="0.5" data-mandala-opacity="0.7" aria-hidden="true"></canvas>
+      <div class="container hero__inner">
+        <div>
+          <span class="eyebrow">§ 00 — Mandala Tattoos</span>
+          <h1 class="hero__title">Mandala tattoos, from <em>meaning to skin</em>.</h1>
+          <p class="hero__lede">A mandala is a circle that stands for wholeness. We design custom mandala tattoos built from sacred geometry — drawn by hand, composed for your body, made to last.</p>
+          <div class="hero__actions">
+            <a class="btn btn--dark" href="contact.html#book">Book a consult →</a>
+            <a class="btn btn--ghost" href="portfolio.html">See mandala work</a>
+          </div>
+          <div class="hero__meta">
+            <div class="hero__meta-item"><span class="hero__meta-label">Specialty</span><span class="hero__meta-value">Mandala</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Built from</span><span class="hero__meta-value">Sacred geometry</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Studio</span><span class="hero__meta-value">By appointment</span></div>
+          </div>
+        </div>
+        {GEO_STAR}
+      </div>
+      {HERO_WAVES}
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 01 — Meaning</span><h2>What a mandala <em>carries</em>.</h2></div>
+        <p class="manifesto">A center, and everything ordered around it — a map of <em>wholeness</em>, balance, and return.</p>
+        <p style="max-width: 62ch; margin-top: 24px;">Across cultures the mandala shows up as the same idea: concentric symmetry radiating from a single point. On skin it reads as calm, deliberate, and personal — which is why we start every piece from your symbolism, not a flash sheet, and build the geometry out from the center.</p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 02 — Styles</span><h2>Four ways we draw a <em>mandala</em>.</h2>
+          <p>Most pieces live where these meet — a dotwork-shaded sacred-geometry mandala, a blackwork-anchored sleeve, a fine-line ornament.</p></div>
+        {STYLE_STRIP}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 03 — Placement</span><h2>Where a mandala <em>sits best</em>.</h2>
+          <p>Symmetry wants a surface that flows. These placements carry mandala work well.</p></div>
+        {proc([
+          ("01", "Sternum &amp; chest", "Centered symmetry that mirrors the body — a classic home for a radial mandala."),
+          ("02", "Spine &amp; back", "The largest canvas; full mandalas and stacked geometry down the spine."),
+          ("03", "Sleeve", "Wraps the arm — geometry that travels around the limb and reads from every angle."),
+          ("04", "Hand, thigh, behind-ear", "Smaller, decorative, fine-line mandalas where detail and restraint matter."),
+        ])}
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 04 — Recent work</span><h2>A few <em>mandala pieces</em>.</h2></div>
+        <div class="work-grid">
+          {WORK_6}
+        </div>
+        <div style="margin-top: 40px;"><a class="btn btn--ghost" href="portfolio.html">See the whole portfolio →</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 05 — Process</span><h2>From idea to <em>ink</em>.</h2></div>
+        {PROCESS_IDEA}
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 06 — Questions</span><h2>Mandala tattoos, <em>answered</em>.</h2></div>
+        {FAQ_FULL}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div><span class="eyebrow">§ 07 — Booking</span><h2>Start your <em>mandala</em>.</h2>
+            <p>Send your idea — symbolism, placement, scale — and we'll come back with a sketch direction and a date.</p></div>
+          <div><a class="btn btn--primary" href="contact.html#book">Send a request →</a></div>
+        </div>
+      </div>
+    </section>
+    </main>"""
+
+# ------------------------------------------------------------------ courses
+COURSE_MAIN = f"""<main id="main">
+    <section class="hero">
+      <div class="container hero__inner">
+        <div>
+          <span class="eyebrow">§ 00 — Tattoo Courses · By application</span>
+          <h1 class="hero__title">Learn to tattoo, <em>properly</em>.</h1>
+          <p class="hero__lede">Small-group, mentor-led tattoo training at the studio — a foundation course for people starting out, and an advanced course for working tattooers pushing geometric and mandala work.</p>
+          <div class="hero__actions">
+            <a class="btn btn--dark" href="contact.html#book">Apply / enquire →</a>
+            <a class="btn btn--ghost" href="#foundation">See the courses</a>
+          </div>
+          <div class="hero__meta">
+            <div class="hero__meta-item"><span class="hero__meta-label">Format</span><span class="hero__meta-value">Small groups</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Level</span><span class="hero__meta-value">Beginner → Pro</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Intake</span><span class="hero__meta-value">By application</span></div>
+          </div>
+        </div>
+        {GEO_RINGS}
+      </div>
+    </section>
+
+    <section class="section" id="foundation">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 01 — Foundation course</span><h2>Start from <em>zero</em>, the right way.</h2>
+          <p>For complete beginners. By the end you can set up safely, run a machine, and complete a clean, healed tattoo under supervision.</p></div>
+        {proc([
+          ("01", "Health &amp; safety", "Bloodborne pathogens, sterilisation, cross-contamination, station setup, and studio law — first, and properly."),
+          ("02", "Machines &amp; needles", "Coil vs rotary, needle groupings, voltage, depth — how to build and tune a working setup."),
+          ("03", "Line &amp; shade", "Stencils, lining, packing, whip and dotwork shading — practised on synthetic skin before anyone."),
+          ("04", "Supervised tattoos", "Your first real tattoos on willing models, fully mentored, from stencil to healed result."),
+        ])}
+      </div>
+    </section>
+
+    <section class="section section--alt" id="advanced">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 02 — Advanced course</span><h2>For working tattooers going <em>geometric</em>.</h2>
+          <p>Prerequisite: you already tattoo. This is about construction, symmetry, and scale — what mandala and sacred-geometry work live or die on.</p></div>
+        {proc([
+          ("01", "Geometry &amp; construction", "Grids, compass work, freehand symmetry — building a mandala from the center out."),
+          ("02", "Dotwork &amp; density", "Stippled gradients, packing solid black, and controlling the healed result."),
+          ("03", "Composition at scale", "Sleeves, backs, and fitting a large design to the body's natural flow."),
+          ("04", "Critique &amp; mentorship", "Portfolio review, one-to-one feedback, and a guided large piece start to finish."),
+        ])}
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 03 — What you get</span><h2>Small groups, <em>real mentorship</em>.</h2></div>
+        <div class="stats">
+          <div class="stat"><div class="stat__num"><em>6</em></div><div class="stat__label">Students max, per intake</div></div>
+          <div class="stat"><div class="stat__num"><em>1:3</em></div><div class="stat__label">Mentor-to-student ratio</div></div>
+          <div class="stat"><div class="stat__num"><em>∞</em></div><div class="stat__label">Aftercare — questions answered for life</div></div>
+          <div class="stat"><div class="stat__num"><em>1</em></div><div class="stat__label">Certificate of completion</div></div>
+        </div>
+        <p style="max-width: 60ch; margin-top: 30px;">Kit and practice materials are provided during the course. <em>Dates, duration, and pricing are set per intake — drop your live details in here.</em></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 04 — Questions</span><h2>Before you <em>apply</em>.</h2></div>
+        {faq([
+          ("Do I need experience?", "Not for the foundation course — it starts from zero. The advanced course is for people who already tattoo and want to push geometric and mandala work."),
+          ("What does it cost?", "Pricing is set per intake and a deposit secures your seat. <em>Replace with your live course fees and dates.</em>"),
+          ("Do I get a certificate?", "Yes — a certificate of completion. Note that tattoo licensing rules vary by country, so check your local requirements too."),
+          ("What do I need to bring?", "Kit and practice skin are provided during the course. Bring a sketchbook, something to take notes on, and any reference work you'd like to build toward."),
+        ])}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div><span class="eyebrow">§ 05 — Apply</span><h2>Ready to <em>learn</em>?</h2>
+            <p>Tell us where you are now and which course fits. Seats are limited and go by application.</p></div>
+          <div><a class="btn btn--primary" href="contact.html#book">Apply now →</a></div>
+        </div>
+      </div>
+    </section>
+    </main>"""
+
+PAGE_SPECS = [
+    dict(file="index.html", slug="home", photos=True, main=HOME_MAIN,
+         title="Massa Tattoo — Custom Mandala &amp; Sacred-Geometry Tattoo Studio",
+         desc="A private, appointment-only studio for custom mandala and sacred-geometry tattoos — dotwork, blackwork, and fine line. See the work, then book a consult.",
+         canon="https://massatattoo.com/"),
+    dict(file="portfolio.html", slug="portfolio", photos=True, main=PORTFOLIO_MAIN,
+         title="Mandala &amp; Geometric Tattoo Portfolio — Massa Tattoo",
+         desc="A filterable archive of mandala, sacred geometry, dotwork, and blackwork tattoo work from Massa Tattoo.",
+         canon="https://massatattoo.com/portfolio.html"),
+    dict(file="mandala-tattoos.html", slug="mandala", photos=True, main=MANDALA_MAIN,
+         title="Mandala Tattoos — Meaning, Styles &amp; Custom Work | Massa Tattoo",
+         desc="Everything on mandala tattoos: what they mean, the styles (dotwork, sacred geometry, blackwork, fine line), placement, the process, and how to book a custom piece.",
+         canon="https://massatattoo.com/mandala-tattoos/"),
+    dict(file="tattoo-course.html", slug="courses", photos=False, main=COURSE_MAIN,
+         title="Tattoo Courses — Foundation &amp; Advanced | Massa Tattoo",
+         desc="Small-group, mentor-led tattoo courses at Massa Tattoo — a foundation course for beginners and an advanced course in geometric and mandala work.",
+         canon="https://massatattoo.com/tattoo-course/"),
+    dict(file="about.html", slug="about", photos=False, main=None),
+    dict(file="blog.html", slug="blog", photos=False, main=None),
+    dict(file="testimonials.html", slug="testimonials", photos=False, main=None),
+    dict(file="contact.html", slug="contact", photos=False, main=None),
+]
+
+for spec in PAGE_SPECS:
+    fname = spec["file"]; slug = spec["slug"]
+    if spec["main"] is None:
+        src = (SRC / fname).read_text()
+        title = grab(r"<title>(.*?)</title>", src)
+        desc = grab(r'name="description" content="(.*?)"', src)
+        canon = grab(r'rel="canonical" href="(.*?)"', src)
+        orbit = grab(r'(<div class="page-orbit".*?</div>)', src)
+        main = grab(r"(<main id=\"main\">.*?</main>)", src)
+    else:
+        title = spec["title"]; desc = spec["desc"]; canon = spec["canon"]
+        orbit = ORBIT; main = spec["main"]
+    uses_photos = spec["photos"]
+    css = CSS.replace("/*PHOTOS*/", PHOTO_CSS if uses_photos else "")
+
+    doc = f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content="{desc}" />
+    <link rel="canonical" href="{canon}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Massa Tattoo" />
+    <meta property="og:title" content="{title}" />
+    <meta property="og:description" content="{desc}" />
+    <meta property="og:url" content="{canon}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{title}" />
+    <meta name="twitter:description" content="{desc}" />
+    <meta name="theme-color" content="#0E0B07" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+{css}
+    </style>
+  </head>
+  <body data-nav-current="{slug}">
+    {orbit}
+
+{header(slug)}
+
+    {main}
+
+{FOOTER}
+
+{JS}
   </body>
 </html>
+"""
+    (OUT / fname).write_text(doc)
+    print(f"wrote {fname:18} {len(doc)//1024:4d} KB  (photos={uses_photos})")
+
+print("\nDone ->", OUT)

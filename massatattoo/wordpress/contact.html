@@ -173,6 +173,8 @@ em{font-style:italic;color:var(--gold-bright)}
 @media(max-width:560px){.work-grid .work-tile{grid-column:span 12!important}}
 .work-tile:focus-within{outline:2px solid var(--gold);outline-offset:2px}
 @media(hover:none){.work-tile__meta{opacity:1}}
+.work-empty{margin-top:34px;font-family:var(--serif);font-style:italic;font-size:1.25rem;color:var(--muted)}
+.work-empty[hidden]{display:none}
 /* filter bar */
 .filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);align-items:center}
 .filter-bar__label{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-right:14px}
@@ -440,8 +442,10 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         <nav aria-label="Primary">
           <ul class="nav__links" id="nav-menu">
         <li><a href="index.html" data-nav="home">Home</a></li>
-        <li><a href="about.html" data-nav="about">About</a></li>
         <li><a href="portfolio.html" data-nav="portfolio">Portfolio</a></li>
+        <li><a href="mandala-tattoos.html" data-nav="mandala">Mandala</a></li>
+        <li><a href="tattoo-course.html" data-nav="courses">Courses</a></li>
+        <li><a href="about.html" data-nav="about">About</a></li>
         <li><a href="blog.html" data-nav="blog">Blog</a></li>
         <li><a href="testimonials.html" data-nav="testimonials">Testimonials</a></li>
           </ul>
@@ -764,8 +768,10 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
           <div>
             <h4>Studio</h4>
             <ul>
-              <li><a href="about.html">About</a></li>
               <li><a href="portfolio.html">Portfolio</a></li>
+              <li><a href="mandala-tattoos.html">Mandala tattoos</a></li>
+              <li><a href="tattoo-course.html">Tattoo courses</a></li>
+              <li><a href="about.html">About</a></li>
               <li><a href="blog.html">Blog</a></li>
               <li><a href="testimonials.html">Testimonials</a></li>
             </ul>
@@ -803,7 +809,22 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         var y=document.getElementById('year'); if(y){y.textContent=new Date().getFullYear();}
         var t=document.querySelector('.nav__toggle'), m=document.querySelector('.nav__links');
         if(t&&m){t.addEventListener('click',function(){var o=m.classList.toggle('is-open');t.setAttribute('aria-expanded',String(o));t.setAttribute('aria-label',o?'Close menu':'Open menu');});}
-        document.addEventListener('click',function(e){var b=e.target.closest('.filter');if(!b)return;b.parentNode.querySelectorAll('.filter').forEach(function(s){s.classList.remove('is-active');});b.classList.add('is-active');});
+        document.addEventListener('click',function(e){
+          var b=e.target.closest('.filter'); if(!b) return;
+          var bar=b.closest('.filter-bar'); if(!bar) return;
+          bar.querySelectorAll('.filter').forEach(function(s){s.classList.remove('is-active');s.setAttribute('aria-pressed','false');});
+          b.classList.add('is-active'); b.setAttribute('aria-pressed','true');
+          var f=b.getAttribute('data-filter')||'all';
+          var scope=bar.closest('.container')||document;
+          var grid=scope.querySelector('.work-grid'); if(!grid) return;
+          var shown=0;
+          grid.querySelectorAll('.work-tile').forEach(function(t){
+            var styles=(t.getAttribute('data-style')||'').split(' ');
+            var ok=(f==='all')||styles.indexOf(f)>-1;
+            t.style.display=ok?'':'none'; if(ok) shown++;
+          });
+          var note=scope.querySelector('.work-empty'); if(note) note.hidden=(shown>0);
+        });
         initMandala();
       });
       function initMandala(){

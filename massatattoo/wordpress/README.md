@@ -3,14 +3,28 @@
 Six self-contained pages, re-skinned into a **refined dark + antique-gold**
 theme. Same sections and copy as the current site — new look.
 
-| File                | Page         |
-| ------------------- | ------------ |
-| `index.html`        | Home         |
-| `about.html`        | About        |
-| `portfolio.html`    | Portfolio    |
-| `blog.html`         | Blog         |
-| `testimonials.html` | Testimonials |
-| `contact.html`      | Contact      |
+| File                   | Page                                                  |
+| ---------------------- | ----------------------------------------------------- |
+| `index.html`           | Home — ordered as a customer's decision path          |
+| `portfolio.html`       | Portfolio — with working style filters                |
+| `mandala-tattoos.html` | Mandala pillar page (meaning → styles → placement → book) |
+| `tattoo-course.html`   | Tattoo courses (Foundation + Advanced)                |
+| `about.html`           | About                                                 |
+| `blog.html`            | Blog                                                  |
+| `testimonials.html`    | Testimonials                                          |
+| `contact.html`         | Contact                                               |
+
+**Homepage order** follows how someone vetting a new tattoo artist actually
+decides: see the work → what we specialise in → how we work → client proof →
+how it works → the studio → FAQ → visit → book.
+
+**Two content caveats to replace before publishing:**
+- **Tattoo courses** — the live `/tattoo-course/` and `/advanced-tattoo-courses/`
+  pages were behind a captcha and couldn't be read, so the course copy is a
+  sensible draft. Swap in your real curriculum, dates, duration, and pricing
+  (search `set per intake`, `Replace with your live`).
+- **FAQ pricing / studio details** — the cost answers and address/hours are
+  placeholders (search `Replace with your real rates`, `Atelier Lane`).
 
 ## What's inside each file
 

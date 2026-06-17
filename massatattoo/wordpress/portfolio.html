@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Portfolio — Massa Tattoo · Geometric Studio</title>
-    <meta name="description" content="A gallery of recent geometric tattoo work — sacred geometry, dotwork, blackwork, fine line, mandala, and ornamental pieces." />
+    <title>Mandala &amp; Geometric Tattoo Portfolio — Massa Tattoo</title>
+    <meta name="description" content="A filterable archive of mandala, sacred geometry, dotwork, and blackwork tattoo work from Massa Tattoo." />
     <link rel="canonical" href="https://massatattoo.com/portfolio.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Massa Tattoo" />
-    <meta property="og:title" content="Portfolio — Massa Tattoo · Geometric Studio" />
-    <meta property="og:description" content="A gallery of recent geometric tattoo work — sacred geometry, dotwork, blackwork, fine line, mandala, and ornamental pieces." />
+    <meta property="og:title" content="Mandala &amp; Geometric Tattoo Portfolio — Massa Tattoo" />
+    <meta property="og:description" content="A filterable archive of mandala, sacred geometry, dotwork, and blackwork tattoo work from Massa Tattoo." />
     <meta property="og:url" content="https://massatattoo.com/portfolio.html" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Portfolio — Massa Tattoo · Geometric Studio" />
-    <meta name="twitter:description" content="A gallery of recent geometric tattoo work — sacred geometry, dotwork, blackwork, fine line, mandala, and ornamental pieces." />
+    <meta name="twitter:title" content="Mandala &amp; Geometric Tattoo Portfolio — Massa Tattoo" />
+    <meta name="twitter:description" content="A filterable archive of mandala, sacred geometry, dotwork, and blackwork tattoo work from Massa Tattoo." />
     <meta name="theme-color" content="#0E0B07" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -178,6 +178,8 @@ em{font-style:italic;color:var(--gold-bright)}
 @media(max-width:560px){.work-grid .work-tile{grid-column:span 12!important}}
 .work-tile:focus-within{outline:2px solid var(--gold);outline-offset:2px}
 @media(hover:none){.work-tile__meta{opacity:1}}
+.work-empty{margin-top:34px;font-family:var(--serif);font-style:italic;font-size:1.25rem;color:var(--muted)}
+.work-empty[hidden]{display:none}
 /* filter bar */
 .filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);align-items:center}
 .filter-bar__label{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-right:14px}
@@ -418,14 +420,10 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
   </head>
   <body data-nav-current="portfolio">
     <div class="page-orbit" aria-hidden="true">
-      <svg viewBox="0 0 200 200">
-        <g class="geo-rotate--rev">
-          <circle cx="100" cy="100" r="90" />
-          <circle cx="100" cy="100" r="76" />
-          <circle cx="100" cy="100" r="60" />
-          <circle cx="100" cy="100" r="44" />
-        </g>
-      </svg>
+      <svg viewBox="0 0 200 200"><g class="geo-rotate--rev">
+        <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="76"/><circle cx="100" cy="100" r="60"/>
+        <circle cx="100" cy="100" r="44"/><circle cx="100" cy="100" r="28"/><circle cx="100" cy="100" r="14"/>
+      </g></svg>
     </div>
 
     <a class="skip-link" href="#main">Skip to content</a>
@@ -443,8 +441,10 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         <nav aria-label="Primary">
           <ul class="nav__links" id="nav-menu">
         <li><a href="index.html" data-nav="home">Home</a></li>
-        <li><a href="about.html" data-nav="about">About</a></li>
         <li><a href="portfolio.html" data-nav="portfolio" class="is-active" aria-current="page">Portfolio</a></li>
+        <li><a href="mandala-tattoos.html" data-nav="mandala">Mandala</a></li>
+        <li><a href="tattoo-course.html" data-nav="courses">Courses</a></li>
+        <li><a href="about.html" data-nav="about">About</a></li>
         <li><a href="blog.html" data-nav="blog">Blog</a></li>
         <li><a href="testimonials.html" data-nav="testimonials">Testimonials</a></li>
           </ul>
@@ -462,42 +462,21 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         <div>
           <span class="eyebrow">§ 01 — Portfolio</span>
           <h1 class="hero__title">Ten years, <em>line by line</em>.</h1>
-          <p class="hero__lede">
-            A working archive of recent pieces — sacred geometry, dotwork,
-            blackwork, fine line. Filter to find the work that lives closest to
-            the idea you're carrying.
-          </p>
+          <p class="hero__lede">A working archive of recent pieces — mandala, sacred geometry, dotwork, blackwork, fine line. Filter to find the work closest to the idea you're carrying.</p>
           <div class="hero__meta">
-            <div class="hero__meta-item">
-              <span class="hero__meta-label">Pieces shown</span>
-              <span class="hero__meta-value">9 / 1,200+</span>
-            </div>
-            <div class="hero__meta-item">
-              <span class="hero__meta-label">Styles</span>
-              <span class="hero__meta-value">Six</span>
-            </div>
-            <div class="hero__meta-item">
-              <span class="hero__meta-label">Updated</span>
-              <span class="hero__meta-value">Weekly</span>
-            </div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Pieces shown</span><span class="hero__meta-value">9 / 1,200+</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Styles</span><span class="hero__meta-value">Five</span></div>
+            <div class="hero__meta-item"><span class="hero__meta-label">Updated</span><span class="hero__meta-value">Weekly</span></div>
           </div>
         </div>
-
         <div class="hero__geo" aria-hidden="true">
           <svg viewBox="-100 -100 200 200">
             <g class="geo-rotate">
-              <circle r="80" class="ring" />
-              <circle r="68" class="ring ring--thin" />
-              <circle r="56" class="ring" />
-              <circle r="44" class="ring ring--thin" />
-              <circle r="32" class="ring" />
-              <circle r="20" class="ring ring--thin" />
+              <circle r="80" class="ring"/><circle r="68" class="ring ring--thin"/><circle r="56" class="ring"/>
+              <circle r="44" class="ring ring--thin"/><circle r="32" class="ring"/><circle r="20" class="ring ring--thin"/>
             </g>
-            <g class="geo-rotate--rev">
-              <polygon points="0,-82 71,41 -71,41" class="tri" />
-            </g>
-            <circle r="6" class="ring ring--accent" />
-            <circle r="1.6" class="dot" />
+            <g class="geo-rotate--rev"><polygon points="0,-82 71,41 -71,41" class="tri"/></g>
+            <circle r="6" class="ring ring--accent"/><circle r="1.6" class="dot"/>
           </svg>
         </div>
       </div>
@@ -507,118 +486,42 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
       <div class="container">
         <div class="filter-bar">
           <span class="filter-bar__label">Filter →</span>
-          <button class="filter is-active" type="button">All</button>
-          <button class="filter" type="button">Sacred geometry</button>
-          <button class="filter" type="button">Dotwork</button>
-          <button class="filter" type="button">Blackwork</button>
-          <button class="filter" type="button">Fine line</button>
-          <button class="filter" type="button">Mandala</button>
-          <button class="filter" type="button">Ornamental</button>
+          <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter" type="button" data-filter="mandala" aria-pressed="false">Mandala</button>
+          <button class="filter" type="button" data-filter="sacred-geometry" aria-pressed="false">Sacred geometry</button>
+          <button class="filter" type="button" data-filter="dotwork" aria-pressed="false">Dotwork</button>
+          <button class="filter" type="button" data-filter="blackwork" aria-pressed="false">Blackwork</button>
+          <button class="filter" type="button" data-filter="ornamental" aria-pressed="false">Ornamental</button>
         </div>
-
         <div class="work-grid">
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-chest-mandala" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Chest Mandala</span>
-              <span class="work-tile__tag">Dotwork · Sternum</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-leg-sleeve" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Mandala Sleeve</span>
-              <span class="work-tile__tag">Geometric · Full leg</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-back-mandala" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Back Mandala</span>
-              <span class="work-tile__tag">Dotwork · Shoulder</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-chrysanthemum" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Chrysanthemum Sleeve</span>
-              <span class="work-tile__tag">Decorative · Full leg</span>
-            </div>
-          </a>
-
-          <a class="work-tile work-tile--dark" href="#">
-            <div class="work-tile__art photo-hip-leopard" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Leopard & Mandala</span>
-              <span class="work-tile__tag">Blackwork · Hip & thigh</span>
-            </div>
-          </a>
-
-          <a class="work-tile work-tile--dark" href="#">
-            <div class="work-tile__art photo-back-in-progress" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Mid-Session</span>
-              <span class="work-tile__tag">In progress · Back</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-chest-mandala" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Chest Mandala</span>
-              <span class="work-tile__tag">Dotwork · Sternum</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-leg-sleeve" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Mandala Sleeve</span>
-              <span class="work-tile__tag">Geometric · Full leg</span>
-            </div>
-          </a>
-
-          <a class="work-tile" href="#">
-            <div class="work-tile__art photo-back-mandala" aria-hidden="true"></div>
-            <div class="work-tile__meta">
-              <span class="work-tile__title">Back Mandala</span>
-              <span class="work-tile__tag">Dotwork · Shoulder</span>
-            </div>
-          </a>
+          <a class="work-tile" href="portfolio.html" data-style="dotwork mandala"><div class="work-tile__art photo-chest-mandala" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Chest Mandala</span><span class="work-tile__tag">Dotwork · Sternum</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="sacred-geometry mandala"><div class="work-tile__art photo-leg-sleeve" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Mandala Sleeve</span><span class="work-tile__tag">Geometric · Full leg</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="dotwork mandala"><div class="work-tile__art photo-back-mandala" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Back Mandala</span><span class="work-tile__tag">Dotwork · Shoulder</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="ornamental"><div class="work-tile__art photo-chrysanthemum" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Chrysanthemum Sleeve</span><span class="work-tile__tag">Decorative · Full leg</span></div></a>
+          <a class="work-tile work-tile--dark" href="portfolio.html" data-style="blackwork mandala"><div class="work-tile__art photo-hip-leopard" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Leopard &amp; Mandala</span><span class="work-tile__tag">Blackwork · Hip &amp; thigh</span></div></a>
+          <a class="work-tile work-tile--dark" href="portfolio.html" data-style="blackwork mandala"><div class="work-tile__art photo-back-in-progress" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Mid-Session</span><span class="work-tile__tag">In progress · Back</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="dotwork mandala"><div class="work-tile__art photo-chest-mandala" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Chest Mandala</span><span class="work-tile__tag">Dotwork · Sternum</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="sacred-geometry mandala"><div class="work-tile__art photo-leg-sleeve" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Mandala Sleeve</span><span class="work-tile__tag">Geometric · Full leg</span></div></a>
+          <a class="work-tile" href="portfolio.html" data-style="dotwork mandala"><div class="work-tile__art photo-back-mandala" aria-hidden="true"></div><div class="work-tile__meta"><span class="work-tile__title">Back Mandala</span><span class="work-tile__tag">Dotwork · Shoulder</span></div></a>
         </div>
+        <p class="work-empty" hidden>No pieces in this style yet — ask in your booking request and we'll show you more.</p>
       </div>
     </section>
 
     <section class="section section--alt">
       <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">§ 02 — A note on the archive</span>
-          <h2>What you don't see is <em>most of it</em>.</h2>
-          <p>This page is a selection. We don't post every piece — some clients want their tattoos kept off the feed, and we honour that. If you'd like to see more of a specific style, ask in your booking request.</p>
-        </div>
-
-        <blockquote class="pull-quote">
-          "A good portfolio shows you what an artist <em>can</em> do. A great
-          one tells you what they keep coming back to. This is ours."
-          <cite>— from the studio notes</cite>
-        </blockquote>
+        <div class="section-head"><span class="eyebrow">§ 02 — A note on the archive</span><h2>What you don't see is <em>most of it</em>.</h2>
+          <p>This page is a selection. We don't post every piece — some clients keep their tattoos off the feed, and we honour that. If you'd like to see more of a specific style, ask in your booking request.</p></div>
+        <blockquote class="pull-quote">"A good portfolio shows you what an artist <em>can</em> do. A great one tells you what they keep coming back to. This is ours."<cite>— from the studio notes</cite></blockquote>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
         <div class="cta-banner">
-          <div>
-            <span class="eyebrow">§ 03 — Your turn</span>
-            <h2>See a piece that <em>opens something up</em>?</h2>
-            <p>Send us a reference or just describe what drew you to it. We'll come back with a sketch direction.</p>
-          </div>
-          <div>
-            <a class="btn btn--primary" href="contact.html#book">Send a request →</a>
-          </div>
+          <div><span class="eyebrow">§ 03 — Your turn</span><h2>See a piece that <em>opens something up</em>?</h2>
+            <p>Send us a reference or just describe what drew you to it. We'll come back with a sketch direction.</p></div>
+          <div><a class="btn btn--primary" href="contact.html#book">Send a request →</a></div>
         </div>
       </div>
     </section>
@@ -646,8 +549,10 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
           <div>
             <h4>Studio</h4>
             <ul>
-              <li><a href="about.html">About</a></li>
               <li><a href="portfolio.html">Portfolio</a></li>
+              <li><a href="mandala-tattoos.html">Mandala tattoos</a></li>
+              <li><a href="tattoo-course.html">Tattoo courses</a></li>
+              <li><a href="about.html">About</a></li>
               <li><a href="blog.html">Blog</a></li>
               <li><a href="testimonials.html">Testimonials</a></li>
             </ul>
@@ -685,7 +590,22 @@ details.faq__item .faq__body{padding:0 12px 28px;color:var(--muted);max-width:70
         var y=document.getElementById('year'); if(y){y.textContent=new Date().getFullYear();}
         var t=document.querySelector('.nav__toggle'), m=document.querySelector('.nav__links');
         if(t&&m){t.addEventListener('click',function(){var o=m.classList.toggle('is-open');t.setAttribute('aria-expanded',String(o));t.setAttribute('aria-label',o?'Close menu':'Open menu');});}
-        document.addEventListener('click',function(e){var b=e.target.closest('.filter');if(!b)return;b.parentNode.querySelectorAll('.filter').forEach(function(s){s.classList.remove('is-active');});b.classList.add('is-active');});
+        document.addEventListener('click',function(e){
+          var b=e.target.closest('.filter'); if(!b) return;
+          var bar=b.closest('.filter-bar'); if(!bar) return;
+          bar.querySelectorAll('.filter').forEach(function(s){s.classList.remove('is-active');s.setAttribute('aria-pressed','false');});
+          b.classList.add('is-active'); b.setAttribute('aria-pressed','true');
+          var f=b.getAttribute('data-filter')||'all';
+          var scope=bar.closest('.container')||document;
+          var grid=scope.querySelector('.work-grid'); if(!grid) return;
+          var shown=0;
+          grid.querySelectorAll('.work-tile').forEach(function(t){
+            var styles=(t.getAttribute('data-style')||'').split(' ');
+            var ok=(f==='all')||styles.indexOf(f)>-1;
+            t.style.display=ok?'':'none'; if(ok) shown++;
+          });
+          var note=scope.querySelector('.work-empty'); if(note) note.hidden=(shown>0);
+        });
         initMandala();
       });
       function initMandala(){
