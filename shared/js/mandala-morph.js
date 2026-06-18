@@ -228,10 +228,9 @@
     return out.length ? out : null;
   }
 
-  /* ---------- figure 1: pointed-petal dotwork mandala -------- */
+  /* ---------- figure 1: detailed 8-ring dotwork mandala ------ */
 
-  // One sharp-tipped petal, base→tip greyscale gradient (dark base packs the
-  // stipple, light tip lets it fade — the dahlia shading in the references).
+  // Sharp-tipped petal; base→tip gradient drives stipple density.
   function petal(c, a, r0, r1, h, base, tip) {
     var bx = Math.cos(a) * r0, by = Math.sin(a) * r0;
     var tx = Math.cos(a) * r1, ty = Math.sin(a) * r1;
@@ -246,40 +245,102 @@
     c.quadraticCurveTo(rx, ry, bx, by);
     c.closePath();
     c.fillStyle = g; c.fill();
-    c.lineWidth = 0.012; c.strokeStyle = '#000'; c.stroke(); // crisp dotted edge
+    c.lineWidth = 0.010; c.strokeStyle = '#080808'; c.stroke();
   }
 
   function drawMandala(c) {
-    var layers = [
-      { n: 28, r0: 0.60, r1: 1.00, base: '#141414', tip: '#8f8f8f', off: 0.0 },
-      { n: 18, r0: 0.36, r1: 0.68, base: '#0e0e0e', tip: '#7d7d7d', off: 0.5 },
-      { n: 12, r0: 0.16, r1: 0.42, base: '#0a0a0a', tip: '#6a6a6a', off: 0.0 }
-    ];
-    for (var L = 0; L < layers.length; L++) {
-      var ly = layers[L], h = (Math.PI / ly.n) * 0.92;
-      for (var i = 0; i < ly.n; i++) {
-        var a = ((i + ly.off) / ly.n) * TAU - Math.PI / 2;
-        petal(c, a, ly.r0, ly.r1, h, ly.base, ly.tip);
-      }
+    /* Eight concentric zones, each with clear radial gaps so the
+       negative-space lines read as authentic tattoo dotwork. */
+    var i, a, rr;
+
+    // ─ ZONE 1: outer rim — 60 fine alternating teeth ──────────
+    var nRim = 60;
+    for (i = 0; i < nRim; i++) {
+      a = (i / nRim) * TAU - Math.PI / 2;
+      var tall = (i % 2 === 0);
+      petal(c, a,
+        tall ? 0.880 : 0.914,  tall ? 0.996 : 0.950,
+        (Math.PI / nRim) * 0.86,
+        '#090909', tall ? '#484848' : '#1c1c1c');
     }
-    // outer lace tips — small sharp points around the rim
-    var tipN = 36;
-    for (var p = 0; p < tipN; p++) {
-      var pa = (p / tipN) * TAU;
-      petal(c, pa, 0.90, 1.0, (Math.PI / tipN) * 0.8, '#101010', '#444');
+
+    // ─ ZONE 2: 24 large primary outer petals ──────────────────
+    var n4 = 24, h4 = (Math.PI / n4) * 0.70;
+    for (i = 0; i < n4; i++) {
+      a = (i / n4) * TAU - Math.PI / 2;
+      petal(c, a, 0.582, 0.880, h4, '#0b0b0b', '#909090');
     }
-    // pointed center star
-    c.fillStyle = '#111';
-    var cs = 8;
+    // 24 shorter secondary petals interleaved at half-step
+    var h4s = (Math.PI / n4) * 0.52;
+    for (i = 0; i < n4; i++) {
+      a = ((i + 0.5) / n4) * TAU - Math.PI / 2;
+      petal(c, a, 0.670, 0.872, h4s, '#0f0f0f', '#545454');
+    }
+
+    // ─ Fine separator: 36 radial micro-teeth at base of zone 2 ─
+    for (i = 0; i < 36; i++) {
+      a = (i / 36) * TAU;
+      petal(c, a, 0.560, 0.581, (Math.PI / 36) * 0.78, '#111', '#282828');
+    }
+
+    // ─ ZONE 3: 18 mid petals, offset by half-step ─────────────
+    var n3 = 18, h3 = (Math.PI / n3) * 0.74;
+    for (i = 0; i < n3; i++) {
+      a = ((i + 0.5) / n3) * TAU - Math.PI / 2;
+      petal(c, a, 0.330, 0.558, h3, '#0d0d0d', '#8b8b8b');
+    }
+
+    // ─ Separator dots between zones 3 and 4 ───────────────────
+    c.fillStyle = '#0e0e0e';
+    for (i = 0; i < 36; i++) {
+      a = (i / 36) * TAU;
+      c.beginPath();
+      c.arc(Math.cos(a) * 0.320, Math.sin(a) * 0.320, 0.013, 0, TAU);
+      c.fill();
+    }
+    // 18 small triangles (one per mid-petal gap) just inside zone 3
+    for (i = 0; i < 18; i++) {
+      a = (i / 18) * TAU - Math.PI / 2;
+      petal(c, a, 0.308, 0.328, (Math.PI / 18) * 0.60, '#111', '#252525');
+    }
+
+    // ─ ZONE 4: 12 inner lotus petals + 12 secondary ───────────
+    var n2 = 12, h2 = (Math.PI / n2) * 0.82;
+    for (i = 0; i < n2; i++) {
+      a = (i / n2) * TAU - Math.PI / 2;
+      petal(c, a, 0.126, 0.308, h2, '#0c0c0c', '#838383');
+    }
+    var h2s = (Math.PI / n2) * 0.58;
+    for (i = 0; i < n2; i++) {
+      a = ((i + 0.5) / n2) * TAU - Math.PI / 2;
+      petal(c, a, 0.172, 0.298, h2s, '#101010', '#525252');
+    }
+
+    // ─ Center ring band at r ≈ 0.084–0.122 ────────────────────
+    c.beginPath(); c.arc(0, 0, 0.122, 0, TAU);
+    c.fillStyle = '#111111'; c.fill();
+    // Clear inside to true transparent so no stray dots appear there
+    c.save();
+    c.globalCompositeOperation = 'destination-out';
+    c.beginPath(); c.arc(0, 0, 0.084, 0, TAU);
+    c.fillStyle = '#000'; c.fill();
+    c.restore();
+
+    // ─ Center 8-pointed star ──────────────────────────────────
+    c.fillStyle = '#0f0f0f';
     c.beginPath();
-    for (var s = 0; s <= cs * 2; s++) {
-      var ang = (s / (cs * 2)) * TAU - Math.PI / 2;
-      var rr = (s % 2 === 0) ? 0.18 : 0.07;
-      var px = Math.cos(ang) * rr, py = Math.sin(ang) * rr;
-      if (s === 0) c.moveTo(px, py); else c.lineTo(px, py);
+    for (i = 0; i <= 16; i++) {
+      a = (i / 16) * TAU - Math.PI / 2;
+      rr = (i % 2 === 0) ? 0.080 : 0.032;
+      if (i === 0) c.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+      else         c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
     }
     c.closePath(); c.fill();
-    c.lineWidth = 0.012; c.strokeStyle = '#000'; c.stroke();
+    c.strokeStyle = '#080808'; c.lineWidth = 0.009; c.stroke();
+
+    // ─ Center dot ─────────────────────────────────────────────
+    c.beginPath(); c.arc(0, 0, 0.027, 0, TAU);
+    c.fillStyle = '#1b1b1b'; c.fill();
   }
 
   /* ---------- figure 2: shaded dotwork skull ----------------- */
@@ -446,12 +507,14 @@
 
     var rand = mulberry32(xmur3(seed)());
 
-    // Figures: text → mandala → skull → geometry. The mandala is the real
-    // baked tattoo when window.MandalaFigures is present, else procedural.
+    // Figures: text → mandala → skull → geometry.
+    // The procedural mandala is primary (crisp geometry, clean negative space).
+    // The baked real-tattoo grid is kept for reference but not used as the
+    // morph target — it renders too diffuse to read as clean dotwork.
     var realFig = window.MandalaFigures && window.MandalaFigures.realMandala;
+    void realFig; // available for future use
     function mandalaCloud() {
-      var g = realFig ? gridCloud(realFig, N, rand) : null;
-      return g || rasterCloud(drawMandala, N, rand);
+      return rasterCloud(drawMandala, N, rand);
     }
     var clouds = [ finalize(rasterCloud(drawText, N, rand), N, rand),
                    finalize(mandalaCloud(), N, rand),
