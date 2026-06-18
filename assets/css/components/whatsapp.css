@@ -1,0 +1,77 @@
+/* =========================================================
+   WhatsApp floating "Book an appointment" button.
+   Floats at the bottom-right; revealed by JS once the hero is
+   scrolled past (so it never sits on top of the hero). Rests as
+   a round bubble and expands to a labelled pill on hover/focus.
+   ========================================================= */
+.wa-fab {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  max-width: 60px;            /* collapsed — just the emoji bubble */
+  border-radius: 999px;
+  background: #25D366;        /* WhatsApp green */
+  color: #fff;
+  text-decoration: none;
+  overflow: hidden;           /* clips the label while collapsed */
+  -webkit-tap-highlight-color: transparent;
+  /* hidden until revealed (so it never overlaps the hero) */
+  opacity: 0;
+  transform: translateY(18px);
+  pointer-events: none;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  transition:
+    max-width 0.5s cubic-bezier(0.22, 0.8, 0.2, 1),
+    transform 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.wa-fab.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  animation: wa-pulse 2.8s ease-out infinite;
+}
+
+.wa-fab__icon {
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+}
+.wa-fab__icon svg { width: 32px; height: 32px; display: block; }
+
+.wa-fab__label {
+  white-space: nowrap;
+  padding-right: 1.4rem;
+  font-family: var(--font-body, "Inter", sans-serif);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+/* Expand to reveal the label on hover (desktop) or keyboard focus. */
+.wa-fab.is-visible:hover,
+.wa-fab.is-visible:focus-visible {
+  max-width: 320px;
+  transform: translateY(-2px);
+}
+
+/* Attention ring via box-shadow (not clipped by overflow). */
+@keyframes wa-pulse {
+  0%   { box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(37, 211, 102, 0.5); }
+  70%  { box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35), 0 0 0 20px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab { transition: opacity 0.3s ease; transform: none; }
+  .wa-fab.is-visible { animation: none; transform: none; }
+  .wa-fab.is-visible:hover,
+  .wa-fab.is-visible:focus-visible { transform: none; }
+}
