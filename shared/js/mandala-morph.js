@@ -177,6 +177,19 @@
              at: function (u) { var iu = 1 - u; return [iu * iu * x0 + 2 * iu * u * cx + u * u * x1,
                                                         iu * iu * y0 + 2 * iu * u * cy + u * u * y1]; } };
   }
+  function cubicS(x0, y0, ax, ay, bx, by, x1, y1, str) {
+    var len = Math.hypot(ax - x0, ay - y0) + Math.hypot(bx - ax, by - ay) + Math.hypot(x1 - bx, y1 - by);
+    return { len: len, str: str,
+             at: function (u) { var iu = 1 - u, A = iu * iu * iu, B = 3 * iu * iu * u, C = 3 * iu * u * u, D = u * u * u;
+                                return [A * x0 + B * ax + C * bx + D * x1, A * y0 + B * ay + C * by + D * y1]; } };
+  }
+  // A spiral from the centre out — fills a region with dense dots (used to
+  // pack the eye sockets dark while staying "lines/dots", not a flat blob).
+  function spiralS(cx, cy, rMax, turns, xStretch, str) {
+    return { len: Math.PI * rMax * turns, str: str,
+             at: function (u) { var a = u * turns * TAU, r = rMax * u;
+                                return [cx + Math.cos(a) * r * xStretch, cy + Math.sin(a) * r]; } };
+  }
   // Push a stroked regular polygon's edges (after Gemini's drawPolygon).
   function polyS(s, cx, cy, r, sides, rot, str) {
     var pts = [], i;
@@ -266,92 +279,76 @@
     return s;
   }
 
-  /* ---------- figure 2: shaded dotwork skull (tonal) --------- */
+  /* ---------- figure 2: geometric linework skull ------------- */
 
-  function skullPath(c) {
-    c.beginPath();
-    c.moveTo(0, 0.86);
-    c.bezierCurveTo(-0.18, 0.85, -0.28, 0.72, -0.33, 0.56);
-    c.bezierCurveTo(-0.39, 0.46, -0.57, 0.42, -0.61, 0.18);
-    c.bezierCurveTo(-0.65, 0.00, -0.60, -0.18, -0.55, -0.31);
-    c.bezierCurveTo(-0.50, -0.63, -0.29, -0.88, 0, -0.88);
-    c.bezierCurveTo(0.29, -0.88, 0.50, -0.63, 0.55, -0.31);
-    c.bezierCurveTo(0.60, -0.18, 0.65, 0.00, 0.61, 0.18);
-    c.bezierCurveTo(0.57, 0.42, 0.39, 0.46, 0.33, 0.56);
-    c.bezierCurveTo(0.28, 0.72, 0.18, 0.85, 0, 0.86);
-    c.closePath();
-  }
-  function softBlob(c, x, y, r, col) {
-    var g = c.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
-    c.fillStyle = g;
-    c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
-  }
-  function eyeSocket(c, x, y, rot) {
-    c.save();
-    c.translate(x, y); c.rotate(rot);
-    var halo = c.createRadialGradient(0, 0, 0.04, 0, 0, 0.32);
-    halo.addColorStop(0, 'rgba(8,8,8,0.95)');
-    halo.addColorStop(0.55, 'rgba(8,8,8,0.65)');
-    halo.addColorStop(1, 'rgba(8,8,8,0)');
-    c.fillStyle = halo;
-    c.beginPath(); c.arc(0, 0, 0.32, 0, TAU); c.fill();
-    var g = c.createRadialGradient(0.02, 0.05, 0.02, 0, 0, 0.21);
-    g.addColorStop(0, '#000'); g.addColorStop(0.75, '#070707'); g.addColorStop(1, '#1d1d1d');
-    c.fillStyle = g;
-    c.beginPath(); c.ellipse(0, 0, 0.205, 0.165, 0, 0, TAU); c.fill();
-    c.restore();
-  }
-  function drawSkull(c) {
-    c.save();
-    c.scale(1.12, 1.12);
-    c.save();
-    skullPath(c);
-    c.fillStyle = '#ececec';
-    c.fill();
-    c.clip();
-    var vg = c.createRadialGradient(0, -0.05, 0.34, 0, -0.05, 0.82);
-    vg.addColorStop(0, 'rgba(20,20,20,0)');
-    vg.addColorStop(0.68, 'rgba(20,20,20,0.06)');
-    vg.addColorStop(1, 'rgba(16,16,16,0.55)');
-    c.fillStyle = vg;
-    c.fillRect(-1.2, -1.2, 2.4, 2.4);
-    c.lineWidth = 0.10; c.strokeStyle = 'rgba(14,14,14,0.55)';
-    skullPath(c); c.stroke();
-    softBlob(c, -0.52, -0.15, 0.30, 'rgba(18,18,18,0.55)');
-    softBlob(c,  0.52, -0.15, 0.30, 'rgba(18,18,18,0.55)');
-    softBlob(c, -0.31, -0.30, 0.20, 'rgba(18,18,18,0.42)');
-    softBlob(c,  0.31, -0.30, 0.20, 'rgba(18,18,18,0.42)');
-    softBlob(c, -0.20, -0.01, 0.15, 'rgba(10,10,10,0.55)');
-    softBlob(c,  0.20, -0.01, 0.15, 'rgba(10,10,10,0.55)');
-    softBlob(c, -0.40,  0.12, 0.18, 'rgba(18,18,18,0.50)');
-    softBlob(c,  0.40,  0.12, 0.18, 'rgba(18,18,18,0.50)');
-    softBlob(c, -0.27,  0.41, 0.20, 'rgba(18,18,18,0.55)');
-    softBlob(c,  0.27,  0.41, 0.20, 'rgba(18,18,18,0.55)');
-    softBlob(c,  0.00,  0.30, 0.13, 'rgba(14,14,14,0.50)');
-    softBlob(c,  0.00,  0.71, 0.22, 'rgba(18,18,18,0.50)');
-    c.restore();
-    eyeSocket(c, -0.27, -0.05, -0.16);
-    eyeSocket(c,  0.27, -0.05,  0.16);
-    c.fillStyle = '#080808';
-    c.beginPath();
-    c.moveTo(0, 0.30);
-    c.bezierCurveTo(-0.14, 0.15, -0.12, 0.00, -0.05, 0.07);
-    c.bezierCurveTo(-0.02, 0.09, 0, 0.09, 0, 0.06);
-    c.bezierCurveTo(0, 0.09, 0.02, 0.09, 0.05, 0.07);
-    c.bezierCurveTo(0.12, 0.00, 0.14, 0.15, 0, 0.30);
-    c.closePath(); c.fill();
-    var ty0 = 0.46, ty1 = 0.66, tx = 0.25, teeth = 8, w = (tx * 2) / teeth, t, gx;
-    c.fillStyle = 'rgba(10,10,10,0.9)';
-    c.fillRect(-tx - 0.02, ty0 - 0.035, (tx + 0.02) * 2, 0.04);
-    for (t = 0; t < teeth; t++) {
-      gx = -tx + t * w;
-      c.fillStyle = '#dcdcdc';
-      c.fillRect(gx + 0.006, ty0, w - 0.012, ty1 - ty0);
-      c.fillStyle = '#0c0c0c';
-      c.fillRect(gx - 0.004, ty0, 0.008, ty1 - ty0);
+  // A nested diamond (rhombus) mandala — the sacred-geometry motif that
+  // flanks the skull in the reference back-piece.
+  function diamondMandala(s, cx, cy, R) {
+    var levels = [1.0, 0.62, 0.30], i, lv, r, rx;
+    for (i = 0; i < levels.length; i++) {
+      lv = levels[i]; r = R * lv; rx = r * 0.72;
+      s.push(segS(cx, cy - r, cx + rx, cy, 0.86));
+      s.push(segS(cx + rx, cy, cx, cy + r, 0.86));
+      s.push(segS(cx, cy + r, cx - rx, cy, 0.86));
+      s.push(segS(cx - rx, cy, cx, cy - r, 0.86));
     }
-    c.restore();
+    s.push(circS(cx, cy, R * 0.13, 0.92));
+    s.push(segS(cx, cy - R, cx, cy + R, 0.7));
+    s.push(segS(cx - R * 0.72, cy, cx + R * 0.72, cy, 0.7));
+  }
+
+  // The skull as clean dotwork linework: crisp outline, spiral-packed dark
+  // sockets, nasal, cheekbones and teeth — flanked by two diamond mandalas.
+  function skullStrokes() {
+    var s = [], STR = 0.9, K = 0.84;
+    function seg(x0, y0, x1, y1, st) { s.push(segS(x0 * K, y0 * K, x1 * K, y1 * K, st)); }
+    function quad(x0, y0, cx, cy, x1, y1, st) { s.push(quadS(x0 * K, y0 * K, cx * K, cy * K, x1 * K, y1 * K, st)); }
+    function cub(x0, y0, ax, ay, bx, by, x1, y1) { s.push(cubicS(x0 * K, y0 * K, ax * K, ay * K, bx * K, by * K, x1 * K, y1 * K, STR)); }
+    function spi(cx, cy, rMax, turns, st) { s.push(spiralS(cx * K, cy * K, rMax * K, turns, 1.25, st)); }
+
+    // cranium + jaw outline
+    cub(0, 0.86, -0.18, 0.85, -0.28, 0.72, -0.33, 0.56);
+    cub(-0.33, 0.56, -0.39, 0.46, -0.57, 0.42, -0.61, 0.18);
+    cub(-0.61, 0.18, -0.65, 0.00, -0.60, -0.18, -0.55, -0.31);
+    cub(-0.55, -0.31, -0.50, -0.63, -0.29, -0.88, 0, -0.88);
+    cub(0, -0.88, 0.29, -0.88, 0.50, -0.63, 0.55, -0.31);
+    cub(0.55, -0.31, 0.60, -0.18, 0.65, 0.00, 0.61, 0.18);
+    cub(0.61, 0.18, 0.57, 0.42, 0.39, 0.46, 0.33, 0.56);
+    cub(0.33, 0.56, 0.28, 0.72, 0.18, 0.85, 0, 0.86);
+
+    // brow ridge + cranial suture
+    quad(-0.42, -0.07, 0, -0.22, 0.42, -0.07, 0.82);
+    quad(0, -0.86, -0.09, -0.45, 0.02, -0.16, 0.6);
+
+    // eye sockets — outline + spiral fill so they read deep and dark
+    var ex, e;
+    for (e = 0; e < 2; e++) {
+      ex = e === 0 ? -0.27 : 0.27;
+      s.push(ellipseS(ex * K, -0.05 * K, 0.205 * K, 0.165 * K, 0.92));
+      // tightly-wound spiral → the arms merge into a solid dark socket
+      spi(ex, -0.05, 0.145, 17, 0.95);
+    }
+
+    // nasal cavity (inverted heart outline + a little fill)
+    quad(0, 0.30, -0.13, 0.10, -0.05, 0.05, 0.9);
+    quad(0, 0.30, 0.13, 0.10, 0.05, 0.05, 0.9);
+    seg(-0.05, 0.05, 0.05, 0.05, 0.9);
+    seg(0, 0.10, 0, 0.27, 0.8);
+
+    // cheekbones
+    quad(-0.30, 0.16, -0.46, 0.30, -0.28, 0.45, 0.78);
+    quad(0.30, 0.16, 0.46, 0.30, 0.28, 0.45, 0.78);
+
+    // teeth — gum line + verticals
+    var ty0 = 0.46, ty1 = 0.66, tx = 0.25, teeth = 7, t, gx;
+    seg(-tx, ty0, tx, ty0, 0.9);
+    seg(-tx, ty1, tx, ty1, 0.82);
+    for (t = 0; t <= teeth; t++) { gx = -tx + (t / teeth) * tx * 2; seg(gx, ty0, gx, ty1, 0.84); }
+
+    // flanking diamond mandalas (unscaled — they sit beside the skull)
+    diamondMandala(s, -0.78, -0.04, 0.185);
+    diamondMandala(s, 0.78, -0.04, 0.185);
+    return s;
   }
 
   /* ---------- figure 3: sacred geometry (linework) ----------- */
@@ -470,11 +467,11 @@
 
     var rand = mulberry32(xmur3(seed)());
 
-    // text + skull are tonal (rasterised); mandala/geometry/owl are clean
-    // linework, dots sampled evenly along their stroke paths.
+    // text is tonal (rasterised, packs solid); mandala/skull/geometry/owl
+    // are clean linework — dots sampled evenly along their stroke paths.
     var clouds = [ finalize(rasterCloud(drawText, N, rand), N, rand),
                    finalize(strokeCloud(mandalaStrokes(), N, rand), N, rand),
-                   finalize(rasterCloud(drawSkull, N, rand), N, rand),
+                   finalize(strokeCloud(skullStrokes(), N, rand), N, rand),
                    finalize(strokeCloud(geometryStrokes(), N, rand), N, rand),
                    finalize(strokeCloud(owlStrokes(), N, rand), N, rand) ];
     var F = clouds.length;
