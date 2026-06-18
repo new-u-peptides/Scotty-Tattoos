@@ -14,7 +14,7 @@
   background:
     radial-gradient(ellipse at 30% 20%, var(--red-25), transparent 60%),
     linear-gradient(180deg, rgba(var(--ink-rgb), 0.85) 0%, rgba(var(--ink-rgb), 0.95) 100%),
-    url('../images/artist/portrait-bw-chair.webp') 30% center / cover no-repeat,
+    url('../../images/artist/portrait-bw-chair.webp') 30% center / cover no-repeat,
     var(--ink);
 }
 
