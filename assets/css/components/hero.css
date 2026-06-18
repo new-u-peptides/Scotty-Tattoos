@@ -1,7 +1,6 @@
-/* Hero — a centred, living dotwork sequence: the dots spell the name,
-   then bloom through the mandala, skull and sacred geometry. There is no
-   static headline; the animation is the opening title.
-   Mandala/disc styling lives in mandala.css. */
+/* Hero — brand copy on the left, a full-bleed field of living dotwork
+   mandalas on the right. The animation engine lives in
+   shared/js/mandala-morph.js; canvas placement is in mandala.css. */
 .hero {
   position: relative;
   min-height: 92vh;
@@ -35,33 +34,76 @@
   pointer-events: none;
 }
 
-/* Single centred column — the dotwork sequence is the stage. */
+/* Two-column: copy on the left, mandala field on the right. */
 .hero__inner {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
   align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
   padding: 6rem 0;
 }
-
-/* The opening-sequence stage: sigil with the actions tucked beneath. */
-.hero__stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(2rem, 4vw, 3rem);
-  width: 100%;
+.hero__content {
+  max-width: 620px;
+  position: relative;
+  z-index: 2;
 }
-
-.hero__actions {
+.hero__name {
+  font-size: clamp(3.2rem, 9vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 0.2em;
+}
+.hero__name span {
+  display: block;
+  color: var(--rust-soft);
+}
+.hero__tagline {
+  font-family: var(--font-script);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--red);
+  margin: 1.2rem 0 2rem;
+}
+.hero__meta {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   flex-wrap: wrap;
-  justify-content: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  margin: 3rem 0 0;
+  padding-top: 2rem;
+  border-top: var(--line);
+}
+.hero__meta strong { color: var(--bone); font-weight: 500; }
+
+.hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* The mandala field: a tall rectangle on the right that bleeds to the
+   viewport edge. The canvas fills it (placement in mandala.css). */
+.hero__art {
+  position: relative;
+  align-self: stretch;
+  min-height: min(78vh, 760px);
+  margin-right: calc(50% - 50vw);   /* bleed to the right edge */
 }
 
+/* Stack on narrow screens — the mandala leads, the copy follows. */
 @media (max-width: 920px) {
   .hero { min-height: auto; }
-  .hero__inner { padding: 4rem 0; }
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 3.5rem 0;
+  }
+  .hero__content { order: 2; max-width: none; }
+  .hero__art {
+    order: 1;
+    min-height: 56vh;
+    margin-right: calc(50% - 50vw);
+    margin-left: calc(50% - 50vw);  /* full-bleed both sides on mobile */
+  }
 }
