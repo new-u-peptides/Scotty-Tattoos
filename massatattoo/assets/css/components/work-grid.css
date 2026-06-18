@@ -39,12 +39,12 @@
   background-position: center;
   background-repeat: no-repeat;
 }
-.photo-chest-mandala    { background-image: url('../images/tattoos/chest-mandala.jpg'); }
-.photo-leg-sleeve       { background-image: url('../images/tattoos/leg-sleeve-mandala.jpg'); }
-.photo-back-mandala     { background-image: url('../images/tattoos/back-mandala.jpg'); }
-.photo-chrysanthemum    { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); }
-.photo-hip-leopard      { background-image: url('../images/tattoos/hip-leopard.jpg'); }
-.photo-back-in-progress { background-image: url('../images/tattoos/back-in-progress.jpg'); }
+.photo-chest-mandala    { background-image: url('../../images/tattoos/chest-mandala.jpg'); }
+.photo-leg-sleeve       { background-image: url('../../images/tattoos/leg-sleeve-mandala.jpg'); }
+.photo-back-mandala     { background-image: url('../../images/tattoos/back-mandala.jpg'); }
+.photo-chrysanthemum    { background-image: url('../../images/tattoos/leg-chrysanthemum.jpg'); }
+.photo-hip-leopard      { background-image: url('../../images/tattoos/hip-leopard.jpg'); }
+.photo-back-in-progress { background-image: url('../../images/tattoos/back-in-progress.jpg'); }
 
 .work-tile__meta {
   position: absolute;
