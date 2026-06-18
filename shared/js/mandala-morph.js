@@ -527,6 +527,7 @@
     var lockRaw = canvas.getAttribute('data-morph-fig');
     var lockFig = lockRaw == null ? -1 : (parseInt(lockRaw, 10) || 0);
     var SEG     = HOLD + BLEND;
+    var TEXT    = 0; // the brand logo (solid, then breaks down into dots)
     var MANDALA = 1; // the one figure that slowly spins
 
     var rand = mulberry32(xmur3(seed)());
@@ -622,6 +623,14 @@
         k = into <= HOLD ? 0 : smootherstep((into - HOLD) / BLEND);
       }
 
+      // The brand is a SOLID logo that breaks down into the dotwork: hold it
+      // solid, then dissolve fast as the particles peel away (and re-form it
+      // quickly as they arrive on the geometry→text loop). The dots beneath
+      // carry the actual disintegration; this overlay is the solid "ink".
+      var textAlpha = 0;
+      if (cur === TEXT) textAlpha = clamp(1 - k * 1.5, 0, 1);
+      else if (nxt === TEXT) textAlpha = clamp((k - 0.34) * 1.5, 0, 1);
+
       var src = clouds[cur], dst = clouds[nxt];
       var sp = src.pos, ssr = src.str, dp = dst.pos, dsr = dst.str;
       // only the mandala spins; text, skull and geometry stay upright
@@ -700,6 +709,18 @@
         drawDot(pos[r * 2], pos[r * 2 + 1], sR);
       }
       ctx.globalAlpha = 1;
+
+      // Solid brand logo on top — the dots disperse out from under it as it
+      // fades, so the name reads as solid ink that shatters into the tattoo.
+      if (textAlpha > 0.01) {
+        ctx.save();
+        ctx.globalAlpha = textAlpha;
+        ctx.translate(cx, cy);
+        ctx.scale(Rfit, Rfit);
+        drawText(ctx);
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
