@@ -192,6 +192,9 @@ em{font-style:italic;color:var(--gold-bright)}
 .cta-banner__form input:focus{border-color:var(--gold)}
 .cta-banner__form button{appearance:none;border:0;cursor:pointer;font:inherit;font-family:var(--mono);background:var(--gold);color:#1b1308;padding:0 26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;transition:background var(--t-fast)}
 .cta-banner__form button:hover{background:var(--gold-bright)}
+/* video embed */
+.video-embed{position:relative;aspect-ratio:16/9;background:var(--panel);border:1px solid var(--rule);border-top:3px solid var(--gold);box-shadow:var(--shadow-lg);overflow:hidden}
+.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 /* about */
 .manifesto{font-family:var(--serif);font-size:clamp(1.6rem,2.5vw,2.4rem);line-height:1.3;color:var(--bone);max-width:22ch;margin-bottom:0}
 .manifesto em{color:var(--gold-bright)}
@@ -1036,9 +1039,19 @@ COURSE_MAIN = f"""<main id="main">
       </div>
     </section>
 
+    <section class="section section--alt" id="watch">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">§ 01 — Watch</span><h2>See the work <em>in motion</em>.</h2>
+          <p>A look inside the studio and the kind of geometric and mandala work you'll learn to build.</p></div>
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/D6nA-fN6j7I" title="Massa Tattoo — inside the studio" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="foundation">
       <div class="container">
-        <div class="section-head"><span class="eyebrow">§ 01 — Foundation course</span><h2>Start from <em>zero</em>, the right way.</h2>
+        <div class="section-head"><span class="eyebrow">§ 02 — Foundation course</span><h2>Start from <em>zero</em>, the right way.</h2>
           <p>For complete beginners. By the end you can set up safely, run a machine, and complete a clean, healed tattoo under supervision.</p></div>
         {proc([
           ("01", "Health &amp; safety", "Bloodborne pathogens, sterilisation, cross-contamination, station setup, and studio law — first, and properly."),
@@ -1051,7 +1064,7 @@ COURSE_MAIN = f"""<main id="main">
 
     <section class="section section--alt" id="advanced">
       <div class="container">
-        <div class="section-head"><span class="eyebrow">§ 02 — Advanced course</span><h2>For working tattooers going <em>geometric</em>.</h2>
+        <div class="section-head"><span class="eyebrow">§ 03 — Advanced course</span><h2>For working tattooers going <em>geometric</em>.</h2>
           <p>Prerequisite: you already tattoo. This is about construction, symmetry, and scale — what mandala and sacred-geometry work live or die on.</p></div>
         {proc([
           ("01", "Geometry &amp; construction", "Grids, compass work, freehand symmetry — building a mandala from the center out."),
@@ -1064,7 +1077,7 @@ COURSE_MAIN = f"""<main id="main">
 
     <section class="section section--dark">
       <div class="container">
-        <div class="section-head"><span class="eyebrow">§ 03 — What you get</span><h2>Small groups, <em>real mentorship</em>.</h2></div>
+        <div class="section-head"><span class="eyebrow">§ 04 — What you get</span><h2>Small groups, <em>real mentorship</em>.</h2></div>
         <div class="stats">
           <div class="stat"><div class="stat__num"><em>6</em></div><div class="stat__label">Students max, per intake</div></div>
           <div class="stat"><div class="stat__num"><em>1:3</em></div><div class="stat__label">Mentor-to-student ratio</div></div>
@@ -1077,7 +1090,7 @@ COURSE_MAIN = f"""<main id="main">
 
     <section class="section">
       <div class="container">
-        <div class="section-head"><span class="eyebrow">§ 04 — Questions</span><h2>Before you <em>apply</em>.</h2></div>
+        <div class="section-head"><span class="eyebrow">§ 05 — Questions</span><h2>Before you <em>apply</em>.</h2></div>
         {faq(COURSE_FAQ)}
       </div>
     </section>
@@ -1085,7 +1098,7 @@ COURSE_MAIN = f"""<main id="main">
     <section class="section section--alt">
       <div class="container">
         <div class="cta-banner">
-          <div><span class="eyebrow">§ 05 — Community</span><h2>Or learn in the <em>Social Club</em>.</h2>
+          <div><span class="eyebrow">§ 06 — Community</span><h2>Or learn in the <em>Social Club</em>.</h2>
             <p>Prefer to learn online, or want a community between sittings? The Massa Tattoo Social Club is an online home for people serious about learning to tattoo.</p></div>
           <div><a class="btn btn--primary" href="social-club.html">See the club →</a></div>
         </div>
@@ -1095,7 +1108,7 @@ COURSE_MAIN = f"""<main id="main">
     <section class="section">
       <div class="container">
         <div class="cta-banner">
-          <div><span class="eyebrow">§ 06 — Apply</span><h2>Ready to <em>learn</em>?</h2>
+          <div><span class="eyebrow">§ 07 — Apply</span><h2>Ready to <em>learn</em>?</h2>
             <p>Tell us where you are now and which course fits. Seats are limited and go by application.</p></div>
           <div><a class="btn btn--primary" href="contact.html#book">Apply now →</a></div>
         </div>
