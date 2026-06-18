@@ -18,14 +18,20 @@
    blended still frame and skips the rAF loop). Pauses when offscreen
    via IntersectionObserver. Resizes with the parent.
 
+   Pairs with assets/css/components/mandala.css for placement, the bone
+   "flash-paper" disc, and the breathing/halo treatment of the hero sigil.
+
    Markup:
-     <canvas data-mandala data-mandala-theme="red"></canvas>
+     <canvas data-mandala data-mandala-theme="ink"></canvas>
 
    Data attributes (all optional):
-     data-mandala-theme    : red | gold | white | bark   (default: red)
+     data-mandala-theme    : ink | red | gold | white | bark   (default: red)
+                             ink = bold black linework + dotwork, blood-red
+                             accents — the homepage hero treatment.
      data-mandala-rings    : integer, # of concentric polygon rings    (default: 4)
      data-mandala-dots     : integer, # of dots in outer ring          (default: 96)
      data-mandala-speed    : float, rotation speed multiplier          (default: 1)
+     data-mandala-weight   : float, line/dot boldness multiplier        (default: 1)
      data-mandala-opacity  : float 0-1, overall canvas opacity         (default: 1)
      data-mandala-cycle    : ms per full phase cycle (dot -> line ->
                              shade -> dot)                              (default: 30000)
@@ -34,6 +40,9 @@
   'use strict';
 
   var PALETTES = {
+    // ink = bold black ink + dotwork with blood-red accents. Designed to be
+    // drawn over the bone "flash-paper" disc with mix-blend-mode: multiply.
+    ink:   { stroke: 'rgba(10, 10, 10, 0.94)',   accent: 'rgba(200, 16, 46, 0.96)',   dot: 'rgba(10, 10, 10, 0.92)',   center: 'rgba(200, 16, 46, 1)' },
     red:   { stroke: 'rgba(200, 16, 46, 0.78)',  accent: 'rgba(245, 242, 236, 0.92)', dot: 'rgba(245, 242, 236, 0.62)', center: 'rgba(200, 16, 46, 1)' },
     gold:  { stroke: 'rgba(184, 149, 106, 0.82)', accent: 'rgba(245, 239, 230, 0.92)', dot: 'rgba(245, 239, 230, 0.58)', center: 'rgba(184, 149, 106, 1)' },
     white: { stroke: 'rgba(245, 242, 236, 0.80)', accent: 'rgba(200, 16, 46, 0.92)',   dot: 'rgba(245, 242, 236, 0.52)', center: 'rgba(245, 242, 236, 1)' },
@@ -94,13 +103,15 @@
 
   // Tattoo-style radial stipple: concentric rings of dots with density
   // falling off toward the centre. Reads as airbrushed shading at a distance.
-  function shadingHalo(ctx, R, t, color) {
+  function shadingHalo(ctx, R, t, color, weight) {
     var bands = 7;
+    // Cap the stipple boldness so a heavy hero weight doesn't blob the centre.
+    var hw = Math.min(weight || 1, 1.7);
     for (var b = 0; b < bands; b++) {
       var k = b / (bands - 1);             // 0 (innermost) → 1 (outermost)
       var ringR = R * (0.18 + k * 0.78);
       var density = Math.floor(24 + k * k * 220); // quadratic falloff
-      var rad = 0.6 + (1 - k) * 1.4;       // outer dots smaller, inner larger
+      var rad = (0.6 + (1 - k) * 1.4) * hw; // outer dots smaller, inner larger
       var alpha = 0.35 + k * 0.45;
       var phaseShift = t * 0.00006 * (b % 2 === 0 ? 1 : -1);
       ctx.fillStyle = setAlpha(color, alpha);
@@ -192,6 +203,7 @@
     var rings = Math.max(1, Math.floor(num(canvas, 'rings', 4)));
     var dots  = Math.max(12, Math.floor(num(canvas, 'dots', 96)));
     var speed = num(canvas, 'speed', 1);
+    var weight = Math.max(0.2, num(canvas, 'weight', 1));
     var opacity = num(canvas, 'opacity', 1);
     var cycle = Math.max(2000, num(canvas, 'cycle', 30000));
 
@@ -225,26 +237,26 @@
 
       // ---- SHADING (drawn first so other layers sit on top) ----
       if (aShade > 0.01) {
-        shadingHalo(ctx, R, t, setAlpha(theme.dot, aShade * 0.9));
+        shadingHalo(ctx, R, t, setAlpha(theme.dot, aShade * 0.9), weight);
       }
 
       // ---- DOTWORK ring ----
       if (aDot > 0.01) {
         var dotPulse = Math.max(0.7, R * 0.005);
-        dottedRing(ctx, R, dots, rot * 0.5, dotPulse * (0.6 + aDot * 0.6),
+        dottedRing(ctx, R, dots, rot * 0.5, dotPulse * (0.6 + aDot * 0.6) * weight,
                    setAlpha(theme.dot, aDot));
       }
 
       // ---- LOTUS petal arches — Scotty's ornamental signature ----
       if (aLotus > 0.01) {
         var petals = Math.max(6, Math.floor(rings * 3));
-        ctx.lineWidth = Math.max(0.6, R * 0.0038) * (0.7 + aLotus);
+        ctx.lineWidth = Math.max(0.6, R * 0.0038) * (0.7 + aLotus) * weight;
         lotusArches(ctx, R, petals, rot * 0.4, setAlpha(theme.stroke, aLotus));
       }
 
       // ---- LINEWORK polygons + star + vesica ----
       if (aLine > 0.01) {
-        ctx.lineWidth = Math.max(0.6, R * 0.0035) * (0.6 + aLine);
+        ctx.lineWidth = Math.max(0.6, R * 0.0035) * (0.6 + aLine) * weight;
         ctx.strokeStyle = setAlpha(theme.stroke, aLine);
         for (var i = 0; i < rings; i++) {
           var ringR = R * (0.92 - i * (0.18 / Math.max(1, rings - 1)));
@@ -254,17 +266,17 @@
           polygon(ctx, ringR, sides, rot * dir * (1 + i * 0.3) + Math.PI / sides);
         }
 
-        ctx.lineWidth = Math.max(0.8, R * 0.005) * (0.6 + aLine);
+        ctx.lineWidth = Math.max(0.8, R * 0.005) * (0.6 + aLine) * weight;
         starOfDavid(ctx, R * 0.28, rot * 0.8, setAlpha(theme.accent, aLine));
 
-        ctx.lineWidth = Math.max(0.6, R * 0.004) * (0.6 + aLine);
+        ctx.lineWidth = Math.max(0.6, R * 0.004) * (0.6 + aLine) * weight;
         vesicaPiscis(ctx, R * 0.08, setAlpha(theme.accent, aLine));
       }
 
       // ---- Always-on centre dot (anchor across all phases) ----
       ctx.fillStyle = theme.center;
       ctx.beginPath();
-      ctx.arc(0, 0, Math.max(2, R * 0.012), 0, Math.PI * 2);
+      ctx.arc(0, 0, Math.max(2, R * 0.012) * Math.min(weight, 1.8), 0, Math.PI * 2);
       ctx.fill();
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
