@@ -186,15 +186,16 @@
       s.push(quadS(tx, ty, crx, cry, brx, bry, str));
     }
   }
-  // sharp pointed petals / teeth
+  // sharp pointed spikes — narrow base so the points read crisp/angular
   function ringSpikes(s, n, rIn, rOut, str) {
     for (var i = 0; i < n; i++) {
       var a = (i / n) * TAU - Math.PI / 2;
-      var aL = ((i - 0.5) / n) * TAU - Math.PI / 2, aR = ((i + 0.5) / n) * TAU - Math.PI / 2;
+      var aL = ((i - 0.34) / n) * TAU - Math.PI / 2, aR = ((i + 0.34) / n) * TAU - Math.PI / 2;
       var blx = Math.cos(aL) * rIn, bly = Math.sin(aL) * rIn;
       var brx = Math.cos(aR) * rIn, bry = Math.sin(aR) * rIn;
       var tx = Math.cos(a) * rOut, ty = Math.sin(a) * rOut;
       s.push(segS(blx, bly, tx, ty, str)); s.push(segS(tx, ty, brx, bry, str));
+      s.push(segS(blx, bly, brx, bry, str));   // close the base for a crisp triangle
     }
   }
   // diamonds / rhombi
@@ -224,6 +225,66 @@
       s.push(segS(cx - sz * 0.7, cy + sz * 0.7, cx + sz * 0.7, cy - sz * 0.7, str));
     }
   }
+  // a ring of sharp triangles, pointing out (or in)
+  function ringTriangles(s, n, rIn, rOut, out, str) {
+    var half = Math.PI / n;
+    for (var i = 0; i < n; i++) {
+      var a = ((i + 0.5) / n) * TAU - Math.PI / 2;
+      var tip = out ? rOut : rIn, base = out ? rIn : rOut;
+      var tx = Math.cos(a) * tip, ty = Math.sin(a) * tip;
+      var blx = Math.cos(a - half * 0.92) * base, bly = Math.sin(a - half * 0.92) * base;
+      var brx = Math.cos(a + half * 0.92) * base, bry = Math.sin(a + half * 0.92) * base;
+      s.push(segS(blx, bly, tx, ty, str)); s.push(segS(tx, ty, brx, bry, str));
+      s.push(segS(blx, bly, brx, bry, str));
+    }
+  }
+  // a ring of small squares (rot in radians, relative to the radial axis)
+  function ringSquares(s, n, r, sz, rot, str) {
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * TAU, cx = Math.cos(a) * r, cy = Math.sin(a) * r;
+      var base = a + rot, p = [], k;
+      for (k = 0; k < 4; k++) { var ang = base + Math.PI / 4 + k * (Math.PI / 2); p.push([cx + Math.cos(ang) * sz, cy + Math.sin(ang) * sz]); }
+      for (k = 0; k < 4; k++) s.push(segS(p[k][0], p[k][1], p[(k + 1) % 4][0], p[(k + 1) % 4][1], str));
+    }
+  }
+  // a zig-zag chevron band between rIn and rOut
+  function ringChevrons(s, n, rIn, rOut, str) {
+    var prev = null;
+    for (var i = 0; i <= n; i++) {
+      var a = (i / n) * TAU - Math.PI / 2;
+      var rr = (i % 2 === 0) ? rIn : rOut;
+      var pt = [Math.cos(a) * rr, Math.sin(a) * rr];
+      if (prev) s.push(segS(prev[0], prev[1], pt[0], pt[1], str));
+      prev = pt;
+    }
+  }
+  // a sharp star polygon {points} drawn as an outline through alternating radii
+  function starPolyS(s, cx, cy, points, rOut, rIn, str) {
+    var m = points * 2, prev = null, k;
+    for (k = 0; k <= m; k++) {
+      var a = (k / m) * TAU - Math.PI / 2, rr = (k % 2 === 0) ? rOut : rIn;
+      var pt = [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
+      if (prev) s.push(segS(prev[0], prev[1], pt[0], pt[1], str));
+      prev = pt;
+    }
+  }
+  // a band densely packed with diamonds (two interleaved rows = a lattice)
+  function diamondLattice(s, n, rIn, rOut, str) {
+    var mid = (rIn + rOut) / 2;
+    ringDiamonds(s, n, rIn, mid + (rOut - rIn) * 0.02, str);
+    ringDiamonds(s, n, mid - (rOut - rIn) * 0.02, rOut, str);
+    // half-step offset row of small diamonds straddling the divide
+    var half = Math.PI / n;
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * TAU - Math.PI / 2;
+      var ix = Math.cos(a) * (mid - (rOut - rIn) * 0.18), iy = Math.sin(a) * (mid - (rOut - rIn) * 0.18);
+      var ox = Math.cos(a) * (mid + (rOut - rIn) * 0.18), oy = Math.sin(a) * (mid + (rOut - rIn) * 0.18);
+      var lx = Math.cos(a - half * 0.4) * mid, ly = Math.sin(a - half * 0.4) * mid;
+      var rx = Math.cos(a + half * 0.4) * mid, ry = Math.sin(a + half * 0.4) * mid;
+      s.push(segS(ix, iy, lx, ly, str)); s.push(segS(lx, ly, ox, oy, str));
+      s.push(segS(ox, oy, rx, ry, str)); s.push(segS(rx, ry, ix, iy, str));
+    }
+  }
   function triangleS(s, R, up, str) {
     var rot = up ? -Math.PI / 2 : Math.PI / 2, v = [], k;
     for (k = 0; k < 3; k++) { var a = rot + k * (TAU / 3); v.push([Math.cos(a) * R, Math.sin(a) * R]); }
@@ -232,11 +293,14 @@
     s.push(segS(v[2][0], v[2][1], v[0][0], v[0][1], str));
   }
   function centerMotif(s, R, rand) {
-    var STR = 0.9, t = rand();
+    var STR = 0.9, t = rand(), Rm = R * 0.92;
     if (R < 0.05) { s.push(circS(0, 0, Math.max(0.02, R), STR)); return; }
-    if (t < 0.34) { triangleS(s, R * 0.92, true, STR); triangleS(s, R * 0.92, false, STR); }      // hexagram
-    else if (t < 0.67) { polyS(s, 0, 0, R * 0.92, 4, 0, STR); polyS(s, 0, 0, R * 0.92, 4, Math.PI / 4, STR); } // 8-point star
-    else { ringPetals(s, 6 + (rand() * 4 | 0), R * 0.28, R * 0.92, STR); }                         // flower
+    if (t < 0.24) { triangleS(s, Rm, true, STR); triangleS(s, Rm, false, STR); }                  // hexagram
+    else if (t < 0.44) { polyS(s, 0, 0, Rm, 4, 0, STR); polyS(s, 0, 0, Rm, 4, Math.PI / 4, STR); } // 8-point star
+    else if (t < 0.60) { triangleS(s, Rm, true, STR); triangleS(s, Rm * 0.72, false, STR); triangleS(s, Rm * 0.46, true, STR); } // nested tris (yantra)
+    else if (t < 0.76) { starPolyS(s, 0, 0, 5, Rm, Rm * 0.42, STR); }                              // pentagram
+    else if (t < 0.90) { ringDiamonds(s, 4 + (rand() * 3 | 0), R * 0.18, Rm, STR); }               // diamond burst
+    else { ringPetals(s, 6 + (rand() * 4 | 0), R * 0.28, Rm, STR); }                               // flower
     s.push(circS(0, 0, R * 0.4, 0.82));
     s.push(circS(0, 0, R * 0.14, 0.95));
   }
@@ -254,13 +318,19 @@
       var rIn = r - (0.09 + rand() * 0.07);
       if (rIn < 0.13) rIn = 0.13;
       var n = pick([8, 10, 12, 12, 16, 18, 24]);
-      var t = rand();
-      if (t < 0.22) ringPetals(s, n, rIn, r, STR);
-      else if (t < 0.42) ringSpikes(s, n, rIn, r, STR);
-      else if (t < 0.58) ringDiamonds(s, n, rIn, r, STR);
-      else if (t < 0.74) { var rot = rand() * TAU; polyS(s, 0, 0, r, n, rot, STR); polyS(s, 0, 0, rIn, n, rot + Math.PI / n, STR); }
-      else if (t < 0.88) ringCircles(s, n, (rIn + r) / 2, (r - rIn) * 0.45, STR);
-      else ringStars(s, n, rIn, r, STR);
+      var mid = (rIn + r) / 2, t = rand();
+      // weighted toward angular shapes (diamonds, triangles, spikes, stars);
+      // rounded petals are an occasional softer accent.
+      if (t < 0.20) ringDiamonds(s, n, rIn, r, STR);
+      else if (t < 0.32) diamondLattice(s, n, rIn, r, STR);          // dense diamonds
+      else if (t < 0.45) ringTriangles(s, n, rIn, r, rand() < 0.6, STR);
+      else if (t < 0.57) ringSpikes(s, n, rIn, r, STR);
+      else if (t < 0.67) { var rot = rand() * TAU; polyS(s, 0, 0, r, n, rot, STR); polyS(s, 0, 0, rIn, n, rot + Math.PI / n, STR); }
+      else if (t < 0.76) ringSquares(s, n, mid, (r - rIn) * 0.5, rand() * Math.PI, STR);
+      else if (t < 0.84) ringChevrons(s, n, rIn, r, STR);
+      else if (t < 0.90) starPolyS(s, 0, 0, n, r, rIn, STR);         // big sharp star ring
+      else if (t < 0.95) ringCircles(s, n, mid, (r - rIn) * 0.45, STR);
+      else ringPetals(s, n, rIn, r, STR);
       s.push(circS(0, 0, rIn, 0.72));                 // separator ring
       r = rIn - rand() * 0.015;
       if (r < 0.15) break;
@@ -281,7 +351,7 @@
     var INK     = attr(canvas, 'ink', '#0a0a0a');
     var NV      = Math.max(2, Math.floor(num(canvas, 'variants', 5)));
     var weight  = Math.max(0.55, num(canvas, 'weight', 1.12));
-    var flow    = Math.max(0, num(canvas, 'flow', 0.30));
+    var flow    = Math.max(0, num(canvas, 'flow', 0.40));
     var breathA = Math.max(0, num(canvas, 'breathe', 0.010));
     var fitK    = clamp(num(canvas, 'fit', 0.46), 0.34, 0.50);
     var HOLD    = Math.max(0, num(canvas, 'hold', 3200));
@@ -377,7 +447,8 @@
         if (morphPulse > 0.0001 && flow > 0) {
           var rr = Math.sqrt(nx * nx + ny * ny) + 0.0001;
           var aa = Math.atan2(ny, nx);
-          aa += flowSign * flow * morphPulse * (0.12 + rr * 0.55);
+          aa += flowSign * flow * morphPulse * (0.14 + rr * 0.62);   // swirl
+          rr *= 1 + morphPulse * (0.06 + Math.sin(phaseB[p] + rr * 6.0) * 0.03); // breathe out + reform
           nx = Math.cos(aa) * rr;
           ny = Math.sin(aa) * rr;
         }
