@@ -2,12 +2,13 @@
    mandala-morph.js — a refined living dotwork engine.
    -------------------------------------------------------------
    Thousands of tiny tattoo-stipple dots that continuously morph
-   between four figures in Scotty's dotwork language:
+   between five figures in Scotty's dotwork language:
 
-       text  →  mandala  →  skull  →  sacred geometry  →  (loop)
+       text → mandala → skull → sacred geometry → owl → (loop)
 
    The dots first spell the brand ("SCOTTY MASSA / TATTOOS"), then bloom
-   into a dotwork mandala, a skull, and a flower-of-life. Each figure is a
+   into a dotwork mandala, a skull, a flower-of-life, and a geometric owl.
+   Each figure is a
    cloud of ~N points; clouds are sorted by angle so dot #i maps across
    figures — the transition swirls and reflows rather than teleporting.
    Every dot eases (smootherstep) between figures with a controlled curl,
@@ -48,8 +49,8 @@
      data-morph-skin    : CSS colour; fill an in-canvas skin disc so the
                           piece reads without the paired CSS (default: none)
      data-morph-fig     : lock to one figure, no morph
-                          (0 = text, 1 = mandala, 2 = skull, 3 = geometry)
-                                                             (default: cycle)
+                          (0 = text, 1 = mandala, 2 = skull,
+                           3 = geometry, 4 = owl)            (default: cycle)
    ============================================================= */
 (function () {
   'use strict';
@@ -412,6 +413,72 @@
     return a;
   }
 
+  /* ---------- figure 4: geometric owl ------------------------ */
+
+  // The geometric-linework primitive: stroke a regular polygon in unit
+  // space (after Gemini's drawPolygon). Build figures from clean stroked
+  // shapes and let rasterCloud render the strokes as dotwork linework —
+  // the methodology behind every geometric piece here.
+  function poly(c, cx, cy, r, sides, rot) {
+    c.beginPath();
+    for (var i = 0; i <= sides; i++) {
+      var an = rot + i * TAU / sides;
+      var x = cx + r * Math.cos(an), y = cy + r * Math.sin(an);
+      if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
+    }
+    c.stroke();
+  }
+  function seg(c, x0, y0, x1, y1) {
+    c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke();
+  }
+
+  // A fierce geometric owl — sacred-geometry crown, angular brow, focused
+  // eyes, layered beak, hexagram chest. Pure stencil linework; the engine
+  // stipples it. (Adapted from Gemini's geometric_owl, mapped to unit space.)
+  function drawOwl(c) {
+    c.strokeStyle = '#0a0a0a';
+    c.lineJoin = 'round';
+    c.lineCap = 'round';
+    c.lineWidth = 0.013;
+
+    // Crown — sacred geometry over the brow
+    poly(c, 0, -0.593, 0.256, 6, Math.PI / 2);   // outer hexagon
+    poly(c, 0, -0.593, 0.160, 6, Math.PI / 2);   // inner hexagon
+    poly(c, 0, -0.593, 0.256, 3, -Math.PI / 2);  // upward triangle
+    poly(c, 0, -0.593, 0.256, 3, Math.PI / 2);   // downward triangle
+
+    // Brow / horns — angular and aggressive
+    seg(c, 0, -0.304, -0.417, -0.304); seg(c, -0.417, -0.304, -0.545, -0.112);
+    seg(c, 0, -0.304, 0.417, -0.304);  seg(c, 0.417, -0.304, 0.545, -0.112);
+
+    // Eyes — fierce, focused (outlined iris + solid pupil)
+    c.beginPath(); c.ellipse(-0.256, -0.112, 0.160, 0.096, 0, 0, TAU); c.stroke();
+    c.beginPath(); c.ellipse(0.256, -0.112, 0.160, 0.096, 0, 0, TAU); c.stroke();
+    c.fillStyle = '#0a0a0a';
+    c.beginPath(); c.arc(-0.256, -0.112, 0.052, 0, TAU); c.fill();
+    c.beginPath(); c.arc(0.256, -0.112, 0.052, 0, TAU); c.fill();
+    c.fillStyle = '#f2f2f2';                     // catchlight keeps the eye alive
+    c.beginPath(); c.arc(-0.238, -0.130, 0.016, 0, TAU); c.fill();
+    c.beginPath(); c.arc(0.274, -0.130, 0.016, 0, TAU); c.fill();
+
+    // Beak — sharp layered triangle
+    c.beginPath();
+    c.moveTo(-0.096, -0.048); c.lineTo(0.096, -0.048); c.lineTo(0, 0.208);
+    c.closePath(); c.stroke();
+    seg(c, 0, -0.048, 0, 0.150);                 // centre ridge
+
+    // Wing/feather sweeps framing the body
+    seg(c, -0.40, -0.112, -0.30, 0.34);
+    seg(c, 0.40, -0.112, 0.30, 0.34);
+
+    // Chest — hexagram emblem + framing chevron
+    poly(c, 0, 0.465, 0.192, 6, Math.PI / 2);
+    poly(c, 0, 0.465, 0.096, 6, Math.PI / 2);
+    poly(c, 0, 0.465, 0.192, 3, -Math.PI / 2);
+    poly(c, 0, 0.465, 0.192, 3, Math.PI / 2);
+    seg(c, -0.320, 0.208, 0, 0.849); seg(c, 0, 0.849, 0.320, 0.208);
+  }
+
   /* ---------- figure 0: the brand, in dots ------------------- */
 
   // "SCOTTY MASSA / TATTOOS" — the dots spell the name, then bloom into
@@ -464,12 +531,14 @@
 
     var rand = mulberry32(xmur3(seed)());
 
-    // Figures: text → mandala → skull → geometry. All procedural — crisp
-    // geometry with clean negative space, drawn greyscale then stippled.
+    // Figures: text → mandala → skull → geometry → owl. All procedural —
+    // crisp stencil linework with clean negative space, drawn greyscale
+    // then stippled into dotwork.
     var clouds = [ finalize(rasterCloud(drawText, N, rand), N, rand),
                    finalize(rasterCloud(drawMandala, N, rand), N, rand),
                    finalize(rasterCloud(drawSkull, N, rand), N, rand),
-                   finalize(geometryArr(), N, rand) ];
+                   finalize(geometryArr(), N, rand),
+                   finalize(rasterCloud(drawOwl, N, rand), N, rand) ];
     var F = clouds.length;
 
     // The text figure wants the brand font; if it loads late, rebuild it.
