@@ -69,31 +69,31 @@
 }
 
 /* Tattoo photos */
-.ph-1 { background-image: url('../images/tattoos/chest-mandala.jpg'); }
-.ph-2 { background-image: url('../images/tattoos/leg-sleeve-mandala.jpg'); }
-.ph-3 { background-image: url('../images/tattoos/back-mandala.jpg'); }
-.ph-4 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); }
-.ph-5 { background-image: url('../images/tattoos/hip-leopard.jpg'); }
-.ph-6 { background-image: url('../images/tattoos/back-in-progress.jpg'); }
+.ph-1 { background-image: url('../../images/tattoos/chest-mandala.jpg'); }
+.ph-2 { background-image: url('../../images/tattoos/leg-sleeve-mandala.jpg'); }
+.ph-3 { background-image: url('../../images/tattoos/back-mandala.jpg'); }
+.ph-4 { background-image: url('../../images/tattoos/leg-chrysanthemum.jpg'); }
+.ph-5 { background-image: url('../../images/tattoos/hip-leopard.jpg'); }
+.ph-6 { background-image: url('../../images/tattoos/back-in-progress.jpg'); }
 /* Additional distinct shots + alt focal-point repeats further down the grid */
-.ph-7 { background-image: url('../images/tattoos/wrist-mandala.jpg'); }
-.ph-8 { background-image: url('../images/tattoos/leg-chrysanthemum.jpg'); background-position: bottom center; }
-.ph-9 { background-image: url('../images/tattoos/back-mandala.jpg'); background-position: bottom center; }
+.ph-7 { background-image: url('../../images/tattoos/wrist-mandala.jpg'); }
+.ph-8 { background-image: url('../../images/tattoos/leg-chrysanthemum.jpg'); background-position: bottom center; }
+.ph-9 { background-image: url('../../images/tattoos/back-mandala.jpg'); background-position: bottom center; }
 
 /* Portraits */
-.ph-portrait-tattooing  { background-image: url('../images/artist/scotty-tattooing.jpg'); }
-.ph-portrait-vondutch   { background-image: url('../images/artist/scotty-vondutch.jpg'); background-position: top center; }
-.ph-portrait-bw-stool   { background-image: url('../images/artist/portrait-bw-stool.webp'); }
-.ph-portrait-bw-chair   { background-image: url('../images/artist/portrait-bw-chair.webp'); }
+.ph-portrait-tattooing  { background-image: url('../../images/artist/scotty-tattooing.jpg'); }
+.ph-portrait-vondutch   { background-image: url('../../images/artist/scotty-vondutch.jpg'); background-position: top center; }
+.ph-portrait-bw-stool   { background-image: url('../../images/artist/portrait-bw-stool.webp'); }
+.ph-portrait-bw-chair   { background-image: url('../../images/artist/portrait-bw-chair.webp'); }
 
 /* Studio interiors */
-.ph-studio-entrance     { background-image: url('../images/studio/entrance-lounge.webp'); }
-.ph-studio-reception    { background-image: url('../images/studio/reception.webp'); }
-.ph-studio-flash        { background-image: url('../images/studio/flash-wall.webp'); }
-.ph-studio-flash-color  { background-image: url('../images/studio/flash-wall-color.jpg'); }
-.ph-studio-consultation { background-image: url('../images/studio/consultation-room.webp'); }
-.ph-studio-treatment    { background-image: url('../images/studio/treatment-room.jpg'); }
-.ph-studio-piano        { background-image: url('../images/studio/piano-flash.jpg'); }
+.ph-studio-entrance     { background-image: url('../../images/studio/entrance-lounge.webp'); }
+.ph-studio-reception    { background-image: url('../../images/studio/reception.webp'); }
+.ph-studio-flash        { background-image: url('../../images/studio/flash-wall.webp'); }
+.ph-studio-flash-color  { background-image: url('../../images/studio/flash-wall-color.jpg'); }
+.ph-studio-consultation { background-image: url('../../images/studio/consultation-room.webp'); }
+.ph-studio-treatment    { background-image: url('../../images/studio/treatment-room.jpg'); }
+.ph-studio-piano        { background-image: url('../../images/studio/piano-flash.jpg'); }
 
 /* Hip/leopard tile is a tall image; in wide layouts shift focus up so the
    leopard face stays in frame instead of cropping to a hip patch. */
