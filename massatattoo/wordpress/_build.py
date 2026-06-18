@@ -724,10 +724,11 @@ FAQ_MANDALA = [
     ("What does a custom mandala cost?", "Most custom pieces run <strong>€3,000–€7,000</strong>, depending on the hours in the chair, the number of sessions, the design work, and delivery. We quote your piece after a short consult; a deposit secures the date and comes off the final price."),
     ("How long does a mandala take to heal?", "The surface settles in about two weeks; the skin fully recovers over six to eight. You leave with an aftercare sheet and a number to text — we check in after two weeks."),
 ]
-FAQ_HOME = faq(FAQ_MANDALA)
-FAQ_FULL = faq(FAQ_MANDALA + [
+MANDALA_FAQ = FAQ_MANDALA + [
     ("How big should a mandala be?", "Geometry needs room to breathe — very small mandalas lose detail as they heal. Most pieces sit palm-sized or larger; sleeves and backs run multiple sessions. We'll advise honestly at the consult."),
-])
+]
+FAQ_HOME = faq(FAQ_MANDALA)
+FAQ_FULL = faq(MANDALA_FAQ)
 
 VISIT = """<div class="contact-grid">
           <div class="info-card">
@@ -792,7 +793,7 @@ HOME_MAIN = f"""<main id="main">
     <section class="section section--alt">
       <div class="container">
         <div class="section-head"><span class="eyebrow">§ 02 — What we specialise in</span><h2>A studio built around <em>mandala &amp; geometry</em>.</h2>
-          <p>A mandala is a circle that stands for wholeness — a center, and everything ordered around it. We start every piece from that idea, then build the geometry out by hand.</p></div>
+          <p>A mandala is a circle that stands for wholeness — a center, and everything ordered around it. We start every piece from that idea, then build the geometry out by hand. Explore our <a href="mandala-tattoos.html">mandala tattoos</a>.</p></div>
         {STYLE_STRIP}
       </div>
     </section>
@@ -1008,6 +1009,12 @@ MANDALA_MAIN = f"""<main id="main">
     </main>"""
 
 # ------------------------------------------------------------------ courses
+COURSE_FAQ = [
+    ("Do I need experience?", "Not for the foundation course — it starts from zero. The advanced course is for people who already tattoo and want to push geometric and mandala work."),
+    ("What does it cost?", "Pricing is set per intake and a deposit secures your seat. <em>Replace with your live course fees and dates.</em>"),
+    ("Do I get a certificate?", "Yes — a certificate of completion. Note that tattoo licensing rules vary by country, so check your local requirements too."),
+    ("What do I need to bring?", "Kit and practice skin are provided during the course. Bring a sketchbook, something to take notes on, and any reference work you'd like to build toward."),
+]
 COURSE_MAIN = f"""<main id="main">
     <section class="hero">
       <div class="container hero__inner">
@@ -1071,12 +1078,7 @@ COURSE_MAIN = f"""<main id="main">
     <section class="section">
       <div class="container">
         <div class="section-head"><span class="eyebrow">§ 04 — Questions</span><h2>Before you <em>apply</em>.</h2></div>
-        {faq([
-          ("Do I need experience?", "Not for the foundation course — it starts from zero. The advanced course is for people who already tattoo and want to push geometric and mandala work."),
-          ("What does it cost?", "Pricing is set per intake and a deposit secures your seat. <em>Replace with your live course fees and dates.</em>"),
-          ("Do I get a certificate?", "Yes — a certificate of completion. Note that tattoo licensing rules vary by country, so check your local requirements too."),
-          ("What do I need to bring?", "Kit and practice skin are provided during the course. Bring a sketchbook, something to take notes on, and any reference work you'd like to build toward."),
-        ])}
+        {faq(COURSE_FAQ)}
       </div>
     </section>
 
@@ -1102,6 +1104,12 @@ COURSE_MAIN = f"""<main id="main">
     </main>"""
 
 # ------------------------------------------------------------------ social club
+SOCIAL_FAQ = [
+    ("Is it for complete beginners?", "Yes — it's built for people starting out as much as those already tattooing. You won't be the only beginner in the room."),
+    ("What do I get for the membership?", "Full access to the community: share work, ask questions, get feedback, and learn alongside artists at every level. Membership is $497."),
+    ("Is this the same as the in-person course?", "No — the course is hands-on training at the studio; the club is the online community around it. They work well together."),
+    ("How do I join?", "Membership runs through Skool. Hit join and you're in — see you inside."),
+]
 SOCIAL_CLUB_MAIN = f"""<main id="main">
     <section class="hero">
       <canvas class="mandala mandala--hero" data-mandala data-mandala-rings="6" data-mandala-dots="150" data-mandala-speed="0.5" data-mandala-opacity="0.6" aria-hidden="true"></canvas>
@@ -1168,12 +1176,7 @@ SOCIAL_CLUB_MAIN = f"""<main id="main">
     <section class="section section--dark">
       <div class="container">
         <div class="section-head"><span class="eyebrow">§ 05 — Questions</span><h2>Before you <em>join</em>.</h2></div>
-        {faq([
-          ("Is it for complete beginners?", "Yes — it's built for people starting out as much as those already tattooing. You won't be the only beginner in the room."),
-          ("What do I get for the membership?", "Full access to the community: share work, ask questions, get feedback, and learn alongside artists at every level. Membership is $497."),
-          ("Is this the same as the in-person course?", "No — the course is hands-on training at the studio; the club is the online community around it. They work well together."),
-          ("How do I join?", "Membership runs through Skool. Hit join and you're in — see you inside."),
-        ])}
+        {faq(SOCIAL_FAQ)}
       </div>
     </section>
 
@@ -1187,6 +1190,82 @@ SOCIAL_CLUB_MAIN = f"""<main id="main">
       </div>
     </section>
     </main>"""
+
+# ---------------------------------------------------------------- JSON-LD schema
+SITE = "https://massatattoo.com"
+INSTAGRAM = "https://www.instagram.com/massatattoo"
+
+ORG_NODE = {
+    "@type": "Organization", "@id": SITE + "/#org", "name": "Massa Tattoo",
+    "url": SITE + "/", "sameAs": [INSTAGRAM, SKOOL],
+}
+WEB_NODE = {
+    "@type": "WebSite", "@id": SITE + "/#website", "url": SITE + "/",
+    "name": "Massa Tattoo", "publisher": {"@id": SITE + "/#org"}, "inLanguage": "en",
+}
+
+def plain(t):
+    t = re.sub(r"<[^>]+>", "", t)
+    return (t.replace("&amp;", "&").replace("&euro;", "€").replace("&middot;", "·")
+             .replace("&mdash;", "—").replace("&deg;", "°").strip())
+
+def faq_node(canon, items):
+    return {"@type": "FAQPage", "@id": canon + "#faq", "mainEntity": [
+        {"@type": "Question", "name": plain(q),
+         "acceptedAnswer": {"@type": "Answer", "text": plain(a)}} for q, a in items]}
+
+def schema_for(slug, title, desc, canon):
+    page = {"@type": "WebPage", "@id": canon + "#webpage", "url": canon,
+            "name": plain(title), "description": plain(desc),
+            "isPartOf": {"@id": SITE + "/#website"}, "inLanguage": "en"}
+    crumbs = [("Home", SITE + "/")]
+    label = {"portfolio": "Portfolio", "mandala": "Mandala Tattoos",
+             "courses": "Tattoo Courses", "community": "Social Club", "about": "About",
+             "blog": "Blog", "testimonials": "Testimonials", "contact": "Contact"}.get(slug)
+    if label:
+        crumbs.append((label, canon))
+    breadcrumb = {"@type": "BreadcrumbList", "@id": canon + "#breadcrumb",
+                  "itemListElement": [
+                      {"@type": "ListItem", "position": i + 1, "name": n, "item": u}
+                      for i, (n, u) in enumerate(crumbs)]}
+    graph = [ORG_NODE, WEB_NODE, page, breadcrumb]
+
+    if slug == "home":
+        graph.append({
+            "@type": ["TattooParlor", "LocalBusiness"], "@id": SITE + "/#studio",
+            "name": "Massa Tattoo", "url": SITE + "/", "priceRange": "€€€",
+            "telephone": "+1-555-555-0123",
+            "address": {"@type": "PostalAddress", "streetAddress": "123 Atelier Lane, Suite 4",
+                        "addressLocality": "Your City", "postalCode": "00000"},
+            "sameAs": [INSTAGRAM, SKOOL], "parentOrganization": {"@id": SITE + "/#org"},
+            "makesOffer": {"@type": "Offer", "itemOffered": {"@type": "Service",
+                           "name": "Custom mandala & sacred-geometry tattoos"}},
+        })
+        graph.append(faq_node(canon, FAQ_MANDALA))
+    elif slug == "mandala":
+        graph.append({"@type": "Service", "@id": canon + "#service",
+                      "serviceType": "Mandala tattooing", "name": "Custom mandala tattoos",
+                      "provider": {"@id": SITE + "/#org"}, "url": canon})
+        graph.append(faq_node(canon, MANDALA_FAQ))
+    elif slug == "courses":
+        graph.append({"@type": "Course", "@id": canon + "#course",
+                      "name": "Tattoo Courses — Foundation & Advanced",
+                      "description": plain(desc), "provider": {"@id": SITE + "/#org"},
+                      "url": canon,
+                      "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Onsite"}})
+        graph.append(faq_node(canon, COURSE_FAQ))
+    elif slug == "community":
+        graph.append({"@type": "Course", "@id": canon + "#course",
+                      "name": "Massa Tattoo Social Club", "description": plain(desc),
+                      "provider": {"@id": SITE + "/#org"}, "url": SKOOL,
+                      "offers": {"@type": "Offer", "price": "497", "priceCurrency": "USD",
+                                 "url": SKOOL, "category": "Membership"},
+                      "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online"}})
+        graph.append(faq_node(canon, SOCIAL_FAQ))
+
+    return ('<script type="application/ld+json">'
+            + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
+            + "</script>")
 
 PAGE_SPECS = [
     dict(file="index.html", slug="home", photos=True, main=HOME_MAIN,
@@ -1229,6 +1308,7 @@ for spec in PAGE_SPECS:
         orbit = ORBIT; main = spec["main"]
     uses_photos = spec["photos"]
     css = CSS.replace("/*PHOTOS*/", PHOTO_CSS if uses_photos else "")
+    schema = schema_for(slug, title, desc, canon)
 
     doc = f"""<!doctype html>
 <html lang="en">
@@ -1253,6 +1333,7 @@ for spec in PAGE_SPECS:
     <style>
 {css}
     </style>
+    {schema}
   </head>
   <body data-nav-current="{slug}">
     {orbit}
