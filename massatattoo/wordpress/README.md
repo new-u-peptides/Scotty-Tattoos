@@ -9,6 +9,7 @@ theme. Same sections and copy as the current site — new look.
 | `portfolio.html`       | Portfolio — with working style filters                |
 | `mandala-tattoos.html` | Mandala pillar page (meaning → styles → placement → book) |
 | `tattoo-course.html`   | Tattoo courses (Foundation + Advanced)                |
+| `social-club.html`     | Massa Tattoo Social Club — Skool community landing    |
 | `about.html`           | About                                                 |
 | `blog.html`            | Blog                                                  |
 | `testimonials.html`    | Testimonials                                          |
@@ -17,6 +18,12 @@ theme. Same sections and copy as the current site — new look.
 **Homepage order** follows how someone vetting a new tattoo artist actually
 decides: see the work → what we specialise in → how we work → client proof →
 how it works → the studio → FAQ → visit → book.
+
+**Social Club (Skool):** the new `social-club.html` landing page and the promo
+bands on Home/Courses link out to `https://www.skool.com/massa-tattoo-social-club-7386`
+(membership shown as **$497 USD**, as Skool bills it). The `?ref=…` tracking
+param from the original link was dropped — re-add it if you want that referral
+attribution kept.
 
 **Two content caveats to replace before publishing:**
 - **Tattoo courses** — the live `/tattoo-course/` and `/advanced-tattoo-courses/`
