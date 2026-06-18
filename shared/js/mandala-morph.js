@@ -1,5 +1,5 @@
 /* =============================================================
-   mandala-morph.js — a living dotwork engine.
+   mandala-morph.js — a refined living dotwork engine.
    -------------------------------------------------------------
    Thousands of tiny tattoo-stipple dots that continuously morph
    between four figures in Scotty's dotwork language:
@@ -7,41 +7,44 @@
        text  →  mandala  →  skull  →  sacred geometry  →  (loop)
 
    The dots first spell the brand ("SCOTTY MASSA / TATTOOS"), then bloom
-   into the real upper-back mandala, a skull, and a flower-of-life. Each
-   figure is a cloud of ~N points; clouds are sorted by angle so dot #i
-   maps across figures — the transition swirls and reflows rather than
-   teleporting. Every dot eases (smoothstep) between figures with a
-   little shimmer and breath, and carries a "strength" (source darkness)
-   that drives its size, so shadows read dense and bold, highlights fine.
-   Only the mandala slowly spins; text, skull and geometry stay upright.
+   into a dotwork mandala, a skull, and a flower-of-life. Each figure is a
+   cloud of ~N points; clouds are sorted by angle so dot #i maps across
+   figures — the transition swirls and reflows rather than teleporting.
+   Every dot eases (smootherstep) between figures with a controlled curl,
+   a little shimmer and breath, and carries a "strength" (source darkness)
+   that drives its size and opacity — so shadows read dense and bold,
+   highlights fine. Only the mandala slowly spins; text, skull and
+   geometry stay upright.
 
-   Deterministic: a seeded PRNG (data-morph-seed) places every dot, so
-   the artwork renders identically on every load.
+   Deterministic: a seeded PRNG (data-morph-seed) places every dot and
+   fixes per-dot styling, so the artwork renders identically on every load.
 
    Zero dependencies. Honours prefers-reduced-motion (draws a single
-   static frame, no loop). Pauses offscreen via IntersectionObserver.
-   Resizes with its parent — clouds live in a normalised [-1, 1] space,
-   so only the on-screen scale changes.
+   static frame, no loop). Pauses offscreen via IntersectionObserver and
+   resumes without a time jump. Resizes with its parent (ResizeObserver) —
+   clouds live in a normalised [-1, 1] space, so only the scale changes.
 
-   The real mandala figure comes from window.MandalaFigures (load
-   shared/js/mandala-figures.js first); without it, a procedural mandala
-   is used instead. Pairs with assets/css/components/mandala.css for the
-   bone "skin" disc — or pass data-morph-skin to draw skin in-canvas and
-   run fully standalone.
+   Pairs with assets/css/components/mandala.css for the bone "skin" disc —
+   or pass data-morph-skin to draw skin in-canvas and run fully standalone.
 
    Markup:
      <canvas data-mandala-morph></canvas>
 
    Data attributes (all optional):
-     data-morph-count   : target dot count                 (default 4000)
-     data-morph-dot     : MAX dot size in CSS px; size scales down toward
-                          this in highlights (default 2.6)
-     data-morph-hold    : ms to hold each figure            (default 3400)
-     data-morph-blend   : ms to morph between figures        (default 2200)
-     data-morph-accent  : fraction of dots inked blood-red   (default 0.02)
-     data-morph-speed   : mandala spin / breath multiplier   (default 1)
-     data-morph-seed    : PRNG seed for a stable layout (default "scotty-massa")
-     data-morph-animate : "false" → render one static frame  (default true)
+     data-morph-count   : target dot count                    (default 4200)
+     data-morph-dot     : max dot size in CSS px; size scales down toward
+                          this in highlights                   (default 2.45)
+     data-morph-weight  : ink weight / contrast multiplier     (default 1.12)
+     data-morph-flow    : transition swirl strength            (default 0.34)
+     data-morph-breathe : idle breathing amount                (default 0.012)
+     data-morph-shape   : "round" or "square" dots          (default round)
+     data-morph-fit     : figure scale inside canvas           (default 0.465)
+     data-morph-hold    : ms to hold each figure               (default 3000)
+     data-morph-blend   : ms to morph between figures          (default 2600)
+     data-morph-accent  : fraction of dots inked blood-red     (default 0.014)
+     data-morph-speed   : mandala spin / motion multiplier     (default 1)
+     data-morph-seed    : PRNG seed for stable layout (default "scotty-massa")
+     data-morph-animate : "false" → render one static frame   (default true)
      data-morph-skin    : CSS colour; fill an in-canvas skin disc so the
                           piece reads without the paired CSS (default: none)
      data-morph-fig     : lock to one figure, no morph
@@ -62,8 +65,21 @@
     var v = el.getAttribute('data-morph-' + key);
     return v == null ? fallback : v;
   }
-  function num(el, key, fallback) { return parseFloat(attr(el, key, fallback)); }
-  function smoothstep(t) { return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t); }
+  function num(el, key, fallback) {
+    var v = parseFloat(attr(el, key, fallback));
+    return isFinite(v) ? v : fallback;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  function smootherstep(t) {
+    t = clamp(t, 0, 1);
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+  function inkCurve(v, weight) {
+    // Slight lift in the highlights, heavier punch in the shadows.
+    v = clamp(v, 0, 1);
+    v = Math.pow(v, 0.82);
+    return clamp((v - 0.055) * weight + 0.075, 0.06, 1);
+  }
 
   // Seeded PRNG so the dot layout is identical on every load.
   function xmur3(str) {
@@ -86,27 +102,6 @@
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
-  }
-
-  function decodeB64(b64) {
-    try {
-      if (typeof atob === 'function') {
-        var bin = atob(b64), u = new Uint8Array(bin.length);
-        for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-        return u;
-      }
-    } catch (e) {}
-    return null;
-  }
-
-  // Ray-cast point-in-polygon (used to mask the real tattoo region).
-  function pointInPolygon(x, y, poly) {
-    var inside = false;
-    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-      var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
-      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
-    }
-    return inside;
   }
 
   /* ---------- cloud utilities -------------------------------- */
@@ -191,111 +186,80 @@
     return out;
   }
 
-  // Sample the real tattoo from a baked luminance grid (window.MandalaFigures).
-  // Same weighting as rasterCloud, but reads cells from the grid and masks to
-  // the tattoo region polygon. Returns [x,y,strength] in unit space.
-  function gridCloud(fig, density, rand) {
-    var lum = decodeB64(fig.lum);
-    if (!lum) return null;
-    var cols = fig.cols, rows = fig.rows, region = fig.region, CELL = 4;
-    var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
-    for (var r0 = 0; r0 < region.length; r0++) {
-      var rx = region[r0][0], ry = region[r0][1];
-      if (rx < minX) minX = rx; if (rx > maxX) maxX = rx;
-      if (ry < minY) minY = ry; if (ry > maxY) maxY = ry;
-    }
-    var ccx = (minX + maxX) / 2, ccy = (minY + maxY) / 2;
-    var half = Math.max(maxX - minX, maxY - minY) / 2 || 1;
-    var thr = 0.18;
-    // One dot per inked cell (a halftone grid) — keeps the negative-space
-    // petal lines crisp instead of blobbing the dark zones. finalize() then
-    // trims/pads to exactly N.
-    var out = [], jit = (CELL / half) * 0.95 * 0.6;
-    for (var row = 0; row < rows; row++) {
-      for (var col = 0; col < cols; col++) {
-        var sx = col * CELL + CELL / 2, sy = row * CELL + CELL / 2;
-        if (!pointInPolygon(sx, sy, region)) continue;
-        var dark = (255 - lum[row * cols + col]) / 255;
-        if (dark <= thr) continue;
-        var s = Math.pow((dark - thr) / (1 - thr), 0.75);
-        out.push([
-          ((sx - ccx) / half) * 0.95 + (rand() - 0.5) * jit,
-          ((sy - ccy) / half) * 0.95 + (rand() - 0.5) * jit,
-          s
-        ]);
-      }
-    }
-    return out.length ? out : null;
-  }
-
   /* ---------- figure 1: Scotty's dotwork back-mandala -------- */
 
-  // Pointed lotus petal. The base→tip gradient drives stipple density:
-  // a light, sparse base tucks under the ring inside it while the dark,
-  // dense tip reads crisp — the feathered, layered depth of the real
-  // back-piece (assets/images/tattoos/back-mandala.jpg).
+  // One lotus petal drawn the way it is tattooed: a crisp dark OUTLINE
+  // (the stencil linework) wrapping a light interior that only deepens
+  // toward the rim (the backfill stipple). When rasterCloud samples this,
+  // the outline becomes a tight line of dots and the interior a soft
+  // gradient of dots — reading as real dotwork, not a fuzzy blob.
   function petal(c, a, r0, r1, h, base, tip) {
     var bx = Math.cos(a) * r0, by = Math.sin(a) * r0;
     var tx = Math.cos(a) * r1, ty = Math.sin(a) * r1;
     var mid = (r0 + r1) * 0.5;
     var lx = Math.cos(a - h) * mid, ly = Math.sin(a - h) * mid;
     var rx = Math.cos(a + h) * mid, ry = Math.sin(a + h) * mid;
-    var g = c.createLinearGradient(bx, by, tx, ty);
-    g.addColorStop(0, base); g.addColorStop(1, tip);
+    var g = c.createRadialGradient(0, 0, r0, 0, 0, r1);
+    g.addColorStop(0, base);
+    g.addColorStop(0.45, base);
+    g.addColorStop(1, tip);            // interior shading deepens at the rim
     c.beginPath();
     c.moveTo(bx, by);
     c.quadraticCurveTo(lx, ly, tx, ty);
     c.quadraticCurveTo(rx, ry, bx, by);
     c.closePath();
     c.fillStyle = g; c.fill();
-    c.lineWidth = 0.009; c.strokeStyle = '#070707'; c.stroke();
+    c.lineWidth = 0.013; c.strokeStyle = '#050505'; c.stroke();  // stencil linework
+  }
+
+  // A crisp concentric circle — the ring linework that frames each row.
+  function ringLine(c, r, lw) {
+    c.lineWidth = lw; c.strokeStyle = '#0a0a0a';
+    c.beginPath(); c.arc(0, 0, r, 0, TAU); c.stroke();
   }
 
   function drawMandala(c) {
     var i, a, L;
 
-    // Concentric rows of BROAD, overlapping lotus petals — drawn outer-row
-    // first so each inner row layers on top like the scales of the real
-    // back-piece. Rows are offset half a step so petals nest in the gaps
-    // below; the light base → dark outer band gives each scale its depth.
-    // Many SHORT, broad scallops (hw≈1 → petals touch within a row) read as
-    // tight concentric scalloped bands rather than long radial spikes — the
-    // overlapping-scale structure of the real back-piece.
+    // Outline-first construction: each row is a band of SHORT outlined
+    // petals (short radial span + many rows → the rhythm reads concentric,
+    // not spoked), framed by crisp concentric ring lines. Interiors stay
+    // light so the dots concentrate on the linework and fade through the
+    // fill — the look of a piece being tattooed (back-mandala.jpg).
+    // tips deepen toward the outer rows for a layered, vignetted depth.
     var rings = [
-      { n: 32, r0: 0.72, r1: 0.90, hw: 1.00, base: '#8f8f8f', tip: '#121212', off: 0.0 },
-      { n: 28, r0: 0.58, r1: 0.75, hw: 1.00, base: '#959595', tip: '#131313', off: 0.5 },
-      { n: 22, r0: 0.45, r1: 0.61, hw: 1.00, base: '#9b9b9b', tip: '#141414', off: 0.0 },
-      { n: 18, r0: 0.33, r1: 0.48, hw: 1.00, base: '#a1a1a1', tip: '#151515', off: 0.5 },
-      { n: 14, r0: 0.21, r1: 0.35, hw: 1.00, base: '#a8a8a8', tip: '#161616', off: 0.0 },
-      { n: 10, r0: 0.10, r1: 0.23, hw: 1.00, base: '#b0b0b0', tip: '#171717', off: 0.5 }
+      { n: 36, r0: 0.82, r1: 0.95, base: '#cfcfcf', tip: '#2c2c2c', off: 0.00 },
+      { n: 30, r0: 0.70, r1: 0.835, base: '#d2d2d2', tip: '#343434', off: 0.50 },
+      { n: 24, r0: 0.58, r1: 0.715, base: '#d4d4d4', tip: '#3c3c3c', off: 0.00 },
+      { n: 20, r0: 0.46, r1: 0.595, base: '#d6d6d6', tip: '#454545', off: 0.50 },
+      { n: 16, r0: 0.34, r1: 0.475, base: '#d8d8d8', tip: '#4e4e4e', off: 0.00 },
+      { n: 12, r0: 0.22, r1: 0.355, base: '#dadada', tip: '#565656', off: 0.50 },
+      { n: 8,  r0: 0.10, r1: 0.235, base: '#dcdcdc', tip: '#5e5e5e', off: 0.00 }
     ];
     for (L = 0; L < rings.length; L++) {
-      var ring = rings[L], h = (Math.PI / ring.n) * ring.hw;
+      var ring = rings[L], h = (Math.PI / ring.n) * 0.96;
       for (i = 0; i < ring.n; i++) {
         a = ((i + ring.off) / ring.n) * TAU - Math.PI / 2;
         petal(c, a, ring.r0, ring.r1, h, ring.base, ring.tip);
       }
+      ringLine(c, ring.r0, 0.009);   // concentric frame at the row base
     }
 
-    // Central lotus burst — fine radiating slivers + a dark seed.
-    var burst = 12;
+    // crisp outer boundary rings (the border linework)
+    ringLine(c, 0.965, 0.012);
+    ringLine(c, 0.995, 0.006);
+
+    // Central lotus — a small ring of outlined petals + a seeded eye.
+    var burst = 8;
     for (i = 0; i < burst; i++) {
       a = (i / burst) * TAU - Math.PI / 2;
-      petal(c, a, 0.028, 0.115, (Math.PI / burst) * 0.85, '#8a8a8a', '#181818');
+      petal(c, a, 0.034, 0.10, (Math.PI / burst) * 0.96, '#dcdcdc', '#7a7a7a');
     }
-    c.fillStyle = '#151515';
-    c.beginPath(); c.arc(0, 0, 0.032, 0, TAU); c.fill();
-
-    // Outer rim — delicate alternating pointed teeth, the lace edge.
-    var rim = 48;
-    for (i = 0; i < rim; i++) {
-      a = (i / rim) * TAU - Math.PI / 2;
-      var tall = (i % 2 === 0);
-      petal(c, a,
-        tall ? 0.915 : 0.935, tall ? 0.992 : 0.958,
-        (Math.PI / rim) * 0.70,
-        '#3f3f3f', tall ? '#141414' : '#2a2a2a');
-    }
+    ringLine(c, 0.034, 0.008);
+    c.fillStyle = '#101010';
+    c.beginPath(); c.arc(0, 0, 0.026, 0, TAU); c.fill();
+    c.fillStyle = '#f0f0f0';
+    c.beginPath(); c.arc(0, 0, 0.011, 0, TAU); c.fill();
   }
 
   /* ---------- figure 2: shaded dotwork skull ----------------- */
@@ -477,13 +441,19 @@
     if (canvas.dataset.morphBound) return;
     canvas.dataset.morphBound = '1';
 
-    var N       = Math.max(400, Math.floor(num(canvas, 'count', 4000)));
-    var dotMax  = num(canvas, 'dot', 2.6);
-    var dotMin  = Math.max(0.5, dotMax * 0.3);
-    var HOLD    = Math.max(0, num(canvas, 'hold', 3400));
-    var BLEND   = Math.max(200, num(canvas, 'blend', 2200));
-    var accentF = num(canvas, 'accent', 0.02);
-    var speed   = num(canvas, 'speed', 1);
+    var N       = Math.max(400, Math.floor(num(canvas, 'count', 4200)));
+    var dotMax  = num(canvas, 'dot', 2.45);
+    var dotMin  = Math.max(0.42, dotMax * 0.26);
+    var weight  = Math.max(0.55, num(canvas, 'weight', 1.12));
+    var flow    = Math.max(0, num(canvas, 'flow', 0.34));
+    var breathA = Math.max(0, num(canvas, 'breathe', 0.012));
+    var fitK    = clamp(num(canvas, 'fit', 0.465), 0.34, 0.50);
+    var HOLD    = Math.max(0, num(canvas, 'hold', 3000));
+    var BLEND   = Math.max(200, num(canvas, 'blend', 2600));
+    var accentF = clamp(num(canvas, 'accent', 0.014), 0, 0.18);
+    var speed   = Math.max(0, num(canvas, 'speed', 1));
+    var shape   = attr(canvas, 'shape', 'round');
+    var roundDots = shape !== 'square';
     var seed    = attr(canvas, 'seed', 'scotty-massa');
     var animate = attr(canvas, 'animate', 'true') !== 'false';
     var skin    = canvas.getAttribute('data-morph-skin');
@@ -494,17 +464,10 @@
 
     var rand = mulberry32(xmur3(seed)());
 
-    // Figures: text → mandala → skull → geometry.
-    // The procedural mandala is primary (crisp geometry, clean negative space).
-    // The baked real-tattoo grid is kept for reference but not used as the
-    // morph target — it renders too diffuse to read as clean dotwork.
-    var realFig = window.MandalaFigures && window.MandalaFigures.realMandala;
-    void realFig; // available for future use
-    function mandalaCloud() {
-      return rasterCloud(drawMandala, N, rand);
-    }
+    // Figures: text → mandala → skull → geometry. All procedural — crisp
+    // geometry with clean negative space, drawn greyscale then stippled.
     var clouds = [ finalize(rasterCloud(drawText, N, rand), N, rand),
-                   finalize(mandalaCloud(), N, rand),
+                   finalize(rasterCloud(drawMandala, N, rand), N, rand),
                    finalize(rasterCloud(drawSkull, N, rand), N, rand),
                    finalize(geometryArr(), N, rand) ];
     var F = clouds.length;
@@ -517,24 +480,35 @@
       });
     }
 
-    // blood-red speckle: a stable (seeded) random subset
+    // Stable per-dot styling. Keeping this seeded makes every load identical.
     var accent = new Uint8Array(N);
-    for (var i = 0; i < N; i++) accent[i] = rand() < accentF ? 1 : 0;
+    var dotJitter = new Float32Array(N);
+    var phaseA = new Float32Array(N);
+    var phaseB = new Float32Array(N);
+    for (var i = 0; i < N; i++) {
+      accent[i] = rand() < accentF ? 1 : 0;
+      dotJitter[i] = 0.86 + rand() * 0.28;
+      phaseA[i] = rand() * TAU;
+      phaseB[i] = rand() * TAU;
+    }
 
-    var ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d', { alpha: true });
     var pos = new Float32Array(N * 2);  // scratch positions for current frame
     var pstr = new Float32Array(N);     // scratch strengths for current frame
     var size = fit();
     var visible = true;
     var start = performance.now();
+    var pausedAt = 0;
 
     function fit() {
       var rect = canvas.getBoundingClientRect();
-      var dpr = window.devicePixelRatio || 1;
+      // Cap DPR to keep 4k+ dots smooth on mobile retina screens.
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
       var w = Math.max(1, Math.floor(rect.width));
       var h = Math.max(1, Math.floor(rect.height));
-      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
-        canvas.width = w * dpr; canvas.height = h * dpr;
+      var bw = Math.floor(w * dpr), bh = Math.floor(h * dpr);
+      if (canvas.width !== bw || canvas.height !== bh) {
+        canvas.width = bw; canvas.height = bh;
       }
       return { w: w, h: h, dpr: dpr };
     }
@@ -545,13 +519,23 @@
       ctx.clearRect(0, 0, w, h);
 
       var cx = w / 2, cy = h / 2;
-      var Rfit = Math.min(w, h) * 0.46;
+      var discR = Math.min(w, h) * 0.5;
+      var Rfit = Math.min(w, h) * fitK;
 
-      // Optional in-canvas skin disc so the piece reads fully standalone.
+      // Optional in-canvas skin disc. The extra vignette gives the piece
+      // enough depth to sit on the page without needing a CSS wrapper.
       if (skin) {
         ctx.fillStyle = skin;
         ctx.beginPath();
-        ctx.arc(cx, cy, Math.min(w, h) * 0.5, 0, TAU);
+        ctx.arc(cx, cy, discR, 0, TAU);
+        ctx.fill();
+        var skinShade = ctx.createRadialGradient(cx, cy, discR * 0.08, cx, cy, discR);
+        skinShade.addColorStop(0, 'rgba(255,255,255,0.08)');
+        skinShade.addColorStop(0.72, 'rgba(0,0,0,0.00)');
+        skinShade.addColorStop(1, 'rgba(0,0,0,0.16)');
+        ctx.fillStyle = skinShade;
+        ctx.beginPath();
+        ctx.arc(cx, cy, discR, 0, TAU);
         ctx.fill();
       }
 
@@ -566,7 +550,7 @@
         cur = Math.floor(elapsed / SEG) % F;
         nxt = (cur + 1) % F;
         var into = elapsed % SEG;
-        k = into <= HOLD ? 0 : smoothstep((into - HOLD) / BLEND);
+        k = into <= HOLD ? 0 : smootherstep((into - HOLD) / BLEND);
       }
 
       var src = clouds[cur], dst = clouds[nxt];
@@ -577,8 +561,10 @@
       var dRot = nxt === MANDALA ? rotM : 0;
       var sc = Math.cos(sRot), ss = Math.sin(sRot);
       var dc = Math.cos(dRot), ds = Math.sin(dRot);
-      var breathe = 1 + Math.sin(now * 0.0009) * 0.018;
-      var shA = now * 0.0016, shB = now * 0.0013;
+      var morphPulse = Math.sin(k * Math.PI); // 0 at rest, 1 mid-morph
+      var breathe = 1 + Math.sin(now * 0.00082 * speed) * breathA;
+      var shA = now * 0.00115 * speed, shB = now * 0.00096 * speed;
+      var flowSign = cur % 2 === 0 ? 1 : -1;
 
       for (var p = 0; p < N; p++) {
         var ix = p * 2, iy = ix + 1;
@@ -588,29 +574,63 @@
         var rdx = dx * dc - dy * ds, rdy = dx * ds + dy * dc;
         var nx = rsx + (rdx - rsx) * k;
         var ny = rsy + (rdy - rsy) * k;
-        // shimmer + breath
-        nx = (nx + Math.sin(shA + p * 0.7) * 0.004) * breathe;
-        ny = (ny + Math.cos(shB + p * 0.9) * 0.004) * breathe;
+        var str = ssr[p] + (dsr[p] - ssr[p]) * k;   // strength eases too
+
+        // Morph flow: a controlled rotational curl during transitions only.
+        // It avoids straight-line teleporting but settles to a clean still figure.
+        if (morphPulse > 0.0001 && flow > 0) {
+          var rr = Math.sqrt(nx * nx + ny * ny) + 0.0001;
+          var aa = Math.atan2(ny, nx);
+          var curl = flowSign * flow * morphPulse * (0.10 + rr * 0.68);
+          aa += curl + Math.sin(phaseA[p] + elapsed * 0.00016 * speed) * curl * 0.28;
+          rr *= 1 + Math.sin(phaseB[p] + rr * 7.0) * flow * morphPulse * 0.030;
+          nx = Math.cos(aa) * rr;
+          ny = Math.sin(aa) * rr;
+        }
+
+        // Fine idle shimmer. Softer on heavy shadow dots, stronger on pale edges.
+        var shimmer = (0.0017 + (1 - str) * 0.0022) * (1 + morphPulse * 0.55);
+        nx = (nx + Math.sin(shA + phaseA[p]) * shimmer) * breathe;
+        ny = (ny + Math.cos(shB + phaseB[p]) * shimmer) * breathe;
         pos[ix] = cx + nx * Rfit;
         pos[iy] = cy + ny * Rfit;
-        pstr[p] = ssr[p] + (dsr[p] - ssr[p]) * k;   // strength eases too
+        pstr[p] = str;
       }
 
       var span = dotMax - dotMin;
-      // black ink pass — dot size scales with strength (source darkness)
+      function drawDot(x, y, s) {
+        var hh = s * 0.5;
+        if (roundDots) {
+          ctx.beginPath();
+          ctx.arc(x, y, hh, 0, TAU);
+          ctx.fill();
+        } else {
+          ctx.fillRect(x - hh, y - hh, s, s);
+        }
+      }
+
+      // Black ink pass. Size and opacity both follow the source darkness,
+      // which gives the artwork more tattoo weight without crushing detail.
       ctx.fillStyle = INK;
       for (var b = 0; b < N; b++) {
         if (accent[b]) continue;
-        var sB = dotMin + pstr[b] * span, hB = sB * 0.5;
-        ctx.fillRect(pos[b * 2] - hB, pos[b * 2 + 1] - hB, sB, sB);
+        var stB = inkCurve(pstr[b], weight);
+        var sB = (dotMin + stB * span) * dotJitter[b];
+        ctx.globalAlpha = 0.72 + stB * 0.28;
+        drawDot(pos[b * 2], pos[b * 2 + 1], sB);
       }
-      // blood-red accent pass — a touch finer so it reads as a speckle
+
+      // Blood-red accent pass. Smaller and slightly translucent so it reads
+      // like occasional ink flecking, not a second competing artwork.
       ctx.fillStyle = RED;
       for (var r = 0; r < N; r++) {
         if (!accent[r]) continue;
-        var sR = (dotMin + pstr[r] * span) * 0.85, hR = sR * 0.5;
-        ctx.fillRect(pos[r * 2] - hR, pos[r * 2 + 1] - hR, sR, sR);
+        var stR = inkCurve(pstr[r], weight);
+        var sR = (dotMin + stR * span) * dotJitter[r] * 0.78;
+        ctx.globalAlpha = 0.58 + stR * 0.20;
+        drawDot(pos[r * 2], pos[r * 2 + 1], sR);
       }
+      ctx.globalAlpha = 1;
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
@@ -624,17 +644,23 @@
     var staticMode = !animate || prefersReducedMotion;
 
     var resizePending = false;
-    window.addEventListener('resize', function () {
+    function refit() {
       if (resizePending) return;
       resizePending = true;
       requestAnimationFrame(function () {
-        resizePending = false; size = fit();
+        resizePending = false;
+        size = fit();
         draw(staticMode ? 0 : performance.now());
       });
-    });
+    }
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(refit).observe(canvas);
+    } else {
+      window.addEventListener('resize', refit);
+    }
 
     if (staticMode) {
-      if (lockFig < 0) lockFig = MANDALA; // rest on the real mandala
+      if (lockFig < 0) lockFig = MANDALA; // rest on the mandala
       draw(0);                            // fixed timestamp → deterministic frame
       return;
     }
@@ -642,8 +668,18 @@
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          visible = e.isIntersecting;
-          if (visible) startLoop(); else stopLoop();
+          if (e.isIntersecting) {
+            visible = true;
+            if (pausedAt) {
+              start += performance.now() - pausedAt;
+              pausedAt = 0;
+            }
+            startLoop();
+          } else {
+            visible = false;
+            pausedAt = performance.now();
+            stopLoop();
+          }
         });
       }, { threshold: 0.01 }).observe(canvas);
     }
