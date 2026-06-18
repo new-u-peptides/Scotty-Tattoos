@@ -2,16 +2,17 @@
    mandala-morph.js — a living dotwork engine.
    -------------------------------------------------------------
    Thousands of tiny tattoo-stipple dots that continuously morph
-   between five figures in Scotty's dotwork language:
+   between four figures in Scotty's dotwork language:
 
-       text → mandala → skull → sacred geometry → owl → (loop)
+       text → mandala → sacred geometry → owl → (loop)
 
    The brand "SCOTTY MASSA / TATTOOS" reads as SOLID ink (the dots pack
    dense across the letters), then breaks apart and flows into the tattoo
    imagery. The geometric figures (mandala, sacred geometry, owl) are built
    as clean LINEWORK: dots are placed evenly ALONG real stroke paths
    (arc-length sampled) so the lines read solid and crisp, the way a piece
-   is actually drawn — not random scatter. The skull is tonal dotwork.
+   is actually drawn — not random scatter. The radially symmetric figures
+   (mandala, geometry) slowly swirl so the piece feels alive.
 
    Each figure is a cloud of N points; clouds are angle-sorted so dot #i
    corresponds across figures — transitions swirl and reflow rather than
@@ -48,8 +49,8 @@
      data-morph-skin    : CSS colour; fill an in-canvas skin disc so the
                           piece reads without the paired CSS (default: none)
      data-morph-fig     : lock to one figure, no morph
-                          (0 = text, 1 = mandala, 2 = skull,
-                           3 = geometry, 4 = owl)            (default: cycle)
+                          (0 = text, 1 = mandala, 2 = geometry, 3 = owl)
+                                                             (default: cycle)
    ============================================================= */
 (function () {
   'use strict';
@@ -177,19 +178,6 @@
              at: function (u) { var iu = 1 - u; return [iu * iu * x0 + 2 * iu * u * cx + u * u * x1,
                                                         iu * iu * y0 + 2 * iu * u * cy + u * u * y1]; } };
   }
-  function cubicS(x0, y0, ax, ay, bx, by, x1, y1, str) {
-    var len = Math.hypot(ax - x0, ay - y0) + Math.hypot(bx - ax, by - ay) + Math.hypot(x1 - bx, y1 - by);
-    return { len: len, str: str,
-             at: function (u) { var iu = 1 - u, A = iu * iu * iu, B = 3 * iu * iu * u, C = 3 * iu * u * u, D = u * u * u;
-                                return [A * x0 + B * ax + C * bx + D * x1, A * y0 + B * ay + C * by + D * y1]; } };
-  }
-  // A spiral from the centre out — fills a region with dense dots (used to
-  // pack the eye sockets dark while staying "lines/dots", not a flat blob).
-  function spiralS(cx, cy, rMax, turns, xStretch, str) {
-    return { len: Math.PI * rMax * turns, str: str,
-             at: function (u) { var a = u * turns * TAU, r = rMax * u;
-                                return [cx + Math.cos(a) * r * xStretch, cy + Math.sin(a) * r]; } };
-  }
   // Push a stroked regular polygon's edges (after Gemini's drawPolygon).
   function polyS(s, cx, cy, r, sides, rot, str) {
     var pts = [], i;
@@ -276,78 +264,6 @@
     }
     s.push(circS(0, 0, 0.075, 0.92));                 // centre eye
     s.push(circS(0, 0, 0.030, 0.96));
-    return s;
-  }
-
-  /* ---------- figure 2: geometric linework skull ------------- */
-
-  // A nested diamond (rhombus) mandala — the sacred-geometry motif that
-  // flanks the skull in the reference back-piece.
-  function diamondMandala(s, cx, cy, R) {
-    var levels = [1.0, 0.62, 0.30], i, lv, r, rx;
-    for (i = 0; i < levels.length; i++) {
-      lv = levels[i]; r = R * lv; rx = r * 0.72;
-      s.push(segS(cx, cy - r, cx + rx, cy, 0.86));
-      s.push(segS(cx + rx, cy, cx, cy + r, 0.86));
-      s.push(segS(cx, cy + r, cx - rx, cy, 0.86));
-      s.push(segS(cx - rx, cy, cx, cy - r, 0.86));
-    }
-    s.push(circS(cx, cy, R * 0.13, 0.92));
-    s.push(segS(cx, cy - R, cx, cy + R, 0.7));
-    s.push(segS(cx - R * 0.72, cy, cx + R * 0.72, cy, 0.7));
-  }
-
-  // The skull as clean dotwork linework: crisp outline, spiral-packed dark
-  // sockets, nasal, cheekbones and teeth — flanked by two diamond mandalas.
-  function skullStrokes() {
-    var s = [], STR = 0.9, K = 0.84;
-    function seg(x0, y0, x1, y1, st) { s.push(segS(x0 * K, y0 * K, x1 * K, y1 * K, st)); }
-    function quad(x0, y0, cx, cy, x1, y1, st) { s.push(quadS(x0 * K, y0 * K, cx * K, cy * K, x1 * K, y1 * K, st)); }
-    function cub(x0, y0, ax, ay, bx, by, x1, y1) { s.push(cubicS(x0 * K, y0 * K, ax * K, ay * K, bx * K, by * K, x1 * K, y1 * K, STR)); }
-    function spi(cx, cy, rMax, turns, st) { s.push(spiralS(cx * K, cy * K, rMax * K, turns, 1.25, st)); }
-
-    // cranium + jaw outline
-    cub(0, 0.86, -0.18, 0.85, -0.28, 0.72, -0.33, 0.56);
-    cub(-0.33, 0.56, -0.39, 0.46, -0.57, 0.42, -0.61, 0.18);
-    cub(-0.61, 0.18, -0.65, 0.00, -0.60, -0.18, -0.55, -0.31);
-    cub(-0.55, -0.31, -0.50, -0.63, -0.29, -0.88, 0, -0.88);
-    cub(0, -0.88, 0.29, -0.88, 0.50, -0.63, 0.55, -0.31);
-    cub(0.55, -0.31, 0.60, -0.18, 0.65, 0.00, 0.61, 0.18);
-    cub(0.61, 0.18, 0.57, 0.42, 0.39, 0.46, 0.33, 0.56);
-    cub(0.33, 0.56, 0.28, 0.72, 0.18, 0.85, 0, 0.86);
-
-    // brow ridge + cranial suture
-    quad(-0.42, -0.07, 0, -0.22, 0.42, -0.07, 0.82);
-    quad(0, -0.86, -0.09, -0.45, 0.02, -0.16, 0.6);
-
-    // eye sockets — outline + spiral fill so they read deep and dark
-    var ex, e;
-    for (e = 0; e < 2; e++) {
-      ex = e === 0 ? -0.27 : 0.27;
-      s.push(ellipseS(ex * K, -0.05 * K, 0.205 * K, 0.165 * K, 0.92));
-      // tightly-wound spiral → the arms merge into a solid dark socket
-      spi(ex, -0.05, 0.145, 17, 0.95);
-    }
-
-    // nasal cavity (inverted heart outline + a little fill)
-    quad(0, 0.30, -0.13, 0.10, -0.05, 0.05, 0.9);
-    quad(0, 0.30, 0.13, 0.10, 0.05, 0.05, 0.9);
-    seg(-0.05, 0.05, 0.05, 0.05, 0.9);
-    seg(0, 0.10, 0, 0.27, 0.8);
-
-    // cheekbones
-    quad(-0.30, 0.16, -0.46, 0.30, -0.28, 0.45, 0.78);
-    quad(0.30, 0.16, 0.46, 0.30, 0.28, 0.45, 0.78);
-
-    // teeth — gum line + verticals
-    var ty0 = 0.46, ty1 = 0.66, tx = 0.25, teeth = 7, t, gx;
-    seg(-tx, ty0, tx, ty0, 0.9);
-    seg(-tx, ty1, tx, ty1, 0.82);
-    for (t = 0; t <= teeth; t++) { gx = -tx + (t / teeth) * tx * 2; seg(gx, ty0, gx, ty1, 0.84); }
-
-    // flanking diamond mandalas (unscaled — they sit beside the skull)
-    diamondMandala(s, -0.78, -0.04, 0.185);
-    diamondMandala(s, 0.78, -0.04, 0.185);
     return s;
   }
 
@@ -444,9 +360,9 @@
     if (canvas.dataset.morphBound) return;
     canvas.dataset.morphBound = '1';
 
-    var N       = Math.max(400, Math.floor(num(canvas, 'count', 9000)));
-    var dotMax  = num(canvas, 'dot', 2.3);
-    var dotMin  = Math.max(0.6, dotMax * 0.55);
+    var N       = Math.max(400, Math.floor(num(canvas, 'count', 11000)));
+    var dotMax  = num(canvas, 'dot', 2.6);
+    var dotMin  = Math.max(0.6, dotMax * 0.58);
     var weight  = Math.max(0.55, num(canvas, 'weight', 1.12));
     var flow    = Math.max(0, num(canvas, 'flow', 0.30));
     var breathA = Math.max(0, num(canvas, 'breathe', 0.010));
@@ -463,18 +379,20 @@
     var lockRaw = canvas.getAttribute('data-morph-fig');
     var lockFig = lockRaw == null ? -1 : (parseInt(lockRaw, 10) || 0);
     var SEG     = HOLD + BLEND;
-    var MANDALA = 1; // the one figure that slowly spins
+    var MANDALA = 1; // default figure for the static frame
 
     var rand = mulberry32(xmur3(seed)());
 
-    // text is tonal (rasterised, packs solid); mandala/skull/geometry/owl
-    // are clean linework — dots sampled evenly along their stroke paths.
+    // text is tonal (rasterised, packs solid); mandala/geometry/owl are clean
+    // linework — dots sampled evenly along their stroke paths. The radially
+    // symmetric figures (mandala, geometry) slowly spin so the piece feels
+    // alive and continuously swirling, like the original sacred-geometry hero.
     var clouds = [ finalize(rasterCloud(drawText, N, rand), N, rand),
                    finalize(strokeCloud(mandalaStrokes(), N, rand), N, rand),
-                   finalize(strokeCloud(skullStrokes(), N, rand), N, rand),
                    finalize(strokeCloud(geometryStrokes(), N, rand), N, rand),
                    finalize(strokeCloud(owlStrokes(), N, rand), N, rand) ];
     var F = clouds.length;
+    var SPIN = [false, true, true, false]; // text, mandala, geometry, owl
 
     // The text figure wants the brand font; if it loads late, rebuild it.
     if (document.fonts && document.fonts.ready && document.fonts.status !== 'loaded') {
@@ -550,9 +468,9 @@
 
       var src = clouds[cur], dst = clouds[nxt];
       var sp = src.pos, ssr = src.str, dp = dst.pos, dsr = dst.str;
-      var rotM = elapsed * 0.00007 * speed;
-      var sRot = cur === MANDALA ? rotM : 0;
-      var dRot = nxt === MANDALA ? rotM : 0;
+      var rotM = elapsed * 0.00011 * speed;   // slow continuous swirl
+      var sRot = SPIN[cur] ? rotM : 0;
+      var dRot = SPIN[nxt] ? rotM : 0;
       var sc = Math.cos(sRot), ss = Math.sin(sRot);
       var dc = Math.cos(dRot), ds = Math.sin(dRot);
       var morphPulse = Math.sin(k * Math.PI); // 0 at rest, 1 mid-morph
