@@ -1,11 +1,14 @@
 /* =========================================================
-   mandala.css — the living mandala system
+   mandala.css — the living dotwork system
    ---------------------------------------------------------
-   Styling layer that pairs with shared/js/mandala.js. The JS
-   draws bold black linework + dotwork onto any <canvas
-   data-mandala>; this sheet places it, gives the homepage hero
-   its bone "flash-paper" disc, the blood-red halo, and the
-   slow breathing that makes the sigil feel alive.
+   Styling layer for the canvas dotwork engines. The homepage
+   hero is driven by shared/js/mandala-morph.js (a <canvas
+   data-mandala-morph> whose dots spell the brand then bloom
+   through the mandala, skull and sacred geometry); the legacy
+   massatattoo/ site uses shared/js/mandala.js (<canvas
+   data-mandala>). This sheet places the canvas, gives the hero
+   its bone "flash-paper" disc, the blood-red halo, and the slow
+   breathing that makes the sigil feel alive.
 
    Variants:
      .mandala            base canvas (full-bleed in its parent)
@@ -43,7 +46,7 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 540px;
+  max-width: min(560px, 86vw);
   aspect-ratio: 1;
   margin-inline: auto;
 }

@@ -228,9 +228,12 @@
     return out.length ? out : null;
   }
 
-  /* ---------- figure 1: detailed 8-ring dotwork mandala ------ */
+  /* ---------- figure 1: Scotty's dotwork back-mandala -------- */
 
-  // Sharp-tipped petal; base→tip gradient drives stipple density.
+  // Pointed lotus petal. The base→tip gradient drives stipple density:
+  // a light, sparse base tucks under the ring inside it while the dark,
+  // dense tip reads crisp — the feathered, layered depth of the real
+  // back-piece (assets/images/tattoos/back-mandala.jpg).
   function petal(c, a, r0, r1, h, base, tip) {
     var bx = Math.cos(a) * r0, by = Math.sin(a) * r0;
     var tx = Math.cos(a) * r1, ty = Math.sin(a) * r1;
@@ -245,117 +248,71 @@
     c.quadraticCurveTo(rx, ry, bx, by);
     c.closePath();
     c.fillStyle = g; c.fill();
-    c.lineWidth = 0.010; c.strokeStyle = '#080808'; c.stroke();
+    c.lineWidth = 0.009; c.strokeStyle = '#070707'; c.stroke();
   }
 
   function drawMandala(c) {
-    /* Eight concentric zones, each with clear radial gaps so the
-       negative-space lines read as authentic tattoo dotwork. */
-    var i, a, rr;
+    var i, a, L;
 
-    // ─ ZONE 1: outer rim — 60 fine alternating teeth ──────────
-    var nRim = 60;
-    for (i = 0; i < nRim; i++) {
-      a = (i / nRim) * TAU - Math.PI / 2;
+    // Concentric rows of BROAD, overlapping lotus petals — drawn outer-row
+    // first so each inner row layers on top like the scales of the real
+    // back-piece. Rows are offset half a step so petals nest in the gaps
+    // below; the light base → dark outer band gives each scale its depth.
+    // Many SHORT, broad scallops (hw≈1 → petals touch within a row) read as
+    // tight concentric scalloped bands rather than long radial spikes — the
+    // overlapping-scale structure of the real back-piece.
+    var rings = [
+      { n: 32, r0: 0.72, r1: 0.90, hw: 1.00, base: '#8f8f8f', tip: '#121212', off: 0.0 },
+      { n: 28, r0: 0.58, r1: 0.75, hw: 1.00, base: '#959595', tip: '#131313', off: 0.5 },
+      { n: 22, r0: 0.45, r1: 0.61, hw: 1.00, base: '#9b9b9b', tip: '#141414', off: 0.0 },
+      { n: 18, r0: 0.33, r1: 0.48, hw: 1.00, base: '#a1a1a1', tip: '#151515', off: 0.5 },
+      { n: 14, r0: 0.21, r1: 0.35, hw: 1.00, base: '#a8a8a8', tip: '#161616', off: 0.0 },
+      { n: 10, r0: 0.10, r1: 0.23, hw: 1.00, base: '#b0b0b0', tip: '#171717', off: 0.5 }
+    ];
+    for (L = 0; L < rings.length; L++) {
+      var ring = rings[L], h = (Math.PI / ring.n) * ring.hw;
+      for (i = 0; i < ring.n; i++) {
+        a = ((i + ring.off) / ring.n) * TAU - Math.PI / 2;
+        petal(c, a, ring.r0, ring.r1, h, ring.base, ring.tip);
+      }
+    }
+
+    // Central lotus burst — fine radiating slivers + a dark seed.
+    var burst = 12;
+    for (i = 0; i < burst; i++) {
+      a = (i / burst) * TAU - Math.PI / 2;
+      petal(c, a, 0.028, 0.115, (Math.PI / burst) * 0.85, '#8a8a8a', '#181818');
+    }
+    c.fillStyle = '#151515';
+    c.beginPath(); c.arc(0, 0, 0.032, 0, TAU); c.fill();
+
+    // Outer rim — delicate alternating pointed teeth, the lace edge.
+    var rim = 48;
+    for (i = 0; i < rim; i++) {
+      a = (i / rim) * TAU - Math.PI / 2;
       var tall = (i % 2 === 0);
       petal(c, a,
-        tall ? 0.880 : 0.914,  tall ? 0.996 : 0.950,
-        (Math.PI / nRim) * 0.86,
-        '#090909', tall ? '#484848' : '#1c1c1c');
+        tall ? 0.915 : 0.935, tall ? 0.992 : 0.958,
+        (Math.PI / rim) * 0.70,
+        '#3f3f3f', tall ? '#141414' : '#2a2a2a');
     }
-
-    // ─ ZONE 2: 24 large primary outer petals ──────────────────
-    var n4 = 24, h4 = (Math.PI / n4) * 0.70;
-    for (i = 0; i < n4; i++) {
-      a = (i / n4) * TAU - Math.PI / 2;
-      petal(c, a, 0.582, 0.880, h4, '#0b0b0b', '#909090');
-    }
-    // 24 shorter secondary petals interleaved at half-step
-    var h4s = (Math.PI / n4) * 0.52;
-    for (i = 0; i < n4; i++) {
-      a = ((i + 0.5) / n4) * TAU - Math.PI / 2;
-      petal(c, a, 0.670, 0.872, h4s, '#0f0f0f', '#545454');
-    }
-
-    // ─ Fine separator: 36 radial micro-teeth at base of zone 2 ─
-    for (i = 0; i < 36; i++) {
-      a = (i / 36) * TAU;
-      petal(c, a, 0.560, 0.581, (Math.PI / 36) * 0.78, '#111', '#282828');
-    }
-
-    // ─ ZONE 3: 18 mid petals, offset by half-step ─────────────
-    var n3 = 18, h3 = (Math.PI / n3) * 0.74;
-    for (i = 0; i < n3; i++) {
-      a = ((i + 0.5) / n3) * TAU - Math.PI / 2;
-      petal(c, a, 0.330, 0.558, h3, '#0d0d0d', '#8b8b8b');
-    }
-
-    // ─ Separator dots between zones 3 and 4 ───────────────────
-    c.fillStyle = '#0e0e0e';
-    for (i = 0; i < 36; i++) {
-      a = (i / 36) * TAU;
-      c.beginPath();
-      c.arc(Math.cos(a) * 0.320, Math.sin(a) * 0.320, 0.013, 0, TAU);
-      c.fill();
-    }
-    // 18 small triangles (one per mid-petal gap) just inside zone 3
-    for (i = 0; i < 18; i++) {
-      a = (i / 18) * TAU - Math.PI / 2;
-      petal(c, a, 0.308, 0.328, (Math.PI / 18) * 0.60, '#111', '#252525');
-    }
-
-    // ─ ZONE 4: 12 inner lotus petals + 12 secondary ───────────
-    var n2 = 12, h2 = (Math.PI / n2) * 0.82;
-    for (i = 0; i < n2; i++) {
-      a = (i / n2) * TAU - Math.PI / 2;
-      petal(c, a, 0.126, 0.308, h2, '#0c0c0c', '#838383');
-    }
-    var h2s = (Math.PI / n2) * 0.58;
-    for (i = 0; i < n2; i++) {
-      a = ((i + 0.5) / n2) * TAU - Math.PI / 2;
-      petal(c, a, 0.172, 0.298, h2s, '#101010', '#525252');
-    }
-
-    // ─ Center ring band at r ≈ 0.084–0.122 ────────────────────
-    c.beginPath(); c.arc(0, 0, 0.122, 0, TAU);
-    c.fillStyle = '#111111'; c.fill();
-    // Clear inside to true transparent so no stray dots appear there
-    c.save();
-    c.globalCompositeOperation = 'destination-out';
-    c.beginPath(); c.arc(0, 0, 0.084, 0, TAU);
-    c.fillStyle = '#000'; c.fill();
-    c.restore();
-
-    // ─ Center 8-pointed star ──────────────────────────────────
-    c.fillStyle = '#0f0f0f';
-    c.beginPath();
-    for (i = 0; i <= 16; i++) {
-      a = (i / 16) * TAU - Math.PI / 2;
-      rr = (i % 2 === 0) ? 0.080 : 0.032;
-      if (i === 0) c.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
-      else         c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
-    }
-    c.closePath(); c.fill();
-    c.strokeStyle = '#080808'; c.lineWidth = 0.009; c.stroke();
-
-    // ─ Center dot ─────────────────────────────────────────────
-    c.beginPath(); c.arc(0, 0, 0.027, 0, TAU);
-    c.fillStyle = '#1b1b1b'; c.fill();
   }
 
   /* ---------- figure 2: shaded dotwork skull ----------------- */
 
+  // Front-facing skull: domed cranium, pinched temples, wide zygomatic
+  // cheekbones, tapering through the jaw to the chin.
   function skullPath(c) {
     c.beginPath();
-    c.moveTo(0, 0.82);
-    c.bezierCurveTo(-0.15, 0.80, -0.25, 0.66, -0.29, 0.50);
-    c.bezierCurveTo(-0.33, 0.40, -0.50, 0.34, -0.52, 0.15);
-    c.bezierCurveTo(-0.55, -0.02, -0.52, -0.18, -0.48, -0.30);
-    c.bezierCurveTo(-0.44, -0.64, -0.26, -0.92, 0, -0.92);
-    c.bezierCurveTo(0.26, -0.92, 0.44, -0.64, 0.48, -0.30);
-    c.bezierCurveTo(0.52, -0.18, 0.55, -0.02, 0.52, 0.15);
-    c.bezierCurveTo(0.50, 0.34, 0.33, 0.40, 0.29, 0.50);
-    c.bezierCurveTo(0.25, 0.66, 0.15, 0.80, 0, 0.82);
+    c.moveTo(0, 0.86);                                        // chin
+    c.bezierCurveTo(-0.18, 0.85, -0.28, 0.72, -0.33, 0.56);   // jaw L
+    c.bezierCurveTo(-0.39, 0.46, -0.57, 0.42, -0.61, 0.18);   // zygomatic L (widest)
+    c.bezierCurveTo(-0.65, 0.00, -0.60, -0.18, -0.55, -0.31); // temple L
+    c.bezierCurveTo(-0.50, -0.63, -0.29, -0.88, 0, -0.88);    // dome L → top
+    c.bezierCurveTo(0.29, -0.88, 0.50, -0.63, 0.55, -0.31);   // top → dome R
+    c.bezierCurveTo(0.60, -0.18, 0.65, 0.00, 0.61, 0.18);     // temple R
+    c.bezierCurveTo(0.57, 0.42, 0.39, 0.46, 0.33, 0.56);      // zygomatic R
+    c.bezierCurveTo(0.28, 0.72, 0.18, 0.85, 0, 0.86);         // jaw R
     c.closePath();
   }
 
@@ -366,60 +323,90 @@
     c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
   }
 
+  // Deep, almond eye socket: a soft dark halo that bleeds into the bone
+  // plus a near-black cavity — no hard ring, so the stipple reads natural.
   function eyeSocket(c, x, y, rot) {
     c.save();
     c.translate(x, y); c.rotate(rot);
-    var g = c.createRadialGradient(0, 0.02, 0.02, 0, 0, 0.22);
-    g.addColorStop(0, '#000'); g.addColorStop(0.7, '#0c0c0c'); g.addColorStop(1, '#2c2c2c');
+    var halo = c.createRadialGradient(0, 0, 0.04, 0, 0, 0.32);
+    halo.addColorStop(0, 'rgba(8,8,8,0.95)');
+    halo.addColorStop(0.55, 'rgba(8,8,8,0.65)');
+    halo.addColorStop(1, 'rgba(8,8,8,0)');
+    c.fillStyle = halo;
+    c.beginPath(); c.arc(0, 0, 0.32, 0, TAU); c.fill();
+    var g = c.createRadialGradient(0.02, 0.05, 0.02, 0, 0, 0.21);
+    g.addColorStop(0, '#000'); g.addColorStop(0.75, '#070707'); g.addColorStop(1, '#1d1d1d');
     c.fillStyle = g;
-    c.beginPath(); c.ellipse(0, 0, 0.20, 0.17, 0, 0, TAU); c.fill();
+    c.beginPath(); c.ellipse(0, 0, 0.205, 0.165, 0, 0, TAU); c.fill();
     c.restore();
   }
 
   function drawSkull(c) {
-    // base cranium tone
-    var g = c.createLinearGradient(0, -0.92, 0, 0.82);
-    g.addColorStop(0, '#909090'); g.addColorStop(0.55, '#6e6e6e'); g.addColorStop(1, '#555555');
-    c.fillStyle = g; skullPath(c); c.fill();
+    // Bone reads LIGHT (sparse dots); only the recesses go dark (dense
+    // dots). That high-key bone vs deep-shadow contrast is what makes the
+    // stipple read as a carved skull rather than a flat dark mass.
+    c.save();
+    c.scale(1.12, 1.12);              // fill a touch more of the disc
 
-    // sculpt light + shadow, clipped to the skull
-    c.save(); skullPath(c); c.clip();
-    softBlob(c, -0.46, -0.10, 0.34, 'rgba(18,18,18,0.85)'); // left temple
-    softBlob(c, 0.46, -0.10, 0.34, 'rgba(18,18,18,0.85)');  // right temple
-    softBlob(c, -0.40, 0.30, 0.26, 'rgba(18,18,18,0.70)');  // under cheekbone L
-    softBlob(c, 0.40, 0.30, 0.26, 'rgba(18,18,18,0.70)');   // under cheekbone R
-    softBlob(c, 0, 0.32, 0.22, 'rgba(18,18,18,0.55)');      // mouth hollow
-    softBlob(c, 0, -0.52, 0.30, 'rgba(230,230,230,0.55)');  // forehead highlight
-    softBlob(c, -0.30, 0.05, 0.15, 'rgba(224,224,224,0.45)'); // cheek L
-    softBlob(c, 0.30, 0.05, 0.15, 'rgba(224,224,224,0.45)');  // cheek R
-    softBlob(c, 0, 0.62, 0.12, 'rgba(214,214,214,0.40)');   // chin
+    c.save();
+    skullPath(c);
+    c.fillStyle = '#ececec';          // light bone base
+    c.fill();
+    c.clip();                          // all shading stays on the bone
+
+    // perimeter vignette → carves the domed silhouette out of the bone
+    var vg = c.createRadialGradient(0, -0.05, 0.34, 0, -0.05, 0.82);
+    vg.addColorStop(0, 'rgba(20,20,20,0)');
+    vg.addColorStop(0.68, 'rgba(20,20,20,0.06)');
+    vg.addColorStop(1, 'rgba(16,16,16,0.55)');
+    c.fillStyle = vg;
+    c.fillRect(-1.2, -1.2, 2.4, 2.4);
+
+    // inner-edge occlusion so the silhouette reads as a crisp rim of stipple
+    c.lineWidth = 0.10; c.strokeStyle = 'rgba(14,14,14,0.55)';
+    skullPath(c); c.stroke();
+
+    // form shadows — soft, mid-dark, carving the cranial planes
+    softBlob(c, -0.52, -0.15, 0.30, 'rgba(18,18,18,0.55)');  // temporal hollow L
+    softBlob(c,  0.52, -0.15, 0.30, 'rgba(18,18,18,0.55)');  // temporal hollow R
+    softBlob(c, -0.31, -0.30, 0.20, 'rgba(18,18,18,0.42)');  // upper temple L
+    softBlob(c,  0.31, -0.30, 0.20, 'rgba(18,18,18,0.42)');  // upper temple R
+    softBlob(c, -0.20, -0.01, 0.15, 'rgba(10,10,10,0.55)');  // brow underside L
+    softBlob(c,  0.20, -0.01, 0.15, 'rgba(10,10,10,0.55)');  // brow underside R
+    softBlob(c, -0.40,  0.12, 0.18, 'rgba(18,18,18,0.50)');  // cheek hollow L
+    softBlob(c,  0.40,  0.12, 0.18, 'rgba(18,18,18,0.50)');  // cheek hollow R
+    softBlob(c, -0.27,  0.41, 0.20, 'rgba(18,18,18,0.55)');  // under-cheekbone L
+    softBlob(c,  0.27,  0.41, 0.20, 'rgba(18,18,18,0.55)');  // under-cheekbone R
+    softBlob(c,  0.00,  0.30, 0.13, 'rgba(14,14,14,0.50)');  // nasal base
+    softBlob(c,  0.00,  0.71, 0.22, 'rgba(18,18,18,0.50)');  // jaw shadow
     c.restore();
 
-    // deep sockets
-    eyeSocket(c, -0.24, -0.16, -0.18);
-    eyeSocket(c, 0.24, -0.16, 0.18);
+    // deep eye sockets
+    eyeSocket(c, -0.27, -0.05, -0.16);
+    eyeSocket(c,  0.27, -0.05,  0.16);
 
     // nasal cavity (inverted heart)
-    c.fillStyle = '#060606';
+    c.fillStyle = '#080808';
     c.beginPath();
-    c.moveTo(0, 0.22);
-    c.bezierCurveTo(-0.12, 0.10, -0.11, -0.04, -0.045, 0.03);
-    c.bezierCurveTo(-0.02, 0.05, 0, 0.05, 0, 0.03);
-    c.bezierCurveTo(0, 0.05, 0.02, 0.05, 0.045, 0.03);
-    c.bezierCurveTo(0.11, -0.04, 0.12, 0.10, 0, 0.22);
+    c.moveTo(0, 0.30);
+    c.bezierCurveTo(-0.14, 0.15, -0.12, 0.00, -0.05, 0.07);
+    c.bezierCurveTo(-0.02, 0.09, 0, 0.09, 0, 0.06);
+    c.bezierCurveTo(0, 0.09, 0.02, 0.09, 0.05, 0.07);
+    c.bezierCurveTo(0.12, 0.00, 0.14, 0.15, 0, 0.30);
     c.closePath(); c.fill();
 
-    // teeth — a light band split by dark gaps
-    var ty0 = 0.40, ty1 = 0.60, tx = 0.20;
-    c.fillStyle = '#bcbcbc';
-    c.fillRect(-tx, ty0, tx * 2, ty1 - ty0);
-    c.fillStyle = '#0a0a0a';
-    c.fillRect(-tx, ty0 - 0.018, tx * 2, 0.02);   // gum line
-    var teeth = 7;
-    for (var t = 0; t <= teeth; t++) {
-      var gx = -tx + (t / teeth) * tx * 2;
-      c.fillRect(gx - 0.008, ty0, 0.016, ty1 - ty0);
+    // teeth — an upper row of light teeth split by dark gaps, dark gum line
+    var ty0 = 0.46, ty1 = 0.66, tx = 0.25, teeth = 8, w = (tx * 2) / teeth, t, gx;
+    c.fillStyle = 'rgba(10,10,10,0.9)';
+    c.fillRect(-tx - 0.02, ty0 - 0.035, (tx + 0.02) * 2, 0.04); // gum shadow
+    for (t = 0; t < teeth; t++) {
+      gx = -tx + t * w;
+      c.fillStyle = '#dcdcdc';
+      c.fillRect(gx + 0.006, ty0, w - 0.012, ty1 - ty0);        // tooth
+      c.fillStyle = '#0c0c0c';
+      c.fillRect(gx - 0.004, ty0, 0.008, ty1 - ty0);            // gap
     }
+    c.restore();                       // undo the 1.12 scale
   }
 
   /* ---------- figure 3: sacred geometry (flower of life) ----- */

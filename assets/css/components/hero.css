@@ -1,4 +1,6 @@
-/* Hero — type on the left, the living mandala sigil on the right.
+/* Hero — a centred, living dotwork sequence: the dots spell the name,
+   then bloom through the mandala, skull and sacred geometry. There is no
+   static headline; the animation is the opening title.
    Mandala/disc styling lives in mandala.css. */
 .hero {
   position: relative;
@@ -33,65 +35,33 @@
   pointer-events: none;
 }
 
-/* Two-column layout: copy + sigil. */
+/* Single centred column — the dotwork sequence is the stage. */
 .hero__inner {
   position: relative;
   z-index: 2;
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(2rem, 6vw, 5rem);
   padding: 6rem 0;
 }
-.hero__content {
-  max-width: 620px;
-  position: relative;
-  z-index: 2;
-}
-.hero__name {
-  font-size: clamp(3.2rem, 9vw, 7.5rem);
-  line-height: 0.95;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin: 0 0 0.2em;
-}
-.hero__name span {
-  display: block;
-  color: var(--rust-soft);
-}
-.hero__tagline {
-  font-family: var(--font-script);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  color: var(--red);
-  margin: 1.2rem 0 2rem;
-}
-.hero__meta {
+
+/* The opening-sequence stage: sigil with the actions tucked beneath. */
+.hero__stage {
   display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--smoke);
-  margin: 3rem 0 0;
-  padding-top: 2rem;
-  border-top: var(--line);
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3rem);
+  width: 100%;
 }
-.hero__meta strong { color: var(--bone); font-weight: 500; }
 
-.hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-/* Stack on narrow screens — the mandala leads, the name follows. */
 @media (max-width: 920px) {
   .hero { min-height: auto; }
-  .hero__inner {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    padding: 4rem 0;
-    text-align: center;
-  }
-  .hero__content { order: 2; max-width: none; margin-inline: auto; }
-  .hero__sigil   { order: 1; }
-  .hero__meta,
-  .hero__actions { justify-content: center; }
+  .hero__inner { padding: 4rem 0; }
 }
