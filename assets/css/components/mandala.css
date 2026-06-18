@@ -52,17 +52,17 @@
 .hero__sigil::before {
   content: "";
   position: absolute;
-  inset: -18%;
+  inset: -16%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--red-35) 0%,
-    var(--red-12) 42%,
+    var(--red-25) 0%,
+    var(--red-08) 44%,
     transparent 70%
   );
-  filter: blur(6px);
+  filter: blur(8px);
   z-index: 0;
-  animation: sigil-pulse 7s ease-in-out infinite;
+  animation: sigil-pulse 8s ease-in-out infinite;
 }
 
 .hero__disc {
@@ -73,26 +73,26 @@
   border-radius: 50%;
   /* Warm bone disc — a sheet of flash paper / patch of skin. */
   background:
-    radial-gradient(circle at 50% 40%,
-      var(--bone) 0%,
-      var(--bone) 55%,
-      var(--bone-2) 82%,
-      #b4afa4 100%);
+    radial-gradient(circle at 50% 42%,
+      #fbf9f4 0%,
+      var(--bone) 62%,
+      var(--bone-2) 88%,
+      #bdb8ad 100%);
   box-shadow:
-    0 0 0 1px var(--red),                       /* hairline blood-red rule  */
-    0 0 0 11px rgba(var(--bone-rgb), 0.04),     /* faint bone halo ring      */
-    0 36px 90px rgba(0, 0, 0, 0.62),            /* lift off the dark hero    */
-    inset 0 0 70px rgba(10, 10, 10, 0.16);      /* vignette into the paper   */
-  animation: sigil-breathe 7s ease-in-out infinite;
+    0 0 0 1px rgba(var(--red-rgb), 0.55),       /* fine blood-red rule       */
+    0 0 0 12px rgba(var(--bone-rgb), 0.03),     /* faint bone halo ring      */
+    0 30px 70px rgba(0, 0, 0, 0.5),             /* lift off the dark hero    */
+    inset 0 0 60px rgba(10, 10, 10, 0.10);      /* soft vignette             */
+  animation: sigil-breathe 8s ease-in-out infinite;
 }
 
-/* Engraved outer ring, sitting just outside the inked area. */
+/* Engraved hairline ring, sitting just outside the inked area. */
 .hero__disc::before {
   content: "";
   position: absolute;
-  inset: 3.5%;
+  inset: 3%;
   border-radius: 50%;
-  border: 1px solid rgba(10, 10, 10, 0.28);
+  border: 1px solid rgba(10, 10, 10, 0.18);
 }
 
 /* The hero canvas: true black ink, multiplied onto the bone.

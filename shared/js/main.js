@@ -43,6 +43,23 @@
     });
   }
 
+  // Reveal the floating WhatsApp button once the hero is scrolled past, so it
+  // never overlaps the hero. On pages without a hero it shows immediately.
+  function bindWhatsApp() {
+    var fab = document.querySelector('.wa-fab');
+    if (!fab || fab.dataset.bound) return;
+    fab.dataset.bound = '1';
+    var hero = document.querySelector('.hero');
+    if (!hero || typeof IntersectionObserver === 'undefined') {
+      fab.classList.add('is-visible');
+      return;
+    }
+    new IntersectionObserver(function (entries) {
+      // visible only when the hero is mostly out of view
+      fab.classList.toggle('is-visible', !entries[0].isIntersecting);
+    }, { threshold: 0.4 }).observe(hero);
+  }
+
   function bindActiveNav() {
     if (document.body.getAttribute('data-nav-current')) return;
     var path = location.pathname.split('/').pop() || 'index.html';
@@ -59,6 +76,7 @@
     bindReveal();
     bindChips();
     bindActiveNav();
+    bindWhatsApp();
   }
 
   if (document.readyState === 'loading') {
