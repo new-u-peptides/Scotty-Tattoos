@@ -155,7 +155,7 @@
   <!-- =========================================================
        HERO
   ========================================================= -->
-  <section class="hero hero--split">
+  <section class="hero">
     <div class="hero__bg"></div>
     <div class="container hero__inner">
       <div class="hero__content">
@@ -174,11 +174,14 @@
         </div>
       </div>
 
-      <div class="hero__art" aria-hidden="true">
-        <canvas class="mandala mandala--hero" data-mandala-morph
-          data-morph-count="11000" data-morph-dot="2.4" data-morph-ink="#efe7d8"
-          data-morph-variants="6" data-morph-seed="scotty-massa"
-          data-morph-hold="3000" data-morph-blend="2800" data-morph-flow="0.42"></canvas>
+      <div class="hero__sigil" aria-hidden="true">
+        <!-- The living mandala: one sacred-geometry piece in white linework
+             on the dark hero that cross-fades through Scotty's techniques —
+             dotwork → lotus → linework → shading — on a slow loop.
+             Engine: shared/js/mandala.js -->
+        <canvas class="mandala mandala--hero" data-mandala data-mandala-theme="white"
+          data-mandala-rings="7" data-mandala-dots="168" data-mandala-speed="0.6"
+          data-mandala-weight="1.8" data-mandala-cycle="34000"></canvas>
       </div>
     </div>
   </section>
@@ -208,6 +211,27 @@
         </div>
         <div class="split__media ph-studio-entrance reveal">
           <span class="badge">Studio · Birkirkara, MT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       MENTORSHIP — online tattoo mentorship (Massa Tattoo Social Club)
+       Placed high on the page: the course is a primary offering.
+  ========================================================= -->
+  <section class="section" id="mentorship">
+    <div class="container">
+      <div class="split">
+        <div class="split__media ph-portrait-tattooing reveal">
+          <span class="badge">Online · Mentorship</span>
+        </div>
+        <div class="reveal">
+          <p class="eyebrow">Online Mentorship</p>
+          <h2>Become a working tattoo artist.</h2>
+          <p class="lead">After sixteen years tattooing, I built the course I wish I'd had. The <strong>Massa Tattoo Social Club</strong> online mentorship takes you from portfolio audit to studio placement across nine structured phases, with direct feedback from me and a community of artists growing alongside you.</p>
+          <p>No three years sweeping floors. Nine phases · group mentorship · lifetime access · €497, 7-day money-back guarantee.</p>
+          <a href="https://massatattoocourse.aweb.page/onlinetattoomentorship" class="btn btn--primary mt-2" target="_blank" rel="noopener">Start Tattooing →</a>
         </div>
       </div>
     </div>
@@ -314,26 +338,6 @@
           <div class="style-card__num">06 / 06</div>
           <h3>Large-scale builds</h3>
           <p>Sleeves, backs, full legs and geometric bodysuits — long-term projects, planned session by session.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================================================
-       MENTORSHIP — online tattoo mentorship (Massa Tattoo Social Club)
-  ========================================================= -->
-  <section class="section">
-    <div class="container">
-      <div class="split">
-        <div class="split__media ph-portrait-tattooing reveal">
-          <span class="badge">Online · Mentorship</span>
-        </div>
-        <div class="reveal">
-          <p class="eyebrow">Online Mentorship</p>
-          <h2>Become a working tattoo artist.</h2>
-          <p class="lead">After sixteen years tattooing, I built the course I wish I'd had. The <strong>Massa Tattoo Social Club</strong> online mentorship takes you from portfolio audit to studio placement across nine structured phases, with direct feedback from me and a community of artists growing alongside you.</p>
-          <p>No three years sweeping floors. Nine phases · group mentorship · lifetime access · €497, 7-day money-back guarantee.</p>
-          <a href="https://massatattoocourse.aweb.page/onlinetattoomentorship" class="btn btn--primary mt-2" target="_blank" rel="noopener">Start Tattooing →</a>
         </div>
       </div>
     </div>
@@ -534,7 +538,7 @@
     <div data-include="partials/footer.html"></div>
 
   <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala-morph.js"></script>
+  <script src="shared/js/mandala.js"></script>
   <script src="shared/js/main.js"></script>
   <script src="shared/js/consult-popup.js"></script>
 </body>
