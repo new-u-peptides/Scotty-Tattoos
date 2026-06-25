@@ -5,16 +5,24 @@ optimised to ≤ 1600 px on the long edge at ~q82.
 
 ```
 assets/images/
-├── tattoos/    Finished tattoo work (backs .ph-1 … .ph-9)
+├── tattoos/    Finished tattoo work (backs .ph-1 … .ph-14)
 ├── artist/     Scotty portraits, lifestyle, working shots
 └── studio/     Studio interior — entrance, reception, treatment room, etc.
 ```
 
 ## Where each is used
 
-- `tattoos/*.jpg` → `.ph-1` … `.ph-9` in `assets/css/styles.css`,
-  used by the portfolio grid (`portfolio.html`) and the home featured-work
-  block (`index.html`).
+- `tattoos/*.webp` → `.ph-1` … `.ph-14` in
+  `assets/css/components/portfolio.css`. `.ph-1` … `.ph-9` drive the home
+  featured-work block (`index.html`), the geometric gallery
+  (`geometric-tattoos.html`) and the first nine portfolio tiles; `.ph-10` …
+  `.ph-14` extend the portfolio archive (`portfolio.html`). The current set is
+  the black-and-grey geometric / mandala / dotwork library:
+  `geo-sleeve-architectural`, `geo-owl-calf`, `geo-chrysanthemum-leg`,
+  `mandala-nape`, `geo-ribs-thigh`, `geo-skull-back`, `mandala-hand`,
+  `mandala-elbow`, `geo-serpent-forearm`, `mandala-shoulder`,
+  `mandala-half-sleeve`, `geo-lion-leg`, `geo-suminagashi-hip`,
+  `geo-hexagon-thigh`.
 - `artist/portrait-bw-chair.webp` → backdrop of the home hero
   (`.hero__bg`, dimmed with red/black overlays).
 - `artist/scotty-tattooing.jpg` → About bio split-media

@@ -18,7 +18,7 @@
   background:
     linear-gradient(180deg, rgba(var(--ink-rgb), 0.82) 0%, rgba(var(--ink-rgb), 0.96) 100%),
     radial-gradient(ellipse at 20% 28%, var(--red-18), transparent 55%),
-    url('../images/artist/portrait-bw-chair.webp') 22% center / cover no-repeat,
+    url('../../images/artist/portrait-bw-chair.webp') 22% center / cover no-repeat,
     var(--ink);
 }
 .hero__bg::after {
