@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="ogTitle ogDesc">
-  <title id="ogTitle">Scotty Massa — Tattoo Artist, Malta &amp; Worldwide</title>
-  <desc id="ogDesc">Open Graph share card for scottymassa.com. Dark ink background with rust-red and gold radial accents, serif name "SCOTTY MASSA" centered in bone, hairline divider, and tracked subtitle "TATTOO ARTIST · MALTA · WORLDWIDE".</desc>
+  <title id="ogTitle">Scotty Massa — Geometric &amp; Ornamental Tattoo Artist, Malta</title>
+  <desc id="ogDesc">Open Graph share card for scottymassa.com. Dark ink background with rust-red and gold radial accents, serif name "SCOTTY MASSA" centered in bone, hairline divider, and tracked subtitle "GEOMETRIC &amp; ORNAMENTAL · MALTA".</desc>
 
   <defs>
     <radialGradient id="rustCorner" cx="0%" cy="0%" r="75%" fx="0%" fy="0%">
@@ -56,7 +56,7 @@
         font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
         font-size="22"
         letter-spacing="8"
-        fill="#d8cfbf">TATTOO ARTIST · MALTA · WORLDWIDE</text>
+        fill="#d8cfbf">GEOMETRIC &amp; ORNAMENTAL · MALTA</text>
 
   <!-- Bottom-right URL -->
   <text x="1128" y="582"
