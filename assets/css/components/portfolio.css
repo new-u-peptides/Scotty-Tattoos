@@ -62,23 +62,30 @@
    split-media boxes. Use a separate ph-portrait-* / ph-studio-* namespace
    for non-tattoo photos. All photos use object-fit:cover via background-size. */
 .ph-1, .ph-2, .ph-3, .ph-4, .ph-5, .ph-6, .ph-7, .ph-8, .ph-9,
+.ph-10, .ph-11, .ph-12, .ph-13, .ph-14,
 [class*="ph-portrait-"], [class*="ph-studio-"] {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* Tattoo photos */
-.ph-1 { background-image: url('../../images/tattoos/chest-mandala.jpg'); }
-.ph-2 { background-image: url('../../images/tattoos/leg-sleeve-mandala.jpg'); }
-.ph-3 { background-image: url('../../images/tattoos/back-mandala.jpg'); }
-.ph-4 { background-image: url('../../images/tattoos/leg-chrysanthemum.jpg'); }
-.ph-5 { background-image: url('../../images/tattoos/hip-leopard.jpg'); }
-.ph-6 { background-image: url('../../images/tattoos/back-in-progress.jpg'); }
-/* Additional distinct shots + alt focal-point repeats further down the grid */
-.ph-7 { background-image: url('../../images/tattoos/wrist-mandala.jpg'); }
-.ph-8 { background-image: url('../../images/tattoos/leg-chrysanthemum.jpg'); background-position: bottom center; }
-.ph-9 { background-image: url('../../images/tattoos/back-mandala.jpg'); background-position: bottom center; }
+/* Tattoo photos — black-and-grey geometric / mandala / dotwork work.
+   ph-1..9 drive the home featured block, the geometric-tattoos gallery and
+   the first nine portfolio tiles; ph-10..14 extend the portfolio archive. */
+.ph-1 { background-image: url('../../images/tattoos/geo-sleeve-architectural.webp'); }
+.ph-2 { background-image: url('../../images/tattoos/geo-owl-calf.webp'); }
+.ph-3 { background-image: url('../../images/tattoos/geo-chrysanthemum-leg.webp'); }
+.ph-4 { background-image: url('../../images/tattoos/mandala-nape.webp'); }
+.ph-5 { background-image: url('../../images/tattoos/geo-ribs-thigh.webp'); }
+.ph-6 { background-image: url('../../images/tattoos/geo-skull-back.webp'); }
+.ph-7 { background-image: url('../../images/tattoos/mandala-hand.webp'); }
+.ph-8 { background-image: url('../../images/tattoos/mandala-elbow.webp'); }
+.ph-9 { background-image: url('../../images/tattoos/geo-serpent-forearm.webp'); }
+.ph-10 { background-image: url('../../images/tattoos/mandala-shoulder.webp'); }
+.ph-11 { background-image: url('../../images/tattoos/mandala-half-sleeve.webp'); }
+.ph-12 { background-image: url('../../images/tattoos/geo-lion-leg.webp'); }
+.ph-13 { background-image: url('../../images/tattoos/geo-suminagashi-hip.webp'); }
+.ph-14 { background-image: url('../../images/tattoos/geo-hexagon-thigh.webp'); }
 
 /* Portraits */
 .ph-portrait-tattooing  { background-image: url('../../images/artist/scotty-tattooing.jpg'); }
@@ -95,7 +102,8 @@
 .ph-studio-treatment    { background-image: url('../../images/studio/treatment-room.jpg'); }
 .ph-studio-piano        { background-image: url('../../images/studio/piano-flash.jpg'); }
 
-/* Hip/leopard tile is a tall image; in wide layouts shift focus up so the
-   leopard face stays in frame instead of cropping to a hip patch. */
-.tile--wide .ph-5 { background-position: top center; }
+/* Tall portrait sources in wide (landscape) tiles: nudge the focal point up so
+   the main motif stays in frame instead of cropping to a mid-limb band. */
+.tile--wide .ph-6  { background-position: center 30%; } /* back skull */
+.tile--wide .ph-10 { background-position: center 35%; } /* shoulder mandala */
 
