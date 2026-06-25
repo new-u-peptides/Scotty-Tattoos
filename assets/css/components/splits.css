@@ -11,7 +11,12 @@
 }
 .split__media {
   aspect-ratio: 4 / 5;
-  background: var(--ink-3);
+  /* Use background-color, not the `background` shorthand, so a .ph-* image set on
+     the same element is not reset to none by the cascade (portfolio.css loads first). */
+  background-color: var(--ink-3);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border: var(--line);
   position: relative;
   overflow: hidden;
