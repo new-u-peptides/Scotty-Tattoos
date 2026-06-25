@@ -1,6 +1,8 @@
-/* Hero — brand copy on the left, a full-bleed field of living dotwork
-   mandalas on the right. The animation engine lives in
-   shared/js/mandala-morph.js; canvas placement is in mandala.css. */
+/* Hero — type on the left, the living mandala sigil on the right: one
+   sacred-geometry piece in white linework on the dark hero that
+   cross-fades through Scotty's techniques (dotwork → lotus → linework →
+   shading). The engine lives in shared/js/mandala.js; the sigil stage
+   and red glow are styled in mandala.css. */
 .hero {
   position: relative;
   min-height: 92vh;
@@ -82,16 +84,10 @@
 
 .hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-/* The mandala field: a tall rectangle on the right that bleeds to the
-   viewport edge. The canvas fills it (placement in mandala.css). */
-.hero__art {
-  position: relative;
-  align-self: stretch;
-  min-height: min(78vh, 760px);
-  margin-right: calc(50% - 50vw);   /* bleed to the right edge */
-}
+/* The sigil sits in the right column, centred. Its disc, halo, blend
+   and breathing all live in mandala.css. */
 
-/* Stack on narrow screens — the mandala leads, the copy follows. */
+/* Stack on narrow screens — the sigil leads, the copy follows. */
 @media (max-width: 920px) {
   .hero { min-height: auto; }
   .hero__inner {
@@ -100,10 +96,5 @@
     padding: 3.5rem 0;
   }
   .hero__content { order: 2; max-width: none; }
-  .hero__art {
-    order: 1;
-    min-height: 56vh;
-    margin-right: calc(50% - 50vw);
-    margin-left: calc(50% - 50vw);  /* full-bleed both sides on mobile */
-  }
+  .hero__sigil { order: 1; }
 }
