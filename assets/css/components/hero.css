@@ -1,8 +1,8 @@
 /* Hero — type on the left, the living mandala sigil on the right: one
-   sacred-geometry piece on a bone flash-paper disc that cross-fades
-   through Scotty's techniques (dotwork → lotus → linework → shading).
-   The engine lives in shared/js/mandala.js; the disc, halo and
-   breathing are styled in mandala.css. */
+   sacred-geometry piece in white linework on the dark hero that
+   cross-fades through Scotty's techniques (dotwork → lotus → linework →
+   shading). The engine lives in shared/js/mandala.js; the sigil stage
+   and red glow are styled in mandala.css. */
 .hero {
   position: relative;
   min-height: 92vh;

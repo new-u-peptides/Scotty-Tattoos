@@ -2,14 +2,14 @@
    mandala.css — the living mandala system
    ---------------------------------------------------------
    Styling layer that pairs with shared/js/mandala.js. The JS
-   draws bold black linework + dotwork onto any <canvas
-   data-mandala>; this sheet places it, gives the homepage hero
-   its bone "flash-paper" disc, the blood-red halo, and the
-   slow breathing that makes the sigil feel alive.
+   draws the mandala onto any <canvas data-mandala>; this sheet
+   places it. The homepage hero renders it as WHITE linework +
+   dotwork on the dark hero (data-mandala-theme="white"), floating
+   free with a soft blood-red glow behind it.
 
    Variants:
      .mandala            base canvas (full-bleed in its parent)
-     .mandala--hero      the homepage centerpiece (black ink on bone)
+     .mandala--hero      the homepage centerpiece (white ink on black)
      .mandala--ornament  subtle decorative use elsewhere
    ========================================================= */
 
@@ -31,11 +31,10 @@
 
 /* ---------------------------------------------------------
    HERO SIGIL
-   The bold black dotwork mandala that anchors the homepage.
-   .hero__sigil  — stage (holds the red halo + the disc)
-   .hero__disc   — bone "skin / flash-paper" the ink lives on
-   .mandala--hero — the canvas, multiply-blended so the black
-                    ink truly soaks into the bone.
+   The living mandala that anchors the homepage — white linework
+   and dotwork on the dark hero, with a soft red life-glow behind.
+   .hero__sigil   — centred square stage (holds the glow + canvas)
+   .mandala--hero — the canvas itself
    --------------------------------------------------------- */
 .hero__sigil {
   position: relative;
@@ -43,91 +42,49 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 540px;
+  max-width: 560px;
   aspect-ratio: 1;
   margin-inline: auto;
 }
 
-/* Blood-red energy halo behind the disc — the "life" glow. */
+/* Soft blood-red glow behind the mandala — the "life". */
 .hero__sigil::before {
   content: "";
   position: absolute;
-  inset: -18%;
+  inset: -6%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--red-35) 0%,
-    var(--red-12) 42%,
-    transparent 70%
+    var(--red-25) 0%,
+    var(--red-08) 45%,
+    transparent 72%
   );
-  filter: blur(6px);
+  filter: blur(10px);
   z-index: 0;
   animation: sigil-pulse 7s ease-in-out infinite;
 }
 
-.hero__disc {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  /* Warm bone disc — a sheet of flash paper / patch of skin. */
-  background:
-    radial-gradient(circle at 50% 40%,
-      var(--bone) 0%,
-      var(--bone) 55%,
-      var(--bone-2) 82%,
-      #b4afa4 100%);
-  box-shadow:
-    0 0 0 1px var(--red),                       /* hairline blood-red rule  */
-    0 0 0 11px rgba(var(--bone-rgb), 0.04),     /* faint bone halo ring      */
-    0 36px 90px rgba(0, 0, 0, 0.62),            /* lift off the dark hero    */
-    inset 0 0 70px rgba(10, 10, 10, 0.16);      /* vignette into the paper   */
-  animation: sigil-breathe 7s ease-in-out infinite;
-}
-
-/* Engraved outer ring, sitting just outside the inked area. */
-.hero__disc::before {
-  content: "";
-  position: absolute;
-  inset: 3.5%;
-  border-radius: 50%;
-  border: 1px solid rgba(10, 10, 10, 0.28);
-}
-
-/* The hero canvas: true black ink, multiplied onto the bone.
-   NB: <canvas> is a replaced element, so `width/height: auto` would
-   collapse to its intrinsic size instead of filling the inset box.
-   Use explicit symmetric offsets to keep it a centred square. */
+/* The hero canvas: white linework on the dark hero — no blend mode,
+   so the light ink stays bright instead of multiplying to black. */
 .mandala--hero {
   position: absolute;
-  top: 7%;
-  left: 7%;
-  width: 86%;
-  height: 86%;
-  z-index: 2;
-  mix-blend-mode: multiply;
-}
-
-@keyframes sigil-breathe {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.022); }
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 @keyframes sigil-pulse {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.06); }
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.05); }
 }
 
 @media (max-width: 920px) {
-  .hero__sigil { max-width: 360px; }
+  .hero__sigil { max-width: 380px; }
 }
 
 /* Stillness for anyone who asks for it. The JS already renders a
-   static frame under reduced motion; kill the CSS life too. */
+   static frame under reduced motion; kill the CSS glow too. */
 @media (prefers-reduced-motion: reduce) {
-  .hero__disc,
-  .hero__sigil::before {
-    animation: none;
-  }
+  .hero__sigil::before { animation: none; }
 }
