@@ -8,27 +8,46 @@
   margin-bottom: 3.5rem;
 }
 
+/* Aggregate-rating chips — one per platform (Google, Facebook). */
+.reviews__ratings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
 .reviews__rating {
   display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.4rem 0.75rem;
-  margin-top: 1rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.15rem;
+  border: var(--line);
+  background: var(--ink-2);
 }
+.reviews__badge { flex: 0 0 auto; display: grid; place-items: center; }
+.reviews__badge svg { display: block; }
 .reviews__stars {
   color: var(--red);
-  font-size: 1.35rem;
-  letter-spacing: 0.15em;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
   line-height: 1;
 }
 .reviews__meta {
   font-family: var(--font-body);
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
   color: var(--bone-2);
+  white-space: nowrap;
 }
 .reviews__meta strong { color: var(--bone); font-weight: 600; }
+
+/* Outbound "read more" buttons, one per platform. */
+.reviews__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
 
 .reviews__grid {
   display: grid;
