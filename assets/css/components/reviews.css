@@ -5,24 +5,28 @@
    ========================================================= */
 .reviews__head {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.75rem;
 }
 
-/* Aggregate-rating chips — one per platform (Google, Facebook). */
-.reviews__ratings {
+/* Each platform (Google, Facebook) is its own group with a header row —
+   rating on the left, an outbound link on the right, rule underneath. */
+.reviews__group + .reviews__group { margin-top: 3.5rem; }
+
+.reviews__group-head {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.9rem;
-  margin-top: 1.5rem;
+  gap: 0.6rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.1rem;
+  border-bottom: var(--line);
 }
-.reviews__rating {
+
+.reviews__platform {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.7rem 1.15rem;
-  border: var(--line);
-  background: var(--ink-2);
 }
 .reviews__badge { flex: 0 0 auto; display: grid; place-items: center; }
 .reviews__badge svg { display: block; }
@@ -34,20 +38,25 @@
 }
 .reviews__meta {
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   letter-spacing: 0.02em;
   color: var(--bone-2);
-  white-space: nowrap;
 }
 .reviews__meta strong { color: var(--bone); font-weight: 600; }
 
-/* Outbound "read more" buttons, one per platform. */
-.reviews__links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
+/* Outbound "read more" link in each group header. */
+.reviews__more {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone-3);
+  white-space: nowrap;
+  transition: color 0.2s ease;
 }
+.reviews__more:hover,
+.reviews__more:focus-visible { color: var(--red-soft); }
 
 .reviews__grid {
   display: grid;
