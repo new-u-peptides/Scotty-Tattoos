@@ -61,30 +61,29 @@
   <section class="section section--tight">
     <div class="container">
       <div class="chips">
-        <button class="chip is-active">All</button>
-        <button class="chip">Dotwork</button>
-        <button class="chip">Mandala</button>
-        <button class="chip">Geometric</button>
-        <button class="chip">Decorative</button>
-        <button class="chip">Blackwork</button>
-        <button class="chip">In progress</button>
+        <button class="chip is-active" data-filter="all">All</button>
+        <button class="chip" data-filter="dotwork">Dotwork</button>
+        <button class="chip" data-filter="mandala">Mandala</button>
+        <button class="chip" data-filter="geometric">Geometric</button>
+        <button class="chip" data-filter="ornamental">Ornamental</button>
+        <button class="chip" data-filter="blackwork">Blackwork</button>
       </div>
 
       <div class="grid grid--portfolio">
-        <div class="tile tile--portrait"><div class="tile__img ph-1"></div><div class="tile__overlay"><span>Geometric Sleeve · Full arm</span><h4>Architectural Sleeve</h4></div></div>
-        <div class="tile tile--wide"><div class="tile__img ph-6"></div><div class="tile__overlay"><span>Blackwork Geometric · Back</span><h4>Skull &amp; Geometry</h4></div></div>
-        <div class="tile tile--portrait"><div class="tile__img ph-2"></div><div class="tile__overlay"><span>Dotwork · Calf</span><h4>Owl Mandala</h4></div></div>
-        <div class="tile tile--portrait"><div class="tile__img ph-3"></div><div class="tile__overlay"><span>Geometric · Leg sleeve</span><h4>Chrysanthemum Geometry</h4></div></div>
-        <div class="tile"><div class="tile__img ph-4"></div><div class="tile__overlay"><span>Mandala · Nape</span><h4>Nape Mandala</h4></div></div>
-        <div class="tile"><div class="tile__img ph-5"></div><div class="tile__overlay"><span>Ornamental Geometric · Ribs &amp; thigh</span><h4>Ribs &amp; Thigh</h4></div></div>
-        <div class="tile"><div class="tile__img ph-9"></div><div class="tile__overlay"><span>Geometric · Forearm</span><h4>Serpent &amp; Geometry</h4></div></div>
-        <div class="tile tile--wide"><div class="tile__img ph-10"></div><div class="tile__overlay"><span>Mandala · Shoulder</span><h4>Shoulder Mandala</h4></div></div>
-        <div class="tile"><div class="tile__img ph-7"></div><div class="tile__overlay"><span>Linework · Hand</span><h4>Hand Mandala</h4></div></div>
-        <div class="tile"><div class="tile__img ph-8"></div><div class="tile__overlay"><span>Dotwork Mandala · Elbow</span><h4>Elbow Mandala</h4></div></div>
-        <div class="tile tile--portrait"><div class="tile__img ph-11"></div><div class="tile__overlay"><span>Mandala · Half sleeve</span><h4>Mendhi Half Sleeve</h4></div></div>
-        <div class="tile tile--portrait"><div class="tile__img ph-12"></div><div class="tile__overlay"><span>Geometric · Leg sleeve</span><h4>Lion Geometry</h4></div></div>
-        <div class="tile"><div class="tile__img ph-13"></div><div class="tile__overlay"><span>Ornamental · Hip</span><h4>Suminagashi Flow</h4></div></div>
-        <div class="tile"><div class="tile__img ph-14"></div><div class="tile__overlay"><span>Geometric · Thigh</span><h4>Hexagon Stack</h4></div></div>
+        <div class="tile tile--portrait" data-category="geometric"><div class="tile__img ph-1"></div><div class="tile__overlay"><span>Geometric Sleeve · Full arm</span><h4>Architectural Sleeve</h4></div></div>
+        <div class="tile tile--wide" data-category="blackwork geometric"><div class="tile__img ph-6"></div><div class="tile__overlay"><span>Blackwork Geometric · Back</span><h4>Skull &amp; Geometry</h4></div></div>
+        <div class="tile tile--portrait" data-category="dotwork mandala geometric"><div class="tile__img ph-2"></div><div class="tile__overlay"><span>Dotwork · Calf</span><h4>Owl Mandala</h4></div></div>
+        <div class="tile tile--portrait" data-category="geometric ornamental"><div class="tile__img ph-3"></div><div class="tile__overlay"><span>Geometric · Leg sleeve</span><h4>Chrysanthemum Geometry</h4></div></div>
+        <div class="tile" data-category="mandala geometric"><div class="tile__img ph-4"></div><div class="tile__overlay"><span>Mandala · Nape</span><h4>Nape Mandala</h4></div></div>
+        <div class="tile" data-category="ornamental geometric"><div class="tile__img ph-5"></div><div class="tile__overlay"><span>Ornamental Geometric · Ribs &amp; thigh</span><h4>Ribs &amp; Thigh</h4></div></div>
+        <div class="tile" data-category="geometric"><div class="tile__img ph-9"></div><div class="tile__overlay"><span>Geometric · Forearm</span><h4>Serpent &amp; Geometry</h4></div></div>
+        <div class="tile tile--wide" data-category="mandala geometric"><div class="tile__img ph-10"></div><div class="tile__overlay"><span>Mandala · Shoulder</span><h4>Shoulder Mandala</h4></div></div>
+        <div class="tile" data-category="mandala geometric"><div class="tile__img ph-7"></div><div class="tile__overlay"><span>Linework · Hand</span><h4>Hand Mandala</h4></div></div>
+        <div class="tile" data-category="dotwork mandala geometric"><div class="tile__img ph-8"></div><div class="tile__overlay"><span>Dotwork Mandala · Elbow</span><h4>Elbow Mandala</h4></div></div>
+        <div class="tile tile--portrait" data-category="mandala ornamental geometric"><div class="tile__img ph-11"></div><div class="tile__overlay"><span>Mandala · Half sleeve</span><h4>Mendhi Half Sleeve</h4></div></div>
+        <div class="tile tile--portrait" data-category="geometric"><div class="tile__img ph-12"></div><div class="tile__overlay"><span>Geometric · Leg sleeve</span><h4>Lion Geometry</h4></div></div>
+        <div class="tile" data-category="ornamental"><div class="tile__img ph-13"></div><div class="tile__overlay"><span>Ornamental · Hip</span><h4>Suminagashi Flow</h4></div></div>
+        <div class="tile" data-category="geometric"><div class="tile__img ph-14"></div><div class="tile__overlay"><span>Geometric · Thigh</span><h4>Hexagon Stack</h4></div></div>
       </div>
 
       <div class="text-center mt-4">

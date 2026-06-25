@@ -34,11 +34,20 @@
     document.querySelectorAll('.chips').forEach(function (group) {
       if (group.dataset.bound) return;
       group.dataset.bound = '1';
+      var grid = (group.parentElement && group.parentElement.querySelector('.grid--portfolio')) ||
+                 document.querySelector('.grid--portfolio');
       group.addEventListener('click', function (e) {
         var chip = e.target.closest('.chip');
         if (!chip) return;
         group.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('is-active'); });
         chip.classList.add('is-active');
+        if (!grid) return;
+        var filter = chip.getAttribute('data-filter') || 'all';
+        grid.querySelectorAll('.tile').forEach(function (tile) {
+          var cats = (tile.getAttribute('data-category') || '').split(/\s+/);
+          var show = filter === 'all' || cats.indexOf(filter) !== -1;
+          tile.style.display = show ? '' : 'none';
+        });
       });
     });
   }
