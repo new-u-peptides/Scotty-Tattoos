@@ -56,6 +56,29 @@
             "opens": "11:00",
             "closes": "16:00"
           }
+        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5",
+          "bestRating": "5",
+          "worstRating": "1",
+          "reviewCount": "18"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": { "@type": "Person", "name": "Christopher Borg" },
+            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5", "worstRating": "1" },
+            "reviewBody": "An amazing artist — great help for choosing and drawing. I recommend Scott. Plus he's a cool guy to talk to while he's tattooing you. Thanks for everything and for my amazing tattoo. Amazing results!",
+            "publisher": { "@type": "Organization", "name": "Facebook" }
+          },
+          {
+            "@type": "Review",
+            "author": { "@type": "Person", "name": "Davie Gillan" },
+            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5", "worstRating": "1" },
+            "reviewBody": "Scotty is a great, easy-going guy as well as a fantastic artist. Scott completed my full sleeve over a period of 11 months and started the other arm before I was diagnosed with cancer. Throughout my treatment he kept in touch and has remained a friend ever since.",
+            "publisher": { "@type": "Organization", "name": "Facebook" }
+          }
         ]
       },
       {
@@ -360,6 +383,59 @@
         <blockquote>The needle is just the tool. The real work is listening — to the skin, to the story, to what someone will carry for the rest of their life.</blockquote>
         <cite><strong>Scotty Massa</strong> — Malta, 2026</cite>
       </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       REVIEWS — Facebook recommendations
+  ========================================================= -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="reviews__head">
+        <p class="eyebrow" style="justify-content:center;">Reviews</p>
+        <h2 class="mb-0">Loved by the people who wear it.</h2>
+        <div class="reviews__rating" role="img"
+             aria-label="Rated 5 out of 5 — 100% recommend across 18 Facebook reviews">
+          <span class="reviews__stars" aria-hidden="true">★★★★★</span>
+          <span class="reviews__meta"><strong>100% recommend</strong> · 18 reviews on Facebook</span>
+        </div>
+      </div>
+
+      <div class="reviews__grid">
+        <figure class="review-card reveal">
+          <div class="review-card__top">
+            <span class="review-card__avatar" aria-hidden="true">CB</span>
+            <figcaption class="review-card__who">
+              <span class="review-card__name">Christopher Borg</span>
+              <span class="review-card__rec">Recommends Massa Tattoo</span>
+            </figcaption>
+            <span class="review-card__src" aria-label="From Facebook" title="From Facebook">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+            </span>
+          </div>
+          <span class="review-card__stars" aria-hidden="true">★★★★★</span>
+          <blockquote class="review-card__body">An amazing artist — great help for choosing and drawing. I recommend Scott. Plus he's a cool guy to talk to while he's tattooing you. Thanks for everything and for my amazing tattoo 😉 Amazing results!</blockquote>
+        </figure>
+
+        <figure class="review-card reveal">
+          <div class="review-card__top">
+            <span class="review-card__avatar" aria-hidden="true">DG</span>
+            <figcaption class="review-card__who">
+              <span class="review-card__name">Davie Gillan</span>
+              <span class="review-card__rec">Recommends Massa Tattoo</span>
+            </figcaption>
+            <span class="review-card__src" aria-label="From Facebook" title="From Facebook">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+            </span>
+          </div>
+          <span class="review-card__stars" aria-hidden="true">★★★★★</span>
+          <blockquote class="review-card__body">Scotty is a great, easy-going guy as well as a fantastic artist. Scott completed my full sleeve over a period of 11 months and started the other arm before I was diagnosed with cancer. Throughout my treatment he kept in touch and has remained a friend ever since.</blockquote>
+        </figure>
+      </div>
+
+      <p class="text-center mt-2">
+        <a class="btn btn--ghost" href="https://www.facebook.com/mtscmalta/reviews" target="_blank" rel="noopener">Read all reviews on Facebook →</a>
+      </p>
     </div>
   </section>
 

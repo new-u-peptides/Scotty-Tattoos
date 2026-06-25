@@ -1,0 +1,110 @@
+/* =========================================================
+   Reviews — Facebook recommendations + aggregate rating.
+   Dark section with ink cards (matches the styles grid), red
+   star rows, and a small platform badge per card.
+   ========================================================= */
+.reviews__head {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.reviews__rating {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem 0.75rem;
+  margin-top: 1rem;
+}
+.reviews__stars {
+  color: var(--red);
+  font-size: 1.35rem;
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+.reviews__meta {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--bone-2);
+}
+.reviews__meta strong { color: var(--bone); font-weight: 600; }
+
+.reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+}
+@media (max-width: 760px) { .reviews__grid { grid-template-columns: 1fr; } }
+
+.review-card {
+  background: var(--ink-2);
+  border: var(--line);
+  padding: 2rem 1.9rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.review-card:hover {
+  border-color: var(--red-35);
+  transform: translateY(-3px);
+}
+
+.review-card__top {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.review-card__avatar {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--red-deep);
+  color: var(--bone);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.review-card__who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  margin-right: auto;        /* pushes the platform badge to the right */
+}
+.review-card__name { font-weight: 600; color: var(--bone); }
+.review-card__rec {
+  font-size: 0.78rem;
+  color: var(--bone-3);
+  letter-spacing: 0.02em;
+}
+
+.review-card__src {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+.review-card__src svg { display: block; }
+
+.review-card__stars {
+  color: var(--red);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+.review-card__body {
+  margin: 0;
+  color: var(--bone-2);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  /* slim accent rule down the left of the quote */
+  border-left: 2px solid var(--red-25);
+  padding-left: 1rem;
+}
