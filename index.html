@@ -175,13 +175,15 @@
       </div>
 
       <div class="hero__sigil" aria-hidden="true">
-        <!-- The living mandala: one sacred-geometry piece in white linework
-             on the dark hero that cross-fades through Scotty's techniques —
-             dotwork → lotus → linework → shading — on a slow loop.
-             Engine: shared/js/mandala.js -->
-        <canvas class="mandala mandala--hero" data-mandala data-mandala-theme="white"
-          data-mandala-rings="7" data-mandala-dots="168" data-mandala-speed="0.6"
-          data-mandala-weight="1.8" data-mandala-cycle="34000"></canvas>
+        <!-- Scotty's living solar mandala: assembles out of gold ink (dotwork +
+             linework) into the brand's tessellated-triangle sun logo, holds
+             luminous, then slowly morphs through a set of geometric mandalas
+             and returns home. Engine: shared/js/mandala-morph.js -->
+        <canvas class="mandala mandala--hero" data-mandala-morph
+          data-morph-count="6500" data-morph-dot="2.1" data-morph-ink="#f4e3ad"
+          data-morph-variants="6" data-morph-seed="scotty-massa"
+          data-morph-hold="3000" data-morph-blend="2400" data-morph-reveal="2600"
+          data-morph-flow="0.42"></canvas>
       </div>
     </div>
   </section>
@@ -538,7 +540,7 @@
     <div data-include="partials/footer.html"></div>
 
   <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala.js"></script>
+  <script src="shared/js/mandala-morph.js"></script>
   <script src="shared/js/main.js"></script>
   <script src="shared/js/consult-popup.js"></script>
 </body>
