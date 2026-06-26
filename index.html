@@ -178,22 +178,18 @@
         </div>
       </div>
 
-      <div class="hero__sigil">
-        <figure class="hero__photo">
-          <img src="assets/images/artist/scotty-tattooing-back.webp"
-               width="1067" height="1600" loading="eager" decoding="async"
-               alt="Scotty Massa tattooing a large ornamental back piece at his Birkirkara studio in Malta" />
-        </figure>
       <div class="hero__sigil" aria-hidden="true">
-        <!-- Scotty's living solar mandala: assembles out of gold ink (dotwork +
-             linework) into the brand's tessellated-triangle sun logo, holds
-             luminous, then slowly morphs through a set of geometric mandalas
-             and returns home. Engine: shared/js/mandala-morph.js -->
+        <!-- Scotty's hero mandala: fine black DOTWORK in the language of his
+             tattoos — 200k stipple dots forming layered mandalas that morph
+             smoothly in and out (lotus -> rosette -> geometric -> star -> seed
+             -> lace), bone ink floating on the dark hero. Slow turn + gentle
+             cross-dissolve, no burst. Engine: shared/js/mandala-morph.js -->
         <canvas class="mandala mandala--hero" data-mandala-morph
-          data-morph-count="40000" data-morph-dot="0.2" data-morph-dotmin="0.1" data-morph-ink="#f5ead6"
-          data-morph-variants="6" data-morph-seed="scotty-massa" data-morph-accent="0"
-          data-morph-hold="3000" data-morph-blend="2800" data-morph-reveal="2600"
-          data-morph-flow="0.34"></canvas>
+          data-morph-cycle="all" data-morph-ink="#e9ddca"
+          data-morph-fit="0.95" data-morph-count="200000" data-morph-dot="0.62"
+          data-morph-alpha="0.42" data-morph-halo="0"
+          data-morph-reveal="1900" data-morph-hold="3600" data-morph-blend="2100"
+          data-morph-seed="scotty-massa"></canvas>
       </div>
     </div>
   </section>
