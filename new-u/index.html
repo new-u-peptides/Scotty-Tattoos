@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>document.documentElement.classList.add('js');</script>
+  <title>New-U — Modern Payments Infrastructure for Growing Businesses</title>
+  <meta name="description" content="New-U is the all-in-one payments platform: accept cards and wallets, send instant payouts, fight fraud, and manage cash flow — with transparent pricing and bank-grade security." />
+  <meta name="theme-color" content="#0a0e2a" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="New-U — Modern Payments Infrastructure" />
+  <meta property="og:description" content="Accept payments, send instant payouts, and grow without limits. Transparent pricing, bank-grade security, developer-first API." />
+  <meta property="og:site_name" content="New-U" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header" id="top">
+    <div class="wrap">
+      <nav class="nav" id="nav">
+        <a class="brand" href="#top" aria-label="New-U home">
+          <svg class="logo" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <rect width="40" height="40" rx="11" fill="url(#lg)"/>
+            <path d="M13 11v13.5a6 6 0 0 0 12 0V11" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+            <circle cx="28.5" cy="12" r="3.2" fill="#14c8a6"/>
+            <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6d63ff"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+          </svg>
+          New-U
+        </a>
+        <ul class="nav__links">
+          <li><a href="#features">Product</a></li>
+          <li><a href="#developers">Developers</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <div class="nav__cta">
+          <a class="signin" href="#signin">Sign in</a>
+          <a class="btn btn--primary" href="#signup">Start now</a>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero__grid">
+          <div class="hero__copy">
+            <span class="eyebrow hero__eyebrow">Modern payment infrastructure</span>
+            <h1>Get paid faster.<br><span class="grad">Grow without limits.</span></h1>
+            <p class="hero__sub">New-U gives growing businesses one platform to accept payments, send payouts, and manage cash flow — with transparent pricing and bank-grade security.</p>
+            <div class="hero__actions">
+              <a class="btn btn--primary btn--lg" href="#signup">Start now <span class="arrow">→</span></a>
+              <a class="btn btn--ghost btn--on-dark btn--lg" href="#contact">Talk to sales</a>
+            </div>
+            <ul class="hero__trust">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> No setup fees</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Cancel anytime</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> PCI DSS Level 1</li>
+            </ul>
+          </div>
+
+          <div class="hero__visual" aria-hidden="true">
+            <div class="pay-card">
+              <div class="pay-card__top">
+                <span class="pay-card__brand">New-U</span>
+                <span class="pay-card__chip"></span>
+              </div>
+              <div class="pay-card__num">4821&nbsp;&bull;&bull;&bull;&bull;&nbsp;&bull;&bull;&bull;&bull;&nbsp;9043</div>
+              <div class="pay-card__row">
+                <div>
+                  <div class="pay-card__label">Cardholder</div>
+                  <div class="pay-card__val">YOUR BUSINESS</div>
+                </div>
+                <div class="pay-card__net"><span></span><span></span></div>
+              </div>
+            </div>
+
+            <div class="float-card float-card--txn">
+              <span class="ic">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div class="meta">
+                <b>Payment received</b>
+                <small>Visa •••• 4242</small>
+              </div>
+              <span class="amt">+€248.00</span>
+            </div>
+
+            <div class="float-card float-card--bal">
+              <div class="label">Today's volume</div>
+              <div class="num" data-count="18420" data-prefix="€">€18,420</div>
+              <div class="spark">
+                <i style="height:42%"></i><i style="height:58%"></i><i style="height:40%"></i>
+                <i style="height:72%"></i><i style="height:55%"></i><i style="height:86%"></i><i style="height:100%"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LOGO BAR ===================== -->
+    <section class="logos">
+      <div class="wrap">
+        <p>Powering payments for 4,000+ ambitious businesses</p>
+        <div class="logos__row">
+          <span>◆ Northwind</span>
+          <span>◇ Lumen</span>
+          <span>● Cadence</span>
+          <span>▲ Vertex</span>
+          <span>✦ Halcyon</span>
+          <span>⬡ Orbit</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS ===================== -->
+    <section class="section section--tight">
+      <div class="wrap">
+        <div class="stats__grid">
+          <div class="stat reveal"><div class="n" data-count="2.4" data-prefix="$" data-suffix="B+">$2.4B+</div><div class="l">Processed annually</div></div>
+          <div class="stat reveal"><div class="n" data-count="99.99" data-suffix="%">99.99%</div><div class="l">Uptime SLA</div></div>
+          <div class="stat reveal"><div class="n" data-count="135" data-suffix="+">135+</div><div class="l">Currencies supported</div></div>
+          <div class="stat reveal"><div class="n" data-count="4000" data-suffix="+">4,000+</div><div class="l">Active merchants</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURES ===================== -->
+    <section class="section features" id="features">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Everything you need</span>
+          <h2>One platform for every payment</h2>
+          <p>Stop stitching together five tools. New-U handles acceptance, payouts, fraud, and reporting in a single account.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M2 9h20" stroke="currentColor" stroke-width="2"/><path d="M6 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <h3>Accept every payment</h3>
+            <p>Cards, Apple Pay, Google Pay, bank transfers and 135+ currencies — all through one simple integration.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+            <h3>Instant payouts</h3>
+            <p>Move money to your bank account in minutes, not days. Keep cash flowing on your schedule, not the network's.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>Built-in fraud protection</h3>
+            <p>Machine-learning risk scoring and 3D Secure block fraudulent transactions before they ever cost you.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/><path d="M12 7v10M9.5 9.2c0-1.2 1.1-1.9 2.5-1.9s2.5.6 2.5 1.8c0 2.5-5 1.4-5 3.9 0 1.2 1.1 1.9 2.5 1.9s2.5-.7 2.5-1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <h3>Transparent pricing</h3>
+            <p>One clear rate per transaction. No monthly minimums, no setup fees, no surprises on your statement.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>Developer-first API</h3>
+            <p>A clean REST API, SDKs for every stack, and reliable webhooks. Most teams are live in an afternoon.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M7 15l3-3 2 2 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>Real-time dashboard</h3>
+            <p>Track revenue, disputes, payouts and customers as it happens — on the web or from your phone.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="section" id="how">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Live in three steps</span>
+          <h2>From sign-up to settled in a day</h2>
+          <p>No lengthy onboarding or stacks of paperwork. Create an account and start accepting payments the same day.</p>
+        </div>
+        <div class="steps">
+          <div class="steps__line"></div>
+          <div class="step reveal"><div class="num">1</div><h3>Create your account</h3><p>Sign up in minutes with a few business details. No hardware, no contracts to negotiate.</p></div>
+          <div class="step reveal"><div class="num">2</div><h3>Connect &amp; integrate</h3><p>Drop in our hosted checkout, embeddable elements, or call the API directly — whatever fits your stack.</p></div>
+          <div class="step reveal"><div class="num">3</div><h3>Get paid</h3><p>Accept payments from anywhere in the world and watch funds settle straight to your account.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DEVELOPERS ===================== -->
+    <section class="section dev" id="developers">
+      <div class="wrap">
+        <div class="dev__grid">
+          <div class="reveal">
+            <span class="eyebrow hero__eyebrow">Built for developers</span>
+            <h2>A payments API you'll actually enjoy</h2>
+            <p class="lead">Predictable, well-documented, and idempotent by default. Spin up a test account and create your first charge in under five minutes.</p>
+            <ul class="dev__list">
+              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Official SDKs for Node, Python, PHP, Ruby, Go &amp; Java</li>
+              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Signed webhooks with automatic retries</li>
+              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Full-featured sandbox with test cards</li>
+              <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 99.99% API uptime, backed by an SLA</li>
+            </ul>
+            <div class="hero__actions">
+              <a class="btn btn--light btn--lg" href="#docs">Read the docs <span class="arrow">→</span></a>
+            </div>
+          </div>
+          <div class="code reveal">
+            <div class="code__bar"><i></i><i></i><i></i><span>create-charge.js</span></div>
+<pre><code><span class="k">const</span> newu = <span class="p">require</span>(<span class="s">'new-u'</span>)(<span class="s">'sk_live_...'</span>);
+
+<span class="c">// Charge a customer 24.00 EUR</span>
+<span class="k">const</span> charge = <span class="k">await</span> newu.charges.<span class="p">create</span>({
+  amount:   <span class="n">2400</span>,
+  currency: <span class="s">'eur'</span>,
+  source:   token,
+  metadata: { order_id: <span class="s">'A-1042'</span> },
+});
+
+<span class="p">console</span>.log(charge.status); <span class="c">// 'succeeded'</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRICING ===================== -->
+    <section class="section pricing" id="pricing">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Simple, transparent pricing</span>
+          <h2>Pay only when you get paid</h2>
+          <p>No monthly fees on Starter. No surprises. Scale to volume pricing the moment it makes sense for you.</p>
+        </div>
+        <div class="price-grid">
+          <div class="price reveal">
+            <h3>Starter</h3>
+            <p class="desc">For new businesses finding their feet.</p>
+            <div class="rate"><b>1.9%</b> <small>+ €0.25</small></div>
+            <div class="per">per successful transaction</div>
+            <ul>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> No monthly or setup fees</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Hosted checkout &amp; payment links</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Next-day payouts</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Email support</li>
+            </ul>
+            <a class="btn btn--ghost" href="#signup">Start free</a>
+          </div>
+          <div class="price price--featured reveal">
+            <span class="price__tag">Most popular</span>
+            <h3>Growth</h3>
+            <p class="desc">For scaling teams that need more control.</p>
+            <div class="rate"><b>1.4%</b> <small>+ €0.20</small></div>
+            <div class="per">per successful transaction</div>
+            <ul>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Starter</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Instant payouts</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Advanced fraud rules</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Priority support</li>
+            </ul>
+            <a class="btn btn--primary" href="#signup">Start now</a>
+          </div>
+          <div class="price reveal">
+            <h3>Enterprise</h3>
+            <p class="desc">For high-volume and complex operations.</p>
+            <div class="rate"><b>Custom</b></div>
+            <div class="per">volume-based interchange++ pricing</div>
+            <ul>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Growth</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Dedicated account manager</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Custom settlement &amp; SLAs</li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> 24/7 phone support</li>
+            </ul>
+            <a class="btn btn--ghost" href="#contact">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Loved by finance &amp; eng teams</span>
+          <h2>Businesses switch and stay</h2>
+        </div>
+        <div class="quotes">
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <p>"We migrated from our old processor in a weekend. Settlement is faster, the dashboard is clearer, and our checkout conversion went up 11%."</p>
+            <figcaption class="who"><span class="av" style="background:#4f46e5">MR</span><div><b>Maya Rossi</b><small>CFO, Cadence Retail</small></div></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <p>"The API is genuinely a pleasure. Webhooks just work, the docs are honest, and we shipped recurring billing in two days."</p>
+            <figcaption class="who"><span class="av" style="background:#14c8a6">TO</span><div><b>Tom Okafor</b><small>Lead Engineer, Lumen</small></div></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <p>"Transparent pricing finally means transparent. No mystery line items, and instant payouts smoothed out our entire cash flow."</p>
+            <figcaption class="who"><span class="av" style="background:#ffb020">AH</span><div><b>Anya Haas</b><small>Founder, Northwind Goods</small></div></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECURITY ===================== -->
+    <section class="section features" id="security">
+      <div class="wrap">
+        <div class="security__grid">
+          <div class="reveal">
+            <span class="eyebrow">Security &amp; compliance</span>
+            <h2 style="font-size:clamp(1.8rem,1.2rem+2vw,2.6rem);margin:14px 0 16px">Bank-grade by default</h2>
+            <p style="color:var(--muted);font-size:1.08rem;margin-bottom:8px">Security isn't a paid add-on. Every New-U account is protected by the same controls we use ourselves — encryption in transit and at rest, continuous monitoring, and independent audits.</p>
+          </div>
+          <div class="badges reveal">
+            <div class="badge">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+              <b>PCI DSS Level 1</b><small>The highest certification for card processors.</small>
+            </div>
+            <div class="badge">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/></svg></div>
+              <b>End-to-end encryption</b><small>AES-256 at rest, TLS 1.3 in transit.</small>
+            </div>
+            <div class="badge">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <b>SOC 2 Type II</b><small>Independently audited every year.</small>
+            </div>
+            <div class="badge">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></div>
+              <b>3D Secure 2</b><small>Frictionless strong customer authentication.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="section" id="faq">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Questions, answered</span>
+          <h2>Frequently asked</h2>
+        </div>
+        <div class="faq reveal">
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">How long does it take to get started?<span class="pm"></span></button>
+            <div class="faq__a"><p>Most businesses create an account and accept their first live payment the same day. Verification is automated for the majority of applicants.</p></div>
+          </div>
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">When do I receive my money?<span class="pm"></span></button>
+            <div class="faq__a"><p>Starter accounts settle on a next-business-day schedule. Growth and Enterprise accounts can enable instant payouts to receive funds in minutes, around the clock.</p></div>
+          </div>
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">Are there any hidden fees?<span class="pm"></span></button>
+            <div class="faq__a"><p>No. You pay the per-transaction rate shown on this page and nothing else — no setup fees, no monthly minimums, and no charge for failed transactions.</p></div>
+          </div>
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">Which payment methods are supported?<span class="pm"></span></button>
+            <div class="faq__a"><p>Major credit and debit cards, Apple Pay, Google Pay, SEPA and local bank transfers, plus a growing list of regional wallets across 135+ currencies.</p></div>
+          </div>
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">Do you support recurring billing and subscriptions?<span class="pm"></span></button>
+            <div class="faq__a"><p>Yes. Built-in subscription tooling handles trials, proration, retries and dunning, with webhooks for every lifecycle event.</p></div>
+          </div>
+          <div class="faq__item">
+            <button class="faq__q" aria-expanded="false">Can I migrate from another provider?<span class="pm"></span></button>
+            <div class="faq__a"><p>Absolutely. We support PCI-compliant data migration so you can bring existing customers and saved cards across without asking them to re-enter details.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA BAND ===================== -->
+    <section class="section" id="signup">
+      <div class="wrap">
+        <div class="cta-band reveal">
+          <h2>Ready to get paid the New-U way?</h2>
+          <p>Create your account in minutes and start accepting payments today. No setup fees, no commitment.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="#signup">Start now <span class="arrow">→</span></a>
+            <a class="btn btn--ghost btn--on-dark btn--lg" href="#contact">Talk to sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="brand" href="#top">
+            <svg class="logo" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <rect width="40" height="40" rx="11" fill="url(#lg2)"/>
+              <path d="M13 11v13.5a6 6 0 0 0 12 0V11" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+              <circle cx="28.5" cy="12" r="3.2" fill="#14c8a6"/>
+              <defs><linearGradient id="lg2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6d63ff"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+            </svg>
+            New-U
+          </a>
+          <p>Modern payment infrastructure for growing businesses everywhere.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Product</h4>
+          <a href="#features">Payments</a>
+          <a href="#features">Payouts</a>
+          <a href="#features">Fraud protection</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div class="footer__col">
+          <h4>Developers</h4>
+          <a href="#docs">Documentation</a>
+          <a href="#developers">API reference</a>
+          <a href="#developers">SDKs</a>
+          <a href="#developers">Status</a>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="#careers">Careers</a>
+          <a href="#blog">Blog</a>
+        </div>
+        <div class="footer__col">
+          <h4>Legal</h4>
+          <a href="#terms">Terms</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#security">Security</a>
+          <a href="#compliance">Compliance</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <div class="footer__legal">
+          <span>© 2026 New-U. All rights reserved.</span>
+          <small>New-U is a payments technology provider. Card processing is provided through licensed banking partners. Rates and figures on this page are illustrative.</small>
+        </div>
+        <div class="social" aria-label="Social links">
+          <a href="#" aria-label="X / Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2H21l-6.4 7.3L22 22h-6.6l-4.6-6.1L5.5 22H3l6.9-7.9L2 2h6.7l4.2 5.5L18.2 2Zm-1.1 18h1.5L7 4H5.4l11.7 16Z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0ZM0 8h5v16H0V8Zm7.5 0h4.8v2.2h.07c.67-1.2 2.3-2.46 4.73-2.46C22 7.74 24 10 24 14.4V24h-5v-8.5c0-2-.7-3.4-2.5-3.4-1.36 0-2.17.9-2.5 1.8-.13.32-.16.76-.16 1.2V24h-5V8Z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-2c-2.9.6-3.5-1.2-3.5-1.2-.5-1.2-1.2-1.6-1.2-1.6-.9-.6 0-.6 0-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.1 0-1.1.4-2 1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
