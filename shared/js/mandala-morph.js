@@ -245,8 +245,46 @@
       T.ring(0, 0, 0.50, 0.5, 0.6);
       // seed-of-life heart, a touch larger here
       T.heart(0.165);
+    },
+
+    // a bold pointed star-burst — 12 long spokes with offset spokes between
+    star: function (T, density) {
+      petalRings(T, [
+        { m: 12, rIn: 0.30, rOut: 1.00, hw: 0.34 },
+        { m: 12, rIn: 0.18, rOut: 0.64, hw: 0.42 }
+      ], true, density);
+      T.ring(0, 0, 1.0, 0.5, 0.45);
+      T.heart(0.12);
+    },
+
+    // sacred geometry — flower / seed of life: overlapping circles + petals
+    seed: function (T, density) {
+      T.ring(0, 0, 1.00, 0.5, 0.5);
+      T.ring(0, 0, 0.86, 0.42, 0.4);
+      for (var i = 0; i < 12; i++) {
+        var a = -Math.PI / 2 + i * (TAU / 12);
+        T.ring(Math.cos(a) * 0.62, Math.sin(a) * 0.62, 0.24, 0.4, 0.6);
+      }
+      petalRings(T, [{ m: 18, rIn: 0.40, rOut: 0.64, hw: 0.6 }], false, density * 0.85);
+      T.heart(0.30);
+    },
+
+    // ornamental lace — concentric scalloped petal bands
+    lace: function (T, density) {
+      petalRings(T, [
+        { m: 30, rIn: 0.82, rOut: 1.00, hw: 0.66 },
+        { m: 24, rIn: 0.66, rOut: 0.85, hw: 0.66 },
+        { m: 36, rIn: 0.50, rOut: 0.67, hw: 0.62 },
+        { m: 20, rIn: 0.34, rOut: 0.53, hw: 0.66 }
+      ], true, density);
+      T.ring(0, 0, 1.0, 0.5, 0.45);
+      T.ring(0, 0, 0.82, 0.42, 0.5);
+      T.ring(0, 0, 0.50, 0.42, 0.5);
+      T.heart(0.14);
     }
   };
+
+  var DESIGN_ORDER = ['lotus', 'rosette', 'geometric', 'star', 'seed', 'lace'];
 
   /* ---------- engine ---------- */
 
@@ -260,7 +298,9 @@
     var INK     = attr(canvas, 'ink', '#0b0908');
     var fitK    = clamp(num(canvas, 'fit', 0.94), 0.4, 1.0);
     var dotMax  = num(canvas, 'dot', 1.7);
-    var density = clamp(num(canvas, 'density', 1), 0.3, 2.5);
+    var density = clamp(num(canvas, 'density', 1), 0.1, 80);
+    var targetN = Math.max(0, Math.floor(num(canvas, 'count', 0)));    // target total dots (0 = use density)
+    var inkA    = clamp(num(canvas, 'alpha', 1), 0.06, 1);             // per-dot alpha multiplier
     var haloK   = clamp(num(canvas, 'halo', 1), 0, 1.6);
     var speed   = Math.max(0, num(canvas, 'speed', 1));
     var REVEAL  = Math.max(0, num(canvas, 'reveal', 1700));
@@ -273,13 +313,22 @@
     var gamma   = clamp(num(canvas, 'gamma', 0.72), 0.2, 2);
     var grid    = null;                                                 // {cols,rows,cw,ch,val:Float32Array}
 
-    var rand = mulberry32(xmur3(seed + '|' + design)());
-    var T = toolkit(rand);
-    build(T, density);
-    var dots = T.dots;
+    // Morph cycle: the list of designs to morph through. data-morph-cycle can be
+    // "all", a comma list ("lotus,rosette,geometric"), or omitted (single design).
+    var cycleRaw = (attr(canvas, 'cycle', '') + '').toLowerCase().trim();
+    var names;
+    if (cycleRaw === 'all') names = DESIGN_ORDER.slice();
+    else if (cycleRaw) names = cycleRaw.split(',');
+    else names = [design];
+    names = names.map(function (s) { return s.trim(); }).filter(function (n) { return DESIGNS[n]; });
+    if (!names.length) names = ['lotus'];
+    var HOLD  = Math.max(0, num(canvas, 'hold', 3600));    // ms each design holds
+    var BLEND = Math.max(300, num(canvas, 'blend', 2000)); // ms to dissolve between
+    var SEG   = HOLD + BLEND;
 
     var ctx = canvas.getContext('2d', { alpha: true });
-    var ink = null, halo = null, builtFor = '';
+    var layers = {};                 // design name -> baked dotwork canvas (current size)
+    var halo = null, grid = null, builtFor = '';
     var size = { w: 1, h: 1, dpr: 1 };
     var visible = true, start = performance.now(), pausedAt = 0;
 
@@ -293,29 +342,47 @@
       return { w: w, h: h, dpr: dpr };
     }
 
-    function bake(w, h, dpr) {
-      var key = w + 'x' + h + '@' + dpr;
-      if (key === builtFor) return;
-      builtFor = key;
-      var pw = Math.floor(w * dpr), ph = Math.floor(h * dpr);
-      var cx = pw / 2, cy = ph / 2, R = Math.min(pw, ph) * 0.5 * fitK;
+    // Build one design's dot list, scaled to the requested total dot count.
+    // (Fills dominate, so scaling density converges to the target in a pass or two.)
+    function dotsFor(name) {
+      function build1(d) {
+        var rnd = mulberry32(xmur3(seed + '|' + name)());
+        var tk = toolkit(rnd); DESIGNS[name](tk, d); return tk.dots;
+      }
+      var d = density, ds = build1(d);
+      if (targetN > 0) {
+        for (var pass = 0; pass < 4 && ds.length > 50; pass++) {
+          var f = targetN / ds.length;
+          if (f > 0.95 && f < 1.05) break;
+          d = clamp(d * f, 0.03, 400); ds = build1(d);
+        }
+      }
+      return ds;
+    }
 
-      // black dotwork layer (transparent)
-      ink = document.createElement('canvas'); ink.width = pw; ink.height = ph;
-      var g = ink.getContext('2d');
-      g.fillStyle = INK;
-      for (var i = 0; i < dots.length; i++) {
-        var d = dots[i];
-        g.globalAlpha = d.a;
+    // Pre-bake a design to its own transparent dotwork layer (done once per
+    // design per size). Per frame we only composite these — cheap even at 100k.
+    function bakeInk(name) {
+      var pw = canvas.width, ph = canvas.height, dpr = size.dpr;
+      var cx = pw / 2, cy = ph / 2, R = Math.min(pw, ph) * 0.5 * fitK;
+      var ds = dotsFor(name);
+      var cv = document.createElement('canvas'); cv.width = pw; cv.height = ph;
+      var g = cv.getContext('2d'); g.fillStyle = INK;
+      for (var i = 0; i < ds.length; i++) {
+        var d = ds[i];
+        g.globalAlpha = clamp(d.a * inkA, 0, 1);
         g.beginPath();
-        g.arc(cx + d.x * R, cy + d.y * R, Math.max(0.4 * dpr, d.r * dotMax * dpr), 0, TAU);
+        g.arc(cx + d.x * R, cy + d.y * R, Math.max(0.35 * dpr, d.r * dotMax * dpr), 0, TAU);
         g.fill();
       }
       g.globalAlpha = 1;
+      return cv;
+    }
+    function ensureBaked(name) { return layers[name] || (layers[name] = bakeInk(name)); }
 
-      // a luminous, skin-warm light disc that the black dotwork sits on so it
-      // reads on the dark hero — bright and fairly even across the mandala, then
-      // fading to fully transparent at the rim (a soft round glow, NOT a box).
+    function bakeHalo() {
+      var pw = canvas.width, ph = canvas.height;
+      var cx = pw / 2, cy = ph / 2, R = Math.min(pw, ph) * 0.5 * fitK;
       halo = document.createElement('canvas'); halo.width = pw; halo.height = ph;
       var hg = halo.getContext('2d');
       var hr = R * 1.12;
@@ -325,29 +392,32 @@
       grad.addColorStop(0.78, 'rgba(220,200,166,' + (0.34 * haloK) + ')');
       grad.addColorStop(0.92, 'rgba(150,118,76,' + (0.12 * haloK) + ')');
       grad.addColorStop(1.00, 'rgba(0,0,0,0)');
-      hg.fillStyle = grad;
-      hg.beginPath(); hg.arc(cx, cy, hr, 0, TAU); hg.fill();
-
-      // ASCII: downsample the dotwork into a character grid (the average ink
-      // alpha per cell becomes that cell's darkness -> a glyph from the ramp).
-      if (style === 'ascii') {
-        var cw = Math.max(3, cellPx * 0.58), chh = Math.max(5, cellPx);
-        var cols = Math.max(8, Math.round(w / cw));
-        var rows = Math.max(8, Math.round(h / chh));
-        var tmp = document.createElement('canvas'); tmp.width = cols; tmp.height = rows;
-        var tg = tmp.getContext('2d');
-        tg.clearRect(0, 0, cols, rows);
-        tg.drawImage(ink, 0, 0, pw, ph, 0, 0, cols, rows);   // box-averages the ink
-        var data = tg.getImageData(0, 0, cols, rows).data;
-        var val = new Float32Array(cols * rows);
-        for (var p = 0; p < cols * rows; p++) val[p] = data[p * 4 + 3] / 255;
-        grid = { cols: cols, rows: rows, val: val };
-      }
+      hg.fillStyle = grad; hg.beginPath(); hg.arc(cx, cy, hr, 0, TAU); hg.fill();
     }
 
-    // ASCII render: a mandala built from monospace glyphs (light on the dark
-    // hero, classic ASCII-art). Glyphs assemble from the centre outward and
-    // shimmer gently. No disc needed — the characters carry the whole image.
+    // ASCII: downsample a baked design into a glyph grid (avg ink alpha per cell)
+    function buildGrid(name) {
+      var src = ensureBaked(name), w = size.w, h = size.h, pw = canvas.width, ph = canvas.height;
+      var cw = Math.max(3, cellPx * 0.58), chh = Math.max(5, cellPx);
+      var cols = Math.max(8, Math.round(w / cw)), rows = Math.max(8, Math.round(h / chh));
+      var tmp = document.createElement('canvas'); tmp.width = cols; tmp.height = rows;
+      var tg = tmp.getContext('2d'); tg.drawImage(src, 0, 0, pw, ph, 0, 0, cols, rows);
+      var data = tg.getImageData(0, 0, cols, rows).data;
+      var val = new Float32Array(cols * rows);
+      for (var p = 0; p < cols * rows; p++) val[p] = data[p * 4 + 3] / 255;
+      grid = { cols: cols, rows: rows, val: val };
+    }
+
+    function ensureSize() {
+      var key = canvas.width + 'x' + canvas.height;
+      if (key === builtFor) return;
+      builtFor = key;
+      layers = {}; halo = null; grid = null;
+      bakeHalo();
+      if (style === 'ascii') buildGrid(names[0]);
+    }
+
+    // ASCII render: a mandala of monospace glyphs (light on the dark hero).
     function drawAscii(now, intro) {
       var w = size.w, h = size.h, dpr = size.dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -356,59 +426,73 @@
       var cols = grid.cols, rows = grid.rows, val = grid.val;
       var cwp = w / cols, chp = h / rows;
       var cx = w / 2, cy = h / 2, maxR = Math.min(w, h) * 0.52;
-      var L = RAMP.length - 1;
-      var t = (now - start) * 0.001 * speed;
+      var L = RAMP.length - 1, t = (now - start) * 0.001 * speed;
       ctx.font = '600 ' + cellPx + 'px "DejaVu Sans Mono","SF Mono",Menlo,Consolas,monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = GLYPH;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = GLYPH;
       for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
           var v = val[r * cols + c];
           if (v < 0.02) continue;
           var x = (c + 0.5) * cwp, y = (r + 0.5) * chp;
           var dist = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy)) / maxR;
-          var rev = clamp((intro * 1.3 - dist * 0.55) / 0.45, 0, 1);  // centre first
+          var rev = clamp((intro * 1.3 - dist * 0.55) / 0.45, 0, 1);
           if (rev <= 0.001) continue;
           var sh = 0.84 + 0.16 * Math.sin(t * 2.2 + c * 0.55 + r * 0.85);
           var inten = clamp(Math.pow(v, gamma) * sh, 0, 1);
-          var gi = Math.round(inten * L);
-          var ch = RAMP.charAt(gi < 0 ? 0 : gi > L ? L : gi);
+          var gi = Math.round(inten * L), ch = RAMP.charAt(gi < 0 ? 0 : gi > L ? L : gi);
           if (ch === ' ') continue;
           ctx.globalAlpha = clamp(rev * (0.4 + 0.6 * inten), 0, 1);
           ctx.fillText(ch, x, y);
         }
       }
-      ctx.globalAlpha = 1;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 1; ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     function draw(now) {
-      var w = size.w, h = size.h, dpr = size.dpr;
-      bake(w, h, dpr);
-
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ensureSize();
       var elapsed = now - start; if (elapsed < 0) elapsed = 0;
       var intro = REVEAL > 0 ? smooth(clamp(elapsed / REVEAL, 0, 1)) : 1;
-      var breath = 1 + 0.012 * Math.sin(elapsed * 0.0006 * speed);
 
       if (style === 'ascii') { drawAscii(now, intro); return; }
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // halo (static, breathes faintly)
-      ctx.globalAlpha = intro;
-      ctx.drawImage(halo, 0, 0);
-
-      // ink — gentle scale-in, then a very slow turn + breathe (no morph, no burst)
       var cx = canvas.width / 2, cy = canvas.height / 2;
+      var breath = 1 + 0.012 * Math.sin(elapsed * 0.0006 * speed);
       var rot = elapsed * 0.00002 * speed;
-      var sc = (0.965 + 0.035 * intro) * breath;
-      ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(sc, sc); ctx.translate(-cx, -cy);
-      ctx.globalAlpha = intro;
-      ctx.drawImage(ink, 0, 0);
+      var base = 0.965 + 0.035 * intro;
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      // halo (steady skin-glow; transparent when halo=0)
+      if (halo) { ctx.globalAlpha = intro; ctx.drawImage(halo, 0, 0); ctx.globalAlpha = 1; }
+
+      var N = names.length, cur = 0, nxt = 0, k = 0, into = 0;
+      if (N > 1) {
+        cur = Math.floor(elapsed / SEG) % N;
+        into = elapsed % SEG;
+        k = into <= HOLD ? 0 : smooth((into - HOLD) / BLEND);
+        nxt = (cur + 1) % N;
+      }
+      ensureBaked(names[cur]);
+      // bake the next design during the hold so the dissolve never hitches
+      if (N > 1 && (k > 0 || into > HOLD * 0.5)) ensureBaked(names[nxt]);
+
+      function blit(name, alpha, scl, rota) {
+        if (alpha <= 0.003 || !layers[name]) return;
+        ctx.save();
+        ctx.translate(cx, cy); ctx.rotate(rota); ctx.scale(scl, scl); ctx.translate(-cx, -cy);
+        ctx.globalAlpha = clamp(alpha, 0, 1);
+        ctx.drawImage(layers[name], 0, 0);
+        ctx.restore();
+      }
+
+      if (k <= 0) {
+        blit(names[cur], intro, base * breath, rot);
+      } else {
+        // cross-dissolve: current drifts out + scales up, next settles in — a
+        // smooth morph, no burst. Slight counter-rotation sells the transform.
+        blit(names[cur], intro * (1 - k), base * (1 + 0.05 * k) * breath, rot - k * 0.10);
+        blit(names[nxt], intro * k,       base * (0.95 + 0.05 * k) * breath, rot + (1 - k) * 0.12);
+      }
       ctx.globalAlpha = 1;
     }
 

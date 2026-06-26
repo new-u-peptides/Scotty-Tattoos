@@ -175,15 +175,16 @@
       </div>
 
       <div class="hero__sigil" aria-hidden="true">
-        <!-- Scotty's hero mandala: a single black DOTWORK piece in the language
-             of his tattoos — layered petals, a flower-of-life heart, value
-             built from the density of black stipple on a soft skin-warm halo.
-             It assembles once, then breathes and turns slowly (no morph).
-             Engine: shared/js/mandala-morph.js. Design: lotus | rosette | geometric -->
+        <!-- Scotty's hero mandala: fine black DOTWORK in the language of his
+             tattoos — 100k stipple dots forming layered mandalas that morph
+             smoothly in and out (lotus -> rosette -> geometric -> star -> seed
+             -> lace), bone ink floating on the dark hero. Slow turn + gentle
+             cross-dissolve, no burst. Engine: shared/js/mandala-morph.js -->
         <canvas class="mandala mandala--hero" data-mandala-morph
-          data-morph-design="lotus" data-morph-ink="#e9ddca"
-          data-morph-fit="0.95" data-morph-dot="1.7" data-morph-density="1.7"
-          data-morph-halo="0" data-morph-reveal="1900"
+          data-morph-cycle="all" data-morph-ink="#e9ddca"
+          data-morph-fit="0.95" data-morph-count="100000" data-morph-dot="0.8"
+          data-morph-alpha="0.5" data-morph-halo="0"
+          data-morph-reveal="1900" data-morph-hold="3600" data-morph-blend="2100"
           data-morph-seed="scotty-massa"></canvas>
       </div>
     </div>
