@@ -40,7 +40,27 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
   line-height: 1;
 }
 
-.lead { font-size: 1.15rem; color: var(--bone-2); max-width: 50ch; }
+.lead {
+  font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--bone-2);
+  max-width: 50ch;
+}
+
+/* Long-form reading column (journal articles, guides).
+   Scales the body copy up on wider desktops so it keeps pace with the
+   fluid headings instead of looking tiny next to them. */
+.prose {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: clamp(1.0625rem, 0.95rem + 0.6vw, 1.25rem);
+  line-height: 1.75;
+}
+.prose .lead { line-height: 1.6; }
+.prose h2 { margin-top: 1.8em; }
+.prose h3 { margin-top: 1.4em; }
+.prose h2:first-child,
+.prose h3:first-child { margin-top: 0; }
 
 .divider {
   border: none;
