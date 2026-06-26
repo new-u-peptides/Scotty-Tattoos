@@ -1,18 +1,15 @@
 /* =========================================================
-   mandala.css — the living dotwork system
+   mandala.css — the living mandala system
    ---------------------------------------------------------
-   Styling layer for the canvas dotwork engines. The homepage
-   hero is driven by shared/js/mandala-morph.js (a <canvas
-   data-mandala-morph> that morphs between random geometric
-   mandalas); the legacy massatattoo/ site uses
-   shared/js/mandala.js (<canvas data-mandala>). This sheet just
-   places the canvas — the hero animation runs full-bleed on the
-   dark hero background (light ink set via data-morph-ink), no
-   disc or blend needed.
+   Styling layer that pairs with shared/js/mandala.js. The JS
+   draws the mandala onto any <canvas data-mandala>; this sheet
+   places it. The homepage hero renders it as WHITE linework +
+   dotwork on the dark hero (data-mandala-theme="white"), floating
+   free with a soft blood-red glow behind it.
 
    Variants:
      .mandala            base canvas (full-bleed in its parent)
-     .mandala--hero      the homepage mandala field
+     .mandala--hero      the homepage centerpiece (white ink on black)
      .mandala--ornament  subtle decorative use elsewhere
    ========================================================= */
 
@@ -32,28 +29,63 @@
   opacity: 0.65;
 }
 
-/* The hero mandala field — a full-bleed canvas, light ink on the
-   dark hero. No circular disc; it floats free on the background. */
-.mandala--hero {
+/* ---------------------------------------------------------
+   HERO SIGIL
+   The living mandala that anchors the homepage — white linework
+   and dotwork on the dark hero, with a soft red life-glow behind.
+   .hero__sigil   — centred square stage (holds the glow + canvas)
+   .mandala--hero — the canvas itself
+   --------------------------------------------------------- */
+.hero__sigil {
+  position: relative;
   z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 1;
+  margin-inline: auto;
 }
 
-/* A soft radial scrim behind the field so the light dotwork reads
-   cleanly over the portrait-photo hero background. */
-.hero__art::before {
+/* Soft gold-and-blood glow behind the mandala — the "life". A warm gold core
+   over the brand red, so the luminous solar mark reads as gilded light. */
+.hero__sigil::before {
   content: "";
   position: absolute;
-  inset: -6% -6% -6% -10%;
-  z-index: 1;
-  background: radial-gradient(
-    ellipse at 55% 50%,
-    rgba(10, 8, 7, 0.55) 0%,
-    rgba(10, 8, 7, 0.32) 42%,
-    transparent 72%
-  );
-  pointer-events: none;
+  inset: -8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(214, 170, 86, 0.30) 0%, rgba(214, 170, 86, 0.08) 38%, transparent 64%),
+    radial-gradient(circle, var(--red-18) 0%, var(--red-08) 48%, transparent 74%);
+  filter: blur(14px);
+  z-index: 0;
+  animation: sigil-pulse 7s ease-in-out infinite;
 }
 
+/* The hero canvas: the gold solar mandala. A near-black radial backing sits
+   behind the gold (through the canvas's transparent pixels) so the metal pops
+   off the dark hero instead of muddying against the portrait, fading to clear
+   at the rim so the piece floats. */
+.mandala--hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: radial-gradient(circle, #0a0807 52%, rgba(10, 8, 7, 0.6) 70%, transparent 82%);
+}
+
+@keyframes sigil-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+
+@media (max-width: 920px) {
+  .hero__sigil { max-width: 380px; }
+}
+
+/* Stillness for anyone who asks for it. The JS already renders a
+   static frame under reduced motion; kill the CSS glow too. */
 @media (prefers-reduced-motion: reduce) {
-  /* JS already renders a single static frame under reduced motion. */
+  .hero__sigil::before { animation: none; }
 }

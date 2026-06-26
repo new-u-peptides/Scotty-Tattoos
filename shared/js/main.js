@@ -30,15 +30,44 @@
     els.forEach(function (el) { el.setAttribute('data-revealed', '1'); observer.observe(el); });
   }
 
+  // Alternate folio rows left/right based on VISIBLE order, so the zig-zag
+  // stays correct even after a filter hides some rows. Marking the container
+  // `.is-striped` hands layout control from the CSS :nth-of-type fallback to
+  // these explicit `.is-flip` classes.
+  function stripeFolio(folio) {
+    folio.classList.add('is-striped');
+    var visible = 0;
+    folio.querySelectorAll('.folio-row').forEach(function (row) {
+      if (row.style.display === 'none') { row.classList.remove('is-flip'); return; }
+      row.classList.toggle('is-flip', visible % 2 === 1);
+      visible++;
+    });
+  }
+
+  function bindFolios() {
+    document.querySelectorAll('.folio').forEach(stripeFolio);
+  }
+
   function bindChips() {
     document.querySelectorAll('.chips').forEach(function (group) {
       if (group.dataset.bound) return;
       group.dataset.bound = '1';
+      var scope = group.parentElement || document;
+      var container = scope.querySelector('.grid--portfolio, .folio') ||
+                      document.querySelector('.grid--portfolio, .folio');
       group.addEventListener('click', function (e) {
         var chip = e.target.closest('.chip');
         if (!chip) return;
         group.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('is-active'); });
         chip.classList.add('is-active');
+        if (!container) return;
+        var filter = chip.getAttribute('data-filter') || 'all';
+        container.querySelectorAll('.tile, .folio-row').forEach(function (item) {
+          var cats = (item.getAttribute('data-category') || '').split(/\s+/);
+          var show = filter === 'all' || cats.indexOf(filter) !== -1;
+          item.style.display = show ? '' : 'none';
+        });
+        if (container.classList.contains('folio')) stripeFolio(container);
       });
     });
   }
@@ -74,6 +103,7 @@
   function bootstrap() {
     bindNavToggle();
     bindReveal();
+    bindFolios();
     bindChips();
     bindActiveNav();
     bindWhatsApp();

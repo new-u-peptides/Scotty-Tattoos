@@ -1,55 +1,54 @@
 /* =============================================================
-   mandala-morph.js — a living field of dotwork mandalas.
+   mandala-morph.js — Scotty Massa's living solar mandala.
    -------------------------------------------------------------
-   Thousands of tiny tattoo-stipple dots that continuously morph
-   between a set of RANDOM geometric mandalas and slowly rotate, so
-   the hero reads as an ever-shifting sheet of mandala tattoos.
+   A premium, animated hero mark. It ASSEMBLES out of gold ink
+   (a dust cloud condensing into crisp dotwork + linework), forms
+   Scotty's gold SOLAR LOGO — concentric rings of tessellated
+   triangles, filled with a warm radial gold gradient, around a
+   flaming sun — holds luminous, then slowly MORPHS through a set
+   of geometric mandalas (star, lotus, girih, diamond, yantra) and
+   returns home to the logo.
 
-   Each mandala is generated procedurally (concentric bands of lotus
-   petals, pointed petals, diamonds, nested polygons, rings of circles
-   and stars, around a random central motif) and rendered as clean
-   LINEWORK: dots are placed evenly ALONG the stroke paths (arc-length
-   sampled) so the lines read solid and crisp, the way a piece is drawn.
+   Three keyed layers per figure, all driven by the same seeded
+   geometry so they move together:
+     1. FILLED BODY  — gold-gradient triangle tessellation (the
+        bold sunburst), with a soft bloom so gold reads as light.
+     2. DOTWORK GRIT — thousands of stipple dots sampled along the
+        figure's edges; they reflow between figures during a morph
+        (glowing additively, so the transition is a shower of gold
+        sparks, not mud) and lay down the hand-stippled texture.
+     3. FLAMING SUN  — the logo's centre: curling gold flame rays,
+        dark core, bright corona.
+   Finished with a dust halo, vignette and fine film grain.
 
-   Clouds are angle-sorted so dot #i corresponds across mandalas — the
-   transition swirls and reflows rather than teleporting. Dots ease
-   (smootherstep) with a gentle curl, breath and shimmer; the whole field
-   rotates continuously.
-
-   Deterministic: a seeded PRNG (data-morph-seed) fixes the mandala set
-   and every dot, so it renders identically each load (set the seed to a
-   timestamp for a fresh set per visit). Zero dependencies. Honours
-   prefers-reduced-motion (one static frame). Pauses offscreen
-   (IntersectionObserver) and resumes without a time jump. Resizes with
-   its parent (ResizeObserver).
+   Deterministic (seeded PRNG), zero dependencies. Honours
+   prefers-reduced-motion (one static assembled frame). Pauses
+   offscreen (IntersectionObserver) and resumes without a jump.
+   Resizes with its parent (ResizeObserver). DPR capped at 2.
 
    Markup:
      <canvas data-mandala-morph></canvas>
 
    Data attributes (all optional):
-     data-morph-count   : target dot count                    (default 11000)
-     data-morph-dot     : max dot size in CSS px               (default 2.6)
-     data-morph-ink     : dot colour (use a light tone on a dark bg)
-                                                               (default #0a0a0a)
-     data-morph-variants: number of random mandalas in the loop (default 5)
-     data-morph-weight  : ink weight / contrast multiplier     (default 1.12)
-     data-morph-flow    : transition swirl strength            (default 0.30)
-     data-morph-breathe : idle breathing amount                (default 0.010)
-     data-morph-shape   : "round" or "square" dots          (default round)
-     data-morph-fit     : figure scale inside canvas           (default 0.46)
-     data-morph-hold    : ms to hold each mandala              (default 3200)
-     data-morph-blend   : ms to morph between mandalas         (default 2600)
-     data-morph-accent  : fraction of dots inked blood-red     (default 0.012)
-     data-morph-speed   : spin / motion multiplier             (default 1)
-     data-morph-seed    : PRNG seed (default "scotty-massa")
-     data-morph-animate : "false" → render one static frame   (default true)
-     data-morph-fig     : lock to one mandala index, no morph  (default: cycle)
+     data-morph-count   : dotwork dot count                  (default 5200)
+     data-morph-dot     : max dot size in CSS px             (default 2.0)
+     data-morph-ink     : dotwork colour (a light gold)      (default #f4e3ad)
+     data-morph-variants: number of mandalas in the loop     (default 6)
+     data-morph-flow    : morph swirl strength               (default 0.42)
+     data-morph-fit     : figure scale inside the canvas     (default 0.46)
+     data-morph-hold    : ms to hold each mandala            (default 3000)
+     data-morph-blend   : ms to morph between mandalas        (default 2400)
+     data-morph-reveal  : ms of the opening assemble          (default 2600)
+     data-morph-accent  : fraction of dots inked blood-red    (default 0 — off)
+     data-morph-speed   : spin / motion multiplier            (default 1)
+     data-morph-seed    : PRNG seed                           (default "scotty-massa")
+     data-morph-animate : "false" -> one static frame         (default true)
+     data-morph-fig     : lock to one mandala index, no morph (default: cycle)
    ============================================================= */
 (function () {
   'use strict';
 
   var TAU = Math.PI * 2;
-  var RED = '#c8102e';
 
   var prefersReducedMotion =
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -63,17 +62,9 @@
     return isFinite(v) ? v : fallback;
   }
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
-  function smootherstep(t) {
-    t = clamp(t, 0, 1);
-    return t * t * t * (t * (t * 6 - 15) + 10);
-  }
-  function inkCurve(v, weight) {
-    v = clamp(v, 0, 1);
-    v = Math.pow(v, 0.82);
-    return clamp((v - 0.055) * weight + 0.075, 0.06, 1);
-  }
+  function smooth(t) { t = clamp(t, 0, 1); return t * t * t * (t * (t * 6 - 15) + 10); }
 
-  // Seeded PRNG so the mandala set + dot layout are identical on every load.
+  // Seeded PRNG so the figures + dot layout are identical on every load.
   function xmur3(str) {
     var h = 1779033703 ^ str.length;
     for (var i = 0; i < str.length; i++) {
@@ -96,270 +87,204 @@
     };
   }
 
-  /* ---------- cloud utilities -------------------------------- */
+  /* ---------- figure geometry (unit space, radius 1) ----------
+     A figure is { tris:[ [ax,ay,bx,by,cx,cy], ... ], sun:bool }.
+     Every gold triangle is stored as three unit-space points. */
 
-  // Force [x,y,strength] points to exactly N, angle-sort for correspondence,
-  // split into a positions buffer + a strength buffer.
-  function finalize(arr, N, rand) {
-    if (arr.length > N) {
-      for (var i = arr.length - 1; i > 0; i--) {
-        var j = (rand() * (i + 1)) | 0;
-        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  // One ring of tessellated triangles. Vertices alternate inner/outer
+  // radius around the circle; triangle k = (v_k, v_{k+1}, v_{k+2}); we
+  // keep every other one (the alternating gold/black sunburst).
+  function triRing(tris, rIn, rOut, m, parity, off) {
+    var n = m * 2, pts = [], i;
+    for (i = 0; i < n; i++) {
+      var a = (i / n) * TAU - Math.PI / 2 + (off || 0);
+      var r = (i % 2 === 0) ? rIn : rOut;
+      pts.push([Math.cos(a) * r, Math.sin(a) * r]);
+    }
+    for (i = 0; i < n; i++) {
+      if (((i + parity) & 1) !== 0) continue;
+      var p0 = pts[i], p1 = pts[(i + 1) % n], p2 = pts[(i + 2) % n];
+      tris.push([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]]);
+    }
+  }
+  // A ring of pointed spokes (triangle tips on a circle) — broad petals.
+  function spokeRing(tris, m, rIn, rOut, spread) {
+    for (var i = 0; i < m; i++) {
+      var a = (i / m) * TAU - Math.PI / 2, h = (TAU / m) * (spread || 0.42);
+      tris.push([
+        Math.cos(a - h) * rIn, Math.sin(a - h) * rIn,
+        Math.cos(a) * rOut, Math.sin(a) * rOut,
+        Math.cos(a + h) * rIn, Math.sin(a + h) * rIn
+      ]);
+    }
+  }
+  // Alternating filled wedges between two radii (a gear/star ring).
+  function wedgeRing(tris, m, rIn, rOut, off) {
+    for (var i = 0; i < m; i++) {
+      if (i & 1) continue;
+      var a0 = (i / m) * TAU - Math.PI / 2 + (off || 0);
+      var a1 = ((i + 1) / m) * TAU - Math.PI / 2 + (off || 0);
+      var am = (a0 + a1) / 2;
+      tris.push([Math.cos(a0) * rOut, Math.sin(a0) * rOut,
+                 Math.cos(a1) * rOut, Math.sin(a1) * rOut,
+                 Math.cos(am) * rIn, Math.sin(am) * rIn]);
+    }
+  }
+  // A small central star motif (filled), for the non-logo figures.
+  function centerStar(tris, points, rOut, rIn) {
+    var m = points * 2, i;
+    for (i = 0; i < m; i += 2) {
+      var a0 = (i / m) * TAU - Math.PI / 2;
+      var a1 = ((i + 1) / m) * TAU - Math.PI / 2;
+      var a2 = ((i + 2) / m) * TAU - Math.PI / 2;
+      tris.push([Math.cos(a0) * rIn, Math.sin(a0) * rIn,
+                 Math.cos(a1) * rOut, Math.sin(a1) * rOut,
+                 Math.cos(a2) * rIn, Math.sin(a2) * rIn]);
+    }
+  }
+
+  /* ---------- the figures ---------- */
+
+  // Figure 0 — Scotty's solar logo: concentric tessellated triangle rings
+  // (more, smaller triangles outward) around the flaming sun.
+  var LOGO_BANDS = [
+    { rIn: 0.30, rOut: 0.44, m: 9,  off: 0.00 },
+    { rIn: 0.44, rOut: 0.58, m: 14, off: 0.70 },
+    { rIn: 0.58, rOut: 0.72, m: 19, off: 0.18 },
+    { rIn: 0.72, rOut: 0.86, m: 25, off: 0.55 },
+    { rIn: 0.86, rOut: 0.985, m: 32, off: 0.30 }
+  ];
+  function figLogo() {
+    var tris = [];
+    for (var b = 0; b < LOGO_BANDS.length; b++) {
+      var B = LOGO_BANDS[b], o = B.off * (TAU / (B.m * 2));
+      triRing(tris, B.rIn, B.rOut, B.m, b & 1, o);
+    }
+    // thin dark separators between the bands (the logo's layered concentric rings)
+    return { tris: tris, sun: true, rings: [0.30, 0.44, 0.58, 0.72, 0.86, 0.985] };
+  }
+  // Figure 1 — a 12-point star burst.
+  function figStar() {
+    var tris = [];
+    triRing(tris, 0.72, 0.985, 18, 0, 0);
+    wedgeRing(tris, 24, 0.42, 0.66, 0);
+    triRing(tris, 0.20, 0.34, 6, 0, 0);
+    centerStar(tris, 6, 0.17, 0.07);
+    return { tris: tris, sun: false };
+  }
+  // Figure 2 — a broad lotus.
+  function figLotus() {
+    var tris = [];
+    triRing(tris, 0.80, 0.985, 28, 0, 0);
+    spokeRing(tris, 10, 0.46, 0.74, 0.46);
+    triRing(tris, 0.30, 0.44, 10, 1, 0.1);
+    centerStar(tris, 8, 0.18, 0.06);
+    return { tris: tris, sun: false };
+  }
+  // Figure 3 — girih-style interlaced star ring.
+  function figGirih() {
+    var tris = [];
+    triRing(tris, 0.78, 0.985, 20, 0, 0);
+    spokeRing(tris, 10, 0.50, 0.78, 0.30);
+    spokeRing(tris, 10, 0.50, 0.30, 0.30);   // inward-pointing counter spokes
+    centerStar(tris, 10, 0.24, 0.10);
+    return { tris: tris, sun: false };
+  }
+  // Figure 4 — dense diamond / rhombus field.
+  function figDiamond() {
+    var tris = [];
+    triRing(tris, 0.74, 0.985, 30, 0, 0);
+    triRing(tris, 0.50, 0.66, 20, 1, 0.1);
+    triRing(tris, 0.28, 0.44, 12, 0, 0.2);
+    centerStar(tris, 4, 0.18, 0.07);
+    return { tris: tris, sun: false };
+  }
+  // Figure 5 — nested-triangle yantra.
+  function figYantra() {
+    var tris = [];
+    triRing(tris, 0.80, 0.985, 24, 0, 0);
+    spokeRing(tris, 6, 0.30, 0.74, 0.5);     // big upward triangles
+    spokeRing(tris, 6, 0.30, 0.74, 0.5);
+    triRing(tris, 0.30, 0.46, 6, 1, 0.5);
+    centerStar(tris, 6, 0.16, 0.06);
+    return { tris: tris, sun: false };
+  }
+
+  var BUILDERS = [figLogo, figStar, figLotus, figGirih, figDiamond, figYantra];
+
+  /* ---------- dotwork cloud sampled along the triangle edges ---------- */
+  function cloudFromTris(tris, N, rand) {
+    var pts = [], i, j, k, m;
+    // Measure the figure so the point budget distributes cleanly to ANY N:
+    // ~34% along the edges (crisp linework) and the rest filling the interiors
+    // (dotwork tone). This scales from a few thousand up to 40k+ dots.
+    var totLen = 0, totArea = 0, G = [];
+    for (i = 0; i < tris.length; i++) {
+      var t = tris[i];
+      var A = [t[0], t[1]], B = [t[2], t[3]], C = [t[4], t[5]];
+      var per = Math.hypot(B[0] - A[0], B[1] - A[1]) + Math.hypot(C[0] - B[0], C[1] - B[1]) + Math.hypot(A[0] - C[0], A[1] - C[1]);
+      var area = Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) * 0.5;
+      totLen += per; totArea += area; G.push([A, B, C, area]);
+    }
+    var lineDens = (N * 0.34) / (totLen || 1e-6);
+    var areaDens = (N * 1.00) / (totArea || 1e-6);
+    for (i = 0; i < G.length; i++) {
+      var A = G[i][0], B = G[i][1], C = G[i][2];
+      var edges = [[A, B], [B, C], [C, A]];
+      for (j = 0; j < 3; j++) {
+        var p0 = edges[j][0], p1 = edges[j][1];
+        var dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy);
+        var cnt = Math.max(1, Math.round(len * lineDens));
+        for (k = 0; k < cnt; k++) {
+          var u = (k + 0.5) / cnt;
+          pts.push([p0[0] + dx * u + (rand() - 0.5) * 0.004, p0[1] + dy * u + (rand() - 0.5) * 0.004]);
+        }
       }
-      arr.length = N;
-    } else {
-      var L = arr.length || 1;
-      while (arr.length < N) {
-        var p = arr[(rand() * L) | 0] || [0, 0, 0.8];
-        arr.push([p[0] + (rand() - 0.5) * 0.012, p[1] + (rand() - 0.5) * 0.012, p[2]]);
+      var fillCnt = Math.round(G[i][3] * areaDens);
+      for (m = 0; m < fillCnt; m++) {
+        var r1 = rand(), r2 = rand();
+        if (r1 + r2 > 1) { r1 = 1 - r1; r2 = 1 - r2; }
+        pts.push([A[0] + r1 * (B[0] - A[0]) + r2 * (C[0] - A[0]),
+                  A[1] + r1 * (B[1] - A[1]) + r2 * (C[1] - A[1])]);
       }
     }
-    arr.sort(function (a, b) {
+    if (pts.length > N) {
+      for (i = pts.length - 1; i > 0; i--) { var r = (rand() * (i + 1)) | 0, tmp = pts[i]; pts[i] = pts[r]; pts[r] = tmp; }
+      pts.length = N;
+    } else {
+      var L = pts.length || 1;
+      while (pts.length < N) { var p = pts[(rand() * L) | 0] || [0, 0]; pts.push([p[0] + (rand() - 0.5) * 0.01, p[1] + (rand() - 0.5) * 0.01]); }
+    }
+    // angle-sort so dot #i corresponds across figures (the morph reflows)
+    pts.sort(function (a, b) {
       var aa = Math.atan2(a[1], a[0]), ba = Math.atan2(b[1], b[0]);
       if (aa !== ba) return aa - ba;
       return (a[0] * a[0] + a[1] * a[1]) - (b[0] * b[0] + b[1] * b[1]);
     });
-    var pos = new Float32Array(N * 2), str = new Float32Array(N);
-    for (var k = 0; k < N; k++) {
-      pos[k * 2] = arr[k][0]; pos[k * 2 + 1] = arr[k][1];
-      str[k] = arr[k][2] == null ? 0.8 : arr[k][2];
-    }
-    return { pos: pos, str: str };
+    var f = new Float32Array(N * 2);
+    for (i = 0; i < N; i++) { f[i * 2] = pts[i][0]; f[i * 2 + 1] = pts[i][1]; }
+    return f;
   }
 
-  // Distribute ~N dots EVENLY along a set of stroke paths (by arc length) so
-  // the lines read solid — not random scatter. Stroke = { len, str, at(u) }.
-  function strokeCloud(strokes, N, rand) {
-    var total = 0, i;
-    for (i = 0; i < strokes.length; i++) total += strokes[i].len;
-    if (total <= 0) return [];
-    var out = [];
-    for (i = 0; i < strokes.length; i++) {
-      var s = strokes[i];
-      var cnt = Math.max(2, Math.round(N * s.len / total));
-      for (var j = 0; j < cnt; j++) {
-        var p = s.at((j + 0.5) / cnt);
-        out.push([p[0] + (rand() - 0.5) * 0.005, p[1] + (rand() - 0.5) * 0.005, s.str]);
-      }
-    }
-    return out;
-  }
-
-  /* ---------- parametric stroke primitives (unit space) ------ */
-
-  function segS(x0, y0, x1, y1, str) {
-    var dx = x1 - x0, dy = y1 - y0;
-    return { len: Math.sqrt(dx * dx + dy * dy), str: str,
-             at: function (u) { return [x0 + dx * u, y0 + dy * u]; } };
-  }
-  function arcS(cx, cy, r, a0, a1, str) {
-    return { len: Math.abs(a1 - a0) * r, str: str,
-             at: function (u) { var a = a0 + (a1 - a0) * u; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; } };
-  }
-  function circS(cx, cy, r, str) { return arcS(cx, cy, r, 0, TAU, str); }
-  function quadS(x0, y0, cx, cy, x1, y1, str) {
-    var len = Math.hypot(cx - x0, cy - y0) + Math.hypot(x1 - cx, y1 - cy);
-    return { len: len, str: str,
-             at: function (u) { var iu = 1 - u; return [iu * iu * x0 + 2 * iu * u * cx + u * u * x1,
-                                                        iu * iu * y0 + 2 * iu * u * cy + u * u * y1]; } };
-  }
-  function polyS(s, cx, cy, r, sides, rot, str) {
-    var pts = [], i;
-    for (i = 0; i <= sides; i++) { var an = rot + i * TAU / sides; pts.push([cx + Math.cos(an) * r, cy + Math.sin(an) * r]); }
-    for (i = 0; i < sides; i++) s.push(segS(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], str));
-  }
-
-  /* ---------- mandala band elements -------------------------- */
-
-  // rounded lotus petals
-  function ringPetals(s, n, rIn, rOut, str) {
-    var half = Math.PI / n;
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * TAU - Math.PI / 2;
-      var blx = Math.cos(a - half) * rIn, bly = Math.sin(a - half) * rIn;
-      var brx = Math.cos(a + half) * rIn, bry = Math.sin(a + half) * rIn;
-      var tx = Math.cos(a) * rOut, ty = Math.sin(a) * rOut;
-      var mid = (rIn + rOut) * 0.5;
-      var clx = Math.cos(a - half * 0.5) * mid * 1.06, cly = Math.sin(a - half * 0.5) * mid * 1.06;
-      var crx = Math.cos(a + half * 0.5) * mid * 1.06, cry = Math.sin(a + half * 0.5) * mid * 1.06;
-      s.push(quadS(blx, bly, clx, cly, tx, ty, str));
-      s.push(quadS(tx, ty, crx, cry, brx, bry, str));
-    }
-  }
-  // sharp pointed spikes — narrow base so the points read crisp/angular
-  function ringSpikes(s, n, rIn, rOut, str) {
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * TAU - Math.PI / 2;
-      var aL = ((i - 0.34) / n) * TAU - Math.PI / 2, aR = ((i + 0.34) / n) * TAU - Math.PI / 2;
-      var blx = Math.cos(aL) * rIn, bly = Math.sin(aL) * rIn;
-      var brx = Math.cos(aR) * rIn, bry = Math.sin(aR) * rIn;
-      var tx = Math.cos(a) * rOut, ty = Math.sin(a) * rOut;
-      s.push(segS(blx, bly, tx, ty, str)); s.push(segS(tx, ty, brx, bry, str));
-      s.push(segS(blx, bly, brx, bry, str));   // close the base for a crisp triangle
-    }
-  }
-  // diamonds / rhombi
-  function ringDiamonds(s, n, rIn, rOut, str) {
-    var half = Math.PI / n, mid = (rIn + rOut) / 2;
-    for (var i = 0; i < n; i++) {
-      var a = ((i + 0.5) / n) * TAU - Math.PI / 2;
-      var ix = Math.cos(a) * rIn, iy = Math.sin(a) * rIn;
-      var ox = Math.cos(a) * rOut, oy = Math.sin(a) * rOut;
-      var lx = Math.cos(a - half * 0.55) * mid, ly = Math.sin(a - half * 0.55) * mid;
-      var rx = Math.cos(a + half * 0.55) * mid, ry = Math.sin(a + half * 0.55) * mid;
-      s.push(segS(ix, iy, lx, ly, str)); s.push(segS(lx, ly, ox, oy, str));
-      s.push(segS(ox, oy, rx, ry, str)); s.push(segS(rx, ry, ix, iy, str));
-    }
-  }
-  // a ring of small circles
-  function ringCircles(s, n, r, dr, str) {
-    for (var i = 0; i < n; i++) { var a = (i / n) * TAU; s.push(circS(Math.cos(a) * r, Math.sin(a) * r, dr, str)); }
-  }
-  // a ring of little cross-stars
-  function ringStars(s, n, rIn, rOut, str) {
-    var r = (rIn + rOut) / 2, sz = (rOut - rIn) * 0.5;
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * TAU, cx = Math.cos(a) * r, cy = Math.sin(a) * r;
-      s.push(segS(cx - sz, cy, cx + sz, cy, str)); s.push(segS(cx, cy - sz, cx, cy + sz, str));
-      s.push(segS(cx - sz * 0.7, cy - sz * 0.7, cx + sz * 0.7, cy + sz * 0.7, str));
-      s.push(segS(cx - sz * 0.7, cy + sz * 0.7, cx + sz * 0.7, cy - sz * 0.7, str));
-    }
-  }
-  // a ring of sharp triangles, pointing out (or in)
-  function ringTriangles(s, n, rIn, rOut, out, str) {
-    var half = Math.PI / n;
-    for (var i = 0; i < n; i++) {
-      var a = ((i + 0.5) / n) * TAU - Math.PI / 2;
-      var tip = out ? rOut : rIn, base = out ? rIn : rOut;
-      var tx = Math.cos(a) * tip, ty = Math.sin(a) * tip;
-      var blx = Math.cos(a - half * 0.92) * base, bly = Math.sin(a - half * 0.92) * base;
-      var brx = Math.cos(a + half * 0.92) * base, bry = Math.sin(a + half * 0.92) * base;
-      s.push(segS(blx, bly, tx, ty, str)); s.push(segS(tx, ty, brx, bry, str));
-      s.push(segS(blx, bly, brx, bry, str));
-    }
-  }
-  // a ring of small squares (rot in radians, relative to the radial axis)
-  function ringSquares(s, n, r, sz, rot, str) {
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * TAU, cx = Math.cos(a) * r, cy = Math.sin(a) * r;
-      var base = a + rot, p = [], k;
-      for (k = 0; k < 4; k++) { var ang = base + Math.PI / 4 + k * (Math.PI / 2); p.push([cx + Math.cos(ang) * sz, cy + Math.sin(ang) * sz]); }
-      for (k = 0; k < 4; k++) s.push(segS(p[k][0], p[k][1], p[(k + 1) % 4][0], p[(k + 1) % 4][1], str));
-    }
-  }
-  // a zig-zag chevron band between rIn and rOut
-  function ringChevrons(s, n, rIn, rOut, str) {
-    var prev = null;
-    for (var i = 0; i <= n; i++) {
-      var a = (i / n) * TAU - Math.PI / 2;
-      var rr = (i % 2 === 0) ? rIn : rOut;
-      var pt = [Math.cos(a) * rr, Math.sin(a) * rr];
-      if (prev) s.push(segS(prev[0], prev[1], pt[0], pt[1], str));
-      prev = pt;
-    }
-  }
-  // a sharp star polygon {points} drawn as an outline through alternating radii
-  function starPolyS(s, cx, cy, points, rOut, rIn, str) {
-    var m = points * 2, prev = null, k;
-    for (k = 0; k <= m; k++) {
-      var a = (k / m) * TAU - Math.PI / 2, rr = (k % 2 === 0) ? rOut : rIn;
-      var pt = [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
-      if (prev) s.push(segS(prev[0], prev[1], pt[0], pt[1], str));
-      prev = pt;
-    }
-  }
-  // a band densely packed with diamonds (two interleaved rows = a lattice)
-  function diamondLattice(s, n, rIn, rOut, str) {
-    var mid = (rIn + rOut) / 2;
-    ringDiamonds(s, n, rIn, mid + (rOut - rIn) * 0.02, str);
-    ringDiamonds(s, n, mid - (rOut - rIn) * 0.02, rOut, str);
-    // half-step offset row of small diamonds straddling the divide
-    var half = Math.PI / n;
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * TAU - Math.PI / 2;
-      var ix = Math.cos(a) * (mid - (rOut - rIn) * 0.18), iy = Math.sin(a) * (mid - (rOut - rIn) * 0.18);
-      var ox = Math.cos(a) * (mid + (rOut - rIn) * 0.18), oy = Math.sin(a) * (mid + (rOut - rIn) * 0.18);
-      var lx = Math.cos(a - half * 0.4) * mid, ly = Math.sin(a - half * 0.4) * mid;
-      var rx = Math.cos(a + half * 0.4) * mid, ry = Math.sin(a + half * 0.4) * mid;
-      s.push(segS(ix, iy, lx, ly, str)); s.push(segS(lx, ly, ox, oy, str));
-      s.push(segS(ox, oy, rx, ry, str)); s.push(segS(rx, ry, ix, iy, str));
-    }
-  }
-  function triangleS(s, R, up, str) {
-    var rot = up ? -Math.PI / 2 : Math.PI / 2, v = [], k;
-    for (k = 0; k < 3; k++) { var a = rot + k * (TAU / 3); v.push([Math.cos(a) * R, Math.sin(a) * R]); }
-    s.push(segS(v[0][0], v[0][1], v[1][0], v[1][1], str));
-    s.push(segS(v[1][0], v[1][1], v[2][0], v[2][1], str));
-    s.push(segS(v[2][0], v[2][1], v[0][0], v[0][1], str));
-  }
-  function centerMotif(s, R, rand) {
-    var STR = 0.9, t = rand(), Rm = R * 0.92;
-    if (R < 0.05) { s.push(circS(0, 0, Math.max(0.02, R), STR)); return; }
-    if (t < 0.24) { triangleS(s, Rm, true, STR); triangleS(s, Rm, false, STR); }                  // hexagram
-    else if (t < 0.44) { polyS(s, 0, 0, Rm, 4, 0, STR); polyS(s, 0, 0, Rm, 4, Math.PI / 4, STR); } // 8-point star
-    else if (t < 0.60) { triangleS(s, Rm, true, STR); triangleS(s, Rm * 0.72, false, STR); triangleS(s, Rm * 0.46, true, STR); } // nested tris (yantra)
-    else if (t < 0.76) { starPolyS(s, 0, 0, 5, Rm, Rm * 0.42, STR); }                              // pentagram
-    else if (t < 0.90) { ringDiamonds(s, 4 + (rand() * 3 | 0), R * 0.18, Rm, STR); }               // diamond burst
-    else { ringPetals(s, 6 + (rand() * 4 | 0), R * 0.28, Rm, STR); }                               // flower
-    s.push(circS(0, 0, R * 0.4, 0.82));
-    s.push(circS(0, 0, R * 0.14, 0.95));
-  }
-
-  // One random geometric mandala → a strokes array. Concentric bands, each a
-  // randomly chosen element, around a random centre. Deterministic per `rand`.
-  function randomMandala(rand) {
-    var s = [], STR = 0.85;
-    function pick(arr) { return arr[(rand() * arr.length) | 0]; }
-    s.push(circS(0, 0, 0.985, 0.7));
-    if (rand() < 0.6) s.push(circS(0, 0, 0.955, 0.76));
-    var r = pick([0.90, 0.92, 0.94]);
-    var bands = 4 + (rand() * 3 | 0);                 // 4–6 bands
-    for (var b = 0; b < bands; b++) {
-      var rIn = r - (0.09 + rand() * 0.07);
-      if (rIn < 0.13) rIn = 0.13;
-      var n = pick([8, 10, 12, 12, 16, 18, 24]);
-      var mid = (rIn + r) / 2, t = rand();
-      // weighted toward angular shapes (diamonds, triangles, spikes, stars);
-      // rounded petals are an occasional softer accent.
-      if (t < 0.20) ringDiamonds(s, n, rIn, r, STR);
-      else if (t < 0.32) diamondLattice(s, n, rIn, r, STR);          // dense diamonds
-      else if (t < 0.45) ringTriangles(s, n, rIn, r, rand() < 0.6, STR);
-      else if (t < 0.57) ringSpikes(s, n, rIn, r, STR);
-      else if (t < 0.67) { var rot = rand() * TAU; polyS(s, 0, 0, r, n, rot, STR); polyS(s, 0, 0, rIn, n, rot + Math.PI / n, STR); }
-      else if (t < 0.76) ringSquares(s, n, mid, (r - rIn) * 0.5, rand() * Math.PI, STR);
-      else if (t < 0.84) ringChevrons(s, n, rIn, r, STR);
-      else if (t < 0.90) starPolyS(s, 0, 0, n, r, rIn, STR);         // big sharp star ring
-      else if (t < 0.95) ringCircles(s, n, mid, (r - rIn) * 0.45, STR);
-      else ringPetals(s, n, rIn, r, STR);
-      s.push(circS(0, 0, rIn, 0.72));                 // separator ring
-      r = rIn - rand() * 0.015;
-      if (r < 0.15) break;
-    }
-    centerMotif(s, r, rand);
-    return s;
-  }
-
-  /* ---------- engine ----------------------------------------- */
+  /* ---------- engine ---------- */
 
   function init(canvas) {
     if (canvas.dataset.morphBound) return;
     canvas.dataset.morphBound = '1';
 
-    var N       = Math.max(400, Math.floor(num(canvas, 'count', 11000)));
-    var dotMax  = num(canvas, 'dot', 2.6);
-    var dotMin  = Math.max(0.6, dotMax * 0.58);
-    var INK     = attr(canvas, 'ink', '#0a0a0a');
-    var NV      = Math.max(2, Math.floor(num(canvas, 'variants', 5)));
-    var weight  = Math.max(0.55, num(canvas, 'weight', 1.12));
-    var flow    = Math.max(0, num(canvas, 'flow', 0.40));
-    var breathA = Math.max(0, num(canvas, 'breathe', 0.010));
-    var fitK    = clamp(num(canvas, 'fit', 0.46), 0.34, 0.50);
-    var HOLD    = Math.max(0, num(canvas, 'hold', 3200));
-    var BLEND   = Math.max(200, num(canvas, 'blend', 2600));
-    var accentF = clamp(num(canvas, 'accent', 0.012), 0, 0.18);
+    var N       = Math.max(800, Math.floor(num(canvas, 'count', 5200)));
+    var dotMax  = num(canvas, 'dot', 2.0);
+    var dotMin  = Math.max(0.08, num(canvas, 'dotmin', dotMax * 0.45));
+    var dotSpan = Math.max(0, dotMax - dotMin);
+    var INK     = attr(canvas, 'ink', '#f4e3ad');
+    var NV      = Math.max(2, Math.min(BUILDERS.length, Math.floor(num(canvas, 'variants', 6))));
+    var flow    = Math.max(0, num(canvas, 'flow', 0.34));
+    var fitK    = clamp(num(canvas, 'fit', 0.46), 0.30, 0.50);
+    var HOLD    = Math.max(0, num(canvas, 'hold', 3000));
+    var BLEND   = Math.max(300, num(canvas, 'blend', 2800));
+    var REVEAL  = Math.max(0, num(canvas, 'reveal', 2600));
+    var accentF = clamp(num(canvas, 'accent', 0), 0, 0.18);
     var speed   = Math.max(0, num(canvas, 'speed', 1));
-    var shape   = attr(canvas, 'shape', 'round');
-    var roundDots = shape !== 'square';
     var seed    = attr(canvas, 'seed', 'scotty-massa');
     var animate = attr(canvas, 'animate', 'true') !== 'false';
     var lockRaw = canvas.getAttribute('data-morph-fig');
@@ -368,31 +293,60 @@
 
     var rand = mulberry32(xmur3(seed)());
 
-    // A set of random geometric mandalas; the dots morph between them and the
-    // whole field slowly rotates.
-    var clouds = [];
-    for (var v = 0; v < NV; v++) clouds.push(finalize(strokeCloud(randomMandala(rand), N, rand), N, rand));
-    var F = clouds.length;
+    // Build the figures + their dot clouds (figure 0 = the logo).
+    var figs = [], clouds = [], v;
+    for (v = 0; v < NV; v++) {
+      var f = (BUILDERS[v] || figLogo)();
+      figs.push(f);
+      clouds.push(cloudFromTris(f.tris, N, rand));
+    }
+    var F = figs.length;
 
-    // Stable per-dot styling — seeded so every load is identical.
+    // Flaming-sun blades (seeded once, so the swirl is stable per load).
+    var sunFlames = [];
+    (function () { var Nf = 16; for (var s = 0; s < Nf; s++) sunFlames.push({ base: (s / Nf) * TAU, curl: 0.85 + rand() * 0.30, len: 0.86 + rand() * 0.18 }); })();
+
+    // Stable per-dot styling + a scattered "dust" start position for the reveal.
     var accent = new Uint8Array(N);
-    var dotJitter = new Float32Array(N);
-    var phaseA = new Float32Array(N);
-    var phaseB = new Float32Array(N);
+    var jit = new Float32Array(N), phase = new Float32Array(N), scatter = new Float32Array(N * 2);
     for (var i = 0; i < N; i++) {
       accent[i] = rand() < accentF ? 1 : 0;
-      dotJitter[i] = 0.9 + rand() * 0.2;
-      phaseA[i] = rand() * TAU;
-      phaseB[i] = rand() * TAU;
+      jit[i] = 0.7 + rand() * 0.7;
+      phase[i] = rand() * TAU;
+      var sa = rand() * TAU, sr = 0.2 + rand() * 1.4;
+      scatter[i * 2] = Math.cos(sa) * sr; scatter[i * 2 + 1] = Math.sin(sa) * sr;
     }
 
     var ctx = canvas.getContext('2d', { alpha: true });
     var pos = new Float32Array(N * 2);
-    var pstr = new Float32Array(N);
     var size = fit();
     var visible = true;
     var start = performance.now();
     var pausedAt = 0;
+
+    // Offscreen layers rebuilt on resize: dust halo + film grain.
+    var halo = null, grain = null, builtFor = '';
+    function buildLayers(w, h, dpr) {
+      var key = w + 'x' + h + '@' + dpr;
+      if (key === builtFor) return;
+      builtFor = key;
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) * fitK;
+      var grand = mulberry32(0x9e3779b1 ^ (w * 73856093) ^ (h * 19349663));
+      // halo
+      halo = document.createElement('canvas'); halo.width = Math.floor(w * dpr); halo.height = Math.floor(h * dpr);
+      var hc = halo.getContext('2d'); hc.setTransform(dpr, 0, 0, dpr, 0, 0);
+      hc.fillStyle = 'rgba(247,225,160,0.85)';
+      for (var n = 0; n < 2600; n++) {
+        var a = grand() * TAU, rr = (0.95 + Math.pow(grand(), 2.2) * 0.11) * R;
+        hc.globalAlpha = 0.10 + grand() * 0.5;
+        hc.beginPath(); hc.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 0.4 + grand() * 1.1, 0, TAU); hc.fill();
+      }
+      // grain
+      grain = document.createElement('canvas'); grain.width = Math.floor(w * dpr); grain.height = Math.floor(h * dpr);
+      var gc = grain.getContext('2d'); gc.setTransform(dpr, 0, 0, dpr, 0, 0);
+      gc.globalAlpha = 0.035;
+      for (var g = 0; g < 4200; g++) { gc.fillStyle = grand() < 0.5 ? '#fff' : '#000'; gc.fillRect(grand() * w, grand() * h, 1, 1); }
+    }
 
     function fit() {
       var rect = canvas.getBoundingClientRect();
@@ -400,91 +354,211 @@
       var w = Math.max(1, Math.floor(rect.width));
       var h = Math.max(1, Math.floor(rect.height));
       var bw = Math.floor(w * dpr), bh = Math.floor(h * dpr);
-      if (canvas.width !== bw || canvas.height !== bh) {
-        canvas.width = bw; canvas.height = bh;
-      }
+      if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
       return { w: w, h: h, dpr: dpr };
+    }
+
+    function goldGrad(cx, cy, R) {
+      var g = ctx.createRadialGradient(cx, cy, R * 0.10, cx, cy, R);
+      g.addColorStop(0.00, '#fdeec0'); g.addColorStop(0.30, '#f2d488');
+      g.addColorStop(0.58, '#d8ad53'); g.addColorStop(0.80, '#a87b32');
+      g.addColorStop(1.00, '#6b4a18');
+      return g;
+    }
+
+    function triPath(q, cx, cy, R) {
+      ctx.beginPath();
+      ctx.moveTo(cx + q[0] * R, cy + q[1] * R);
+      ctx.lineTo(cx + q[2] * R, cy + q[3] * R);
+      ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
+      ctx.closePath();
+    }
+    function drawFills(fig, cx, cy, R, grad, alpha, rot) {
+      if (alpha <= 0.004) return;
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(rot); ctx.translate(-cx, -cy);
+      ctx.globalAlpha = alpha;
+      var t = fig.tris, i, q;
+      // Pass 1 — base gilded fill with a soft bloom
+      ctx.fillStyle = grad;
+      ctx.shadowColor = 'rgba(255,210,120,' + (0.38 * alpha) + ')'; ctx.shadowBlur = R * 0.028;
+      for (i = 0; i < t.length; i++) { triPath(t[i], cx, cy, R); ctx.fill(); }
+      // Pass 2 — facet light + inked outline. A fixed light (upper-left) lifts
+      // the facets that face it and shades those turned away, so the gold reads
+      // as dimensional gilt; a thin dark outline gives the inked-linework edge.
+      ctx.shadowBlur = 0; ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(0.6, R * 0.0042);
+      var lightA = -2.15;
+      for (i = 0; i < t.length; i++) {
+        q = t[i];
+        var ca = Math.atan2((q[1] + q[3] + q[5]) / 3, (q[0] + q[2] + q[4]) / 3);
+        var facing = Math.cos(ca + rot - lightA);
+        triPath(q, cx, cy, R);
+        ctx.fillStyle = facing > 0
+          ? 'rgba(255,247,219,' + (facing * 0.20 * alpha) + ')'
+          : 'rgba(24,15,4,' + (-facing * 0.30 * alpha) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(22,13,4,' + (0.42 * alpha) + ')';
+        ctx.stroke();
+      }
+      // thin dark band separators carve the concentric rings apart
+      if (fig.rings) {
+        ctx.strokeStyle = 'rgba(8,6,5,' + (0.5 * alpha) + ')';
+        ctx.lineWidth = Math.max(1, R * 0.007);
+        for (var ri = 0; ri < fig.rings.length; ri++) {
+          ctx.beginPath(); ctx.arc(cx, cy, fig.rings[ri] * R, 0, TAU); ctx.stroke();
+        }
+      }
+      ctx.restore();
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    }
+
+    // A flaming sun built from tapered, curved blades that all swirl one way
+    // (an ammonite/solar vortex) around a dark gilded core with a bright corona.
+    function flamePath(baseAng, innerR, outerR, curl, t, idx) {
+      var steps = 20, Lx = [], Ly = [], Rx = [], Ry = [], s;
+      for (s = 0; s <= steps; s++) {
+        var f = s / steps, rad = innerR + (outerR - innerR) * f;
+        var bend = curl * 0.62 * f * f, sway = Math.sin(t * 1.1 + idx * 0.7 + f * 2.0) * 0.03 * f;
+        var ang = baseAng + bend + sway;
+        var w = (0.20 * innerR) * (1 - f) * (0.6 + 0.4 * Math.sin(f * Math.PI));
+        var nx = Math.cos(ang + Math.PI / 2), ny = Math.sin(ang + Math.PI / 2);
+        var px = Math.cos(ang) * rad, py = Math.sin(ang) * rad;
+        Lx[s] = px + nx * w; Ly[s] = py + ny * w; Rx[s] = px - nx * w; Ry[s] = py - ny * w;
+      }
+      ctx.beginPath(); ctx.moveTo(Lx[0], Ly[0]);
+      for (var i = 1; i <= steps; i++) ctx.lineTo(Lx[i], Ly[i]);
+      for (var j = steps; j >= 0; j--) ctx.lineTo(Rx[j], Ry[j]);
+      ctx.closePath();
+    }
+
+    function drawSun(cx, cy, R, grad, scale, alpha, now) {
+      if (alpha <= 0.004) return;
+      var t = now * 0.001, pulse = Math.sin(now * 0.0016 * speed);
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(now * 0.00004 * speed); ctx.scale(scale, scale);
+      ctx.globalAlpha = alpha;
+      var sunR = 0.30 * R, coreR = sunR * 0.34, innerR = sunR * 0.40, outerR = sunR * 0.99 * (1 + 0.02 * pulse);
+      // corona (additive, so it glows)
+      var corR = sunR * (1.30 + 0.05 * pulse);
+      var cor = ctx.createRadialGradient(0, 0, coreR * 0.4, 0, 0, corR);
+      cor.addColorStop(0, 'rgba(255,244,210,' + (1.0 * alpha) + ')');
+      cor.addColorStop(0.24, 'rgba(248,216,140,' + (0.62 * alpha) + ')');
+      cor.addColorStop(0.55, 'rgba(190,140,56,' + (0.22 * alpha) + ')');
+      cor.addColorStop(1, 'rgba(110,78,22,0)');
+      ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = cor;
+      ctx.beginPath(); ctx.arc(0, 0, corR, 0, TAU); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = alpha;
+      // main flame blades
+      var fg = ctx.createRadialGradient(0, 0, coreR, 0, 0, outerR * 1.05);
+      fg.addColorStop(0, '#fff1c4'); fg.addColorStop(0.45, '#e7c069'); fg.addColorStop(1, '#9a7026');
+      ctx.fillStyle = fg;
+      var Nf = sunFlames.length, step = TAU / Nf, i;
+      for (i = 0; i < Nf; i++) { var fl = sunFlames[i]; flamePath(fl.base, innerR, outerR * fl.len, fl.curl, t, i); ctx.fill(); }
+      // interleaved shorter counter-blades (depth)
+      var fg2 = ctx.createRadialGradient(0, 0, coreR, 0, 0, outerR * 0.7);
+      fg2.addColorStop(0, '#ffe7b0'); fg2.addColorStop(1, '#8a6422');
+      ctx.fillStyle = fg2;
+      for (i = 0; i < Nf; i++) { var fk = sunFlames[i]; flamePath(fk.base + step * 0.5, innerR * 0.92, outerR * 0.62, -fk.curl * 0.8, t, i + 50); ctx.fill(); }
+      // dark gilded core + rim + hot spark
+      var coreGrad = ctx.createRadialGradient(0, 0, coreR * 0.1, 0, 0, coreR * 1.15);
+      coreGrad.addColorStop(0, '#1c140a'); coreGrad.addColorStop(0.6, '#120c06'); coreGrad.addColorStop(1, '#0a0604');
+      ctx.fillStyle = coreGrad; ctx.beginPath(); ctx.arc(0, 0, coreR, 0, TAU); ctx.fill();
+      ctx.lineWidth = Math.max(1.2, coreR * 0.10); ctx.strokeStyle = '#d8ad53';
+      ctx.beginPath(); ctx.arc(0, 0, coreR * 1.02, 0, TAU); ctx.stroke();
+      var spark = ctx.createRadialGradient(0, 0, 0, 0, 0, coreR * 0.7);
+      spark.addColorStop(0, 'rgba(255,248,222,' + (0.85 * alpha) + ')');
+      spark.addColorStop(0.5, 'rgba(246,227,168,' + (0.30 * alpha) + ')');
+      spark.addColorStop(1, 'rgba(246,227,168,0)');
+      ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = spark;
+      ctx.beginPath(); ctx.arc(0, 0, coreR * 0.7, 0, TAU); ctx.fill();
+      ctx.restore();
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
     }
 
     function draw(now) {
       var w = size.w, h = size.h, dpr = size.dpr;
+      buildLayers(w, h, dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
-      var cx = w / 2, cy = h / 2;
-      var Rfit = Math.min(w, h) * fitK;
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) * fitK;
+      var grad = goldGrad(cx, cy, R);
 
-      var elapsed = now - start;
-      if (elapsed < 0) elapsed = 0;
+      var elapsed = now - start; if (elapsed < 0) elapsed = 0;
+      var intro = REVEAL > 0 ? smooth(clamp(elapsed / REVEAL, 0, 1)) : 1;
+
       var cur, nxt, k;
-      if (lockFig >= 0) {
-        cur = nxt = lockFig % F; k = 0;
-      } else {
-        cur = Math.floor(elapsed / SEG) % F;
+      if (lockFig >= 0) { cur = nxt = lockFig % F; k = 0; intro = 1; }
+      else if (elapsed < REVEAL) { cur = 0; nxt = 0; k = 0; }
+      else {
+        var ph = elapsed - REVEAL;
+        cur = Math.floor(ph / SEG) % F;
         nxt = (cur + 1) % F;
-        var into = elapsed % SEG;
-        k = into <= HOLD ? 0 : smootherstep((into - HOLD) / BLEND);
+        var into = ph % SEG;
+        k = into <= HOLD ? 0 : smooth((into - HOLD) / BLEND);
       }
+      var mp = Math.sin(k * Math.PI);
+      var rot = elapsed * 0.00010 * speed;
 
+      // background: near-black + red life-whisper + gold bloom underlay
+      var rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.3);
+      rg.addColorStop(0, 'rgba(200,16,46,0.14)'); rg.addColorStop(0.5, 'rgba(140,12,34,0.05)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
+      var bgg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.05);
+      bgg.addColorStop(0, 'rgba(255,225,150,' + (0.18 * intro) + ')'); bgg.addColorStop(0.45, 'rgba(210,160,70,' + (0.09 * intro) + ')'); bgg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = bgg; ctx.fillRect(0, 0, w, h);
+
+      // FILLS — crossfade cur->nxt, dimmed through the swirl, faded up by reveal
+      var fillReveal = REVEAL > 0 ? smooth(clamp((elapsed - REVEAL * 0.45) / (REVEAL * 0.55), 0, 1)) : 1;
+      var fillMaster = fillReveal * (1 - 0.5 * mp);
+      drawFills(figs[cur], cx, cy, R, grad, fillMaster * (1 - k), rot);
+      if (k > 0) drawFills(figs[nxt], cx, cy, R, grad, fillMaster * k, rot);
+
+      // DOTWORK — fine white stipple; reflows on morph, converges on reveal,
+      // glows additively through the swirl. One pass (no red accents).
       var src = clouds[cur], dst = clouds[nxt];
-      var sp = src.pos, ssr = src.str, dp = dst.pos, dsr = dst.str;
-      // the whole field rotates continuously
-      var rot = elapsed * 0.00011 * speed;
       var rc = Math.cos(rot), rs = Math.sin(rot);
-      var morphPulse = Math.sin(k * Math.PI);
-      var breathe = 1 + Math.sin(now * 0.00080 * speed) * breathA;
-      var shA = now * 0.00100 * speed, shB = now * 0.00086 * speed;
-      var flowSign = cur % 2 === 0 ? 1 : -1;
-
+      var glow = mp > 0.12;
+      ctx.fillStyle = INK;
+      if (glow) ctx.globalCompositeOperation = 'lighter';
+      // ultra-fine stipple: one alpha for the whole pass, drawn as tiny rects
+      // (far cheaper than arcs at 40k+ dots). Gentle swell during the morph.
+      ctx.globalAlpha = clamp((0.38 + 0.4 * intro) + 0.4 * mp, 0, 1);
+      var swell = 1 + 0.28 * mp;
       for (var p = 0; p < N; p++) {
         var ix = p * 2, iy = ix + 1;
-        var bx = sp[ix] + (dp[ix] - sp[ix]) * k;   // interpolate first
-        var by = sp[iy] + (dp[iy] - sp[iy]) * k;
-        var nx = bx * rc - by * rs;                // then rotate the field
-        var ny = bx * rs + by * rc;
-        var str = ssr[p] + (dsr[p] - ssr[p]) * k;
-
-        if (morphPulse > 0.0001 && flow > 0) {
-          var rr = Math.sqrt(nx * nx + ny * ny) + 0.0001;
-          var aa = Math.atan2(ny, nx);
-          aa += flowSign * flow * morphPulse * (0.14 + rr * 0.62);   // swirl
-          rr *= 1 + morphPulse * (0.06 + Math.sin(phaseB[p] + rr * 6.0) * 0.03); // breathe out + reform
-          nx = Math.cos(aa) * rr;
-          ny = Math.sin(aa) * rr;
+        var bx = src[ix] + (dst[ix] - src[ix]) * k, by = src[iy] + (dst[iy] - src[iy]) * k;
+        if (intro < 1) { bx = scatter[ix] + (bx - scatter[ix]) * intro; by = scatter[iy] + (by - scatter[iy]) * intro; }
+        var nx = bx * rc - by * rs, ny = bx * rs + by * rc;
+        if (mp > 0.001 && flow > 0) {
+          var rr = Math.sqrt(nx * nx + ny * ny) + 1e-4, aa = Math.atan2(ny, nx);
+          aa += (cur % 2 ? -1 : 1) * flow * mp * (0.14 + rr * 0.5); rr *= 1 + mp * 0.05;
+          nx = Math.cos(aa) * rr; ny = Math.sin(aa) * rr;
         }
-
-        var shimmer = (0.0011 + (1 - str) * 0.0016) * (1 + morphPulse * 0.6);
-        nx = (nx + Math.sin(shA + phaseA[p]) * shimmer) * breathe;
-        ny = (ny + Math.cos(shB + phaseB[p]) * shimmer) * breathe;
-        pos[ix] = cx + nx * Rfit;
-        pos[iy] = cy + ny * Rfit;
-        pstr[p] = str;
-      }
-
-      var span = dotMax - dotMin;
-      function drawDot(x, y, sz) {
-        var hh = sz * 0.5;
-        if (roundDots) { ctx.beginPath(); ctx.arc(x, y, hh, 0, TAU); ctx.fill(); }
-        else { ctx.fillRect(x - hh, y - hh, sz, sz); }
-      }
-
-      ctx.fillStyle = INK;
-      for (var b = 0; b < N; b++) {
-        if (accent[b]) continue;
-        var stB = inkCurve(pstr[b], weight);
-        var sB = (dotMin + stB * span) * dotJitter[b];
-        ctx.globalAlpha = 0.78 + stB * 0.22;
-        drawDot(pos[b * 2], pos[b * 2 + 1], sB);
-      }
-      ctx.fillStyle = RED;
-      for (var rr2 = 0; rr2 < N; rr2++) {
-        if (!accent[rr2]) continue;
-        var stR = inkCurve(pstr[rr2], weight);
-        var sR = (dotMin + stR * span) * dotJitter[rr2] * 0.8;
-        ctx.globalAlpha = 0.6 + stR * 0.2;
-        drawDot(pos[rr2 * 2], pos[rr2 * 2 + 1], sR);
+        var sz = (dotMin + dotSpan * ((jit[p] - 0.7) / 0.7)) * (0.9 + 0.18 * Math.sin(phase[p] + now * 0.004)) * swell;
+        if (sz < 0.1) sz = 0.1;
+        ctx.fillRect(cx + nx * R - sz * 0.5, cy + ny * R - sz * 0.5, sz, sz);
       }
       ctx.globalAlpha = 1;
+      if (glow) ctx.globalCompositeOperation = 'source-over';
+
+      // dust halo (prebaked), breathes in with the reveal
+      if (halo) { ctx.globalAlpha = 0.85 * intro; ctx.drawImage(halo, 0, 0, w, h); ctx.globalAlpha = 1; }
+
+      // flaming sun — only the logo carries it; cross-fades + scales on reveal
+      var sunA = ((figs[cur].sun ? 1 : 0) * (1 - k) + (figs[nxt].sun ? 1 : 0) * k) * fillReveal * (1 - 0.6 * mp);
+      drawSun(cx, cy, R, grad, 0.5 + 0.5 * intro, sunA, now);
+
+      // film grain, then a circular alpha mask so the whole piece FLOATS as a disc
+      // (no square panel) — the canvas fades to transparent toward the corners.
+      if (grain) ctx.drawImage(grain, 0, 0, w, h);
+      var mask = ctx.createRadialGradient(cx, cy, R * 0.98, cx, cy, R * 1.16);
+      mask.addColorStop(0, 'rgba(0,0,0,0)');
+      mask.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = mask; ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
@@ -498,20 +572,19 @@
 
     var resizePending = false;
     function refit() {
-      if (resizePending) return;
-      resizePending = true;
+      if (resizePending) return; resizePending = true;
       requestAnimationFrame(function () {
-        resizePending = false;
-        size = fit();
-        draw(staticMode ? 0 : performance.now());
+        resizePending = false; size = fit();
+        draw(staticMode ? (start + REVEAL + HOLD) : performance.now());
       });
     }
     if ('ResizeObserver' in window) { new ResizeObserver(refit).observe(canvas); }
     else { window.addEventListener('resize', refit); }
 
     if (staticMode) {
+      // one fully-assembled frame of the logo
       if (lockFig < 0) lockFig = 0;
-      draw(0);
+      draw(start + REVEAL + HOLD);
       return;
     }
 
@@ -522,11 +595,7 @@
             visible = true;
             if (pausedAt) { start += performance.now() - pausedAt; pausedAt = 0; }
             startLoop();
-          } else {
-            visible = false;
-            pausedAt = performance.now();
-            stopLoop();
-          }
+          } else { visible = false; pausedAt = performance.now(); stopLoop(); }
         });
       }, { threshold: 0.01 }).observe(canvas);
     }

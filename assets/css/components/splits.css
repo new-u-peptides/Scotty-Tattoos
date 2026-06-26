@@ -11,8 +11,10 @@
 }
 .split__media {
   aspect-ratio: 4 / 5;
-  /* Use background-color, not the `background` shorthand, so a .ph-* image set on
-     the same element is not reset to none by the cascade (portfolio.css loads first). */
+  /* Use background-COLOR (not the `background` shorthand) so the ph-* photo
+     classes — which set background-image and load later/earlier in the cascade
+     — are never reset to `none`. This is what makes the story-split photos on
+     the home, about, aftercare, journal and geometric pages actually show. */
   background-color: var(--ink-3);
   background-size: cover;
   background-position: center;

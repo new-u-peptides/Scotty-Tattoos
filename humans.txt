@@ -1,17 +1,17 @@
 /* TEAM */
-Tattoo Artist & Studio Owner: Scotty Massa
-Studio: Massa Tattoo
+Tattoo Artist: Scotty Massa
+Studio: Massa Tattoo Social Club
 Location: 11 Triq Il-Knisja Il-Qadima, Birkirkara, Malta
 Contact: studio@scottymassa.com
 Phone: +356 9968 5949
 
 /* THANKS */
 To every client who has trusted us with their skin.
-To the host studios worldwide who have welcomed Scotty on guest spots.
+To every artist and studio Scotty has worked alongside over sixteen years.
 To the photographers, friends, and collaborators who have helped document the work.
 
 /* SITE */
-Last update: 2026-05-28
+Last update: 2026-06-25
 Language: English (en)
 Doctype: HTML5
 Components: Cinzel + Inter (via Google Fonts)
