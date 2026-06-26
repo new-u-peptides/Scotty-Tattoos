@@ -72,6 +72,25 @@
     });
   }
 
+  // Honour a ?style=<filter> param on inbound links (e.g. the homepage "What
+  // I tattoo" cards link to portfolio.html?style=mandala) by activating the
+  // matching chip on load. Value is sanitised to letters so it can't be used
+  // to inject an attribute selector.
+  function applyUrlFilter() {
+    var search = location.search;
+    if (!search || search.indexOf('style=') === -1) return;
+    var match = /[?&]style=([^&]+)/.exec(search);
+    if (!match) return;
+    var style = decodeURIComponent(match[1]).replace(/[^a-z]/gi, '').toLowerCase();
+    if (!style) return;
+    var group = document.querySelector('.chips');
+    if (!group || group.dataset.urlApplied) return;
+    var chip = group.querySelector('.chip[data-filter="' + style + '"]');
+    if (!chip) return;
+    group.dataset.urlApplied = '1';
+    chip.click();
+  }
+
   // Reveal the floating WhatsApp button once the hero is scrolled past, so it
   // never overlaps the hero. On pages without a hero it shows immediately.
   function bindWhatsApp() {
@@ -105,6 +124,7 @@
     bindReveal();
     bindFolios();
     bindChips();
+    applyUrlFilter();
     bindActiveNav();
     bindWhatsApp();
   }
