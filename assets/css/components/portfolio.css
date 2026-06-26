@@ -89,6 +89,7 @@
 
 /* Portraits */
 .ph-portrait-tattooing  { background-image: url('../../images/artist/scotty-tattooing.jpg'); }
+.ph-tattooing-back      { background-image: url('../../images/artist/scotty-tattooing-back.webp'); background-position: center 30%; }
 .ph-portrait-vondutch   { background-image: url('../../images/artist/scotty-vondutch.jpg'); background-position: top center; }
 .ph-portrait-bw-stool   { background-image: url('../../images/artist/portrait-bw-stool.webp'); }
 .ph-portrait-bw-chair   { background-image: url('../../images/artist/portrait-bw-chair.webp'); }
