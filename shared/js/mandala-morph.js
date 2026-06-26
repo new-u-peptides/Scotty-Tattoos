@@ -39,7 +39,7 @@
      data-morph-hold    : ms to hold each mandala            (default 3000)
      data-morph-blend   : ms to morph between mandalas        (default 2400)
      data-morph-reveal  : ms of the opening assemble          (default 2600)
-     data-morph-accent  : fraction of dots inked blood-red    (default 0.010)
+     data-morph-accent  : fraction of dots inked blood-red    (default 0 — off)
      data-morph-speed   : spin / motion multiplier            (default 1)
      data-morph-seed    : PRNG seed                           (default "scotty-massa")
      data-morph-animate : "false" -> one static frame         (default true)
@@ -214,22 +214,38 @@
 
   /* ---------- dotwork cloud sampled along the triangle edges ---------- */
   function cloudFromTris(tris, N, rand) {
-    var pts = [], i, j;
+    var pts = [], i, j, k, m;
+    // Measure the figure so the point budget distributes cleanly to ANY N:
+    // ~34% along the edges (crisp linework) and the rest filling the interiors
+    // (dotwork tone). This scales from a few thousand up to 40k+ dots.
+    var totLen = 0, totArea = 0, G = [];
     for (i = 0; i < tris.length; i++) {
       var t = tris[i];
-      var edges = [
-        [t[0], t[1], t[2], t[3]],
-        [t[2], t[3], t[4], t[5]],
-        [t[4], t[5], t[0], t[1]]
-      ];
+      var A = [t[0], t[1]], B = [t[2], t[3]], C = [t[4], t[5]];
+      var per = Math.hypot(B[0] - A[0], B[1] - A[1]) + Math.hypot(C[0] - B[0], C[1] - B[1]) + Math.hypot(A[0] - C[0], A[1] - C[1]);
+      var area = Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) * 0.5;
+      totLen += per; totArea += area; G.push([A, B, C, area]);
+    }
+    var lineDens = (N * 0.34) / (totLen || 1e-6);
+    var areaDens = (N * 1.00) / (totArea || 1e-6);
+    for (i = 0; i < G.length; i++) {
+      var A = G[i][0], B = G[i][1], C = G[i][2];
+      var edges = [[A, B], [B, C], [C, A]];
       for (j = 0; j < 3; j++) {
-        var e = edges[j], dx = e[2] - e[0], dy = e[3] - e[1];
-        var len = Math.sqrt(dx * dx + dy * dy), cnt = Math.max(1, Math.round(len * 42));
-        for (var k = 0; k < cnt; k++) {
+        var p0 = edges[j][0], p1 = edges[j][1];
+        var dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy);
+        var cnt = Math.max(1, Math.round(len * lineDens));
+        for (k = 0; k < cnt; k++) {
           var u = (k + 0.5) / cnt;
-          pts.push([e[0] + dx * u + (rand() - 0.5) * 0.006,
-                    e[1] + dy * u + (rand() - 0.5) * 0.006]);
+          pts.push([p0[0] + dx * u + (rand() - 0.5) * 0.004, p0[1] + dy * u + (rand() - 0.5) * 0.004]);
         }
+      }
+      var fillCnt = Math.round(G[i][3] * areaDens);
+      for (m = 0; m < fillCnt; m++) {
+        var r1 = rand(), r2 = rand();
+        if (r1 + r2 > 1) { r1 = 1 - r1; r2 = 1 - r2; }
+        pts.push([A[0] + r1 * (B[0] - A[0]) + r2 * (C[0] - A[0]),
+                  A[1] + r1 * (B[1] - A[1]) + r2 * (C[1] - A[1])]);
       }
     }
     if (pts.length > N) {
@@ -258,14 +274,16 @@
 
     var N       = Math.max(800, Math.floor(num(canvas, 'count', 5200)));
     var dotMax  = num(canvas, 'dot', 2.0);
+    var dotMin  = Math.max(0.08, num(canvas, 'dotmin', dotMax * 0.45));
+    var dotSpan = Math.max(0, dotMax - dotMin);
     var INK     = attr(canvas, 'ink', '#f4e3ad');
     var NV      = Math.max(2, Math.min(BUILDERS.length, Math.floor(num(canvas, 'variants', 6))));
-    var flow    = Math.max(0, num(canvas, 'flow', 0.42));
+    var flow    = Math.max(0, num(canvas, 'flow', 0.34));
     var fitK    = clamp(num(canvas, 'fit', 0.46), 0.30, 0.50);
     var HOLD    = Math.max(0, num(canvas, 'hold', 3000));
-    var BLEND   = Math.max(300, num(canvas, 'blend', 2400));
+    var BLEND   = Math.max(300, num(canvas, 'blend', 2800));
     var REVEAL  = Math.max(0, num(canvas, 'reveal', 2600));
-    var accentF = clamp(num(canvas, 'accent', 0.010), 0, 0.18);
+    var accentF = clamp(num(canvas, 'accent', 0), 0, 0.18);
     var speed   = Math.max(0, num(canvas, 'speed', 1));
     var seed    = attr(canvas, 'seed', 'scotty-massa');
     var animate = attr(canvas, 'animate', 'true') !== 'false';
@@ -319,7 +337,7 @@
       var hc = halo.getContext('2d'); hc.setTransform(dpr, 0, 0, dpr, 0, 0);
       hc.fillStyle = 'rgba(247,225,160,0.85)';
       for (var n = 0; n < 2600; n++) {
-        var a = grand() * TAU, rr = (0.965 + Math.pow(grand(), 2.2) * 0.27) * R;
+        var a = grand() * TAU, rr = (0.95 + Math.pow(grand(), 2.2) * 0.11) * R;
         hc.globalAlpha = 0.10 + grand() * 0.5;
         hc.beginPath(); hc.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 0.4 + grand() * 1.1, 0, TAU); hc.fill();
       }
@@ -348,24 +366,43 @@
       return g;
     }
 
+    function triPath(q, cx, cy, R) {
+      ctx.beginPath();
+      ctx.moveTo(cx + q[0] * R, cy + q[1] * R);
+      ctx.lineTo(cx + q[2] * R, cy + q[3] * R);
+      ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
+      ctx.closePath();
+    }
     function drawFills(fig, cx, cy, R, grad, alpha, rot) {
       if (alpha <= 0.004) return;
       ctx.save();
       ctx.translate(cx, cy); ctx.rotate(rot); ctx.translate(-cx, -cy);
-      ctx.globalAlpha = alpha; ctx.fillStyle = grad;
-      ctx.shadowColor = 'rgba(255,210,120,' + (0.5 * alpha) + ')'; ctx.shadowBlur = R * 0.045;
-      var t = fig.tris;
-      for (var i = 0; i < t.length; i++) {
-        var q = t[i];
-        ctx.beginPath();
-        ctx.moveTo(cx + q[0] * R, cy + q[1] * R);
-        ctx.lineTo(cx + q[2] * R, cy + q[3] * R);
-        ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
-        ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = alpha;
+      var t = fig.tris, i, q;
+      // Pass 1 — base gilded fill with a soft bloom
+      ctx.fillStyle = grad;
+      ctx.shadowColor = 'rgba(255,210,120,' + (0.38 * alpha) + ')'; ctx.shadowBlur = R * 0.028;
+      for (i = 0; i < t.length; i++) { triPath(t[i], cx, cy, R); ctx.fill(); }
+      // Pass 2 — facet light + inked outline. A fixed light (upper-left) lifts
+      // the facets that face it and shades those turned away, so the gold reads
+      // as dimensional gilt; a thin dark outline gives the inked-linework edge.
+      ctx.shadowBlur = 0; ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(0.6, R * 0.0042);
+      var lightA = -2.15;
+      for (i = 0; i < t.length; i++) {
+        q = t[i];
+        var ca = Math.atan2((q[1] + q[3] + q[5]) / 3, (q[0] + q[2] + q[4]) / 3);
+        var facing = Math.cos(ca + rot - lightA);
+        triPath(q, cx, cy, R);
+        ctx.fillStyle = facing > 0
+          ? 'rgba(255,247,219,' + (facing * 0.20 * alpha) + ')'
+          : 'rgba(24,15,4,' + (-facing * 0.30 * alpha) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(22,13,4,' + (0.42 * alpha) + ')';
+        ctx.stroke();
       }
       // thin dark band separators carve the concentric rings apart
       if (fig.rings) {
-        ctx.shadowBlur = 0;
         ctx.strokeStyle = 'rgba(8,6,5,' + (0.5 * alpha) + ')';
         ctx.lineWidth = Math.max(1, R * 0.007);
         for (var ri = 0; ri < fig.rings.length; ri++) {
@@ -478,16 +515,18 @@
       drawFills(figs[cur], cx, cy, R, grad, fillMaster * (1 - k), rot);
       if (k > 0) drawFills(figs[nxt], cx, cy, R, grad, fillMaster * k, rot);
 
-      // DOTWORK — reflow morph + reveal converge; glows additively mid-morph
+      // DOTWORK — fine white stipple; reflows on morph, converges on reveal,
+      // glows additively through the swirl. One pass (no red accents).
       var src = clouds[cur], dst = clouds[nxt];
       var rc = Math.cos(rot), rs = Math.sin(rot);
-      var span = dotMax - Math.max(0.5, dotMax * 0.5);
       var glow = mp > 0.12;
-      var redN = 0;
       ctx.fillStyle = INK;
       if (glow) ctx.globalCompositeOperation = 'lighter';
+      // ultra-fine stipple: one alpha for the whole pass, drawn as tiny rects
+      // (far cheaper than arcs at 40k+ dots). Gentle swell during the morph.
+      ctx.globalAlpha = clamp((0.38 + 0.4 * intro) + 0.4 * mp, 0, 1);
+      var swell = 1 + 0.28 * mp;
       for (var p = 0; p < N; p++) {
-        if (accent[p]) { redN++; }
         var ix = p * 2, iy = ix + 1;
         var bx = src[ix] + (dst[ix] - src[ix]) * k, by = src[iy] + (dst[iy] - src[iy]) * k;
         if (intro < 1) { bx = scatter[ix] + (bx - scatter[ix]) * intro; by = scatter[iy] + (by - scatter[iy]) * intro; }
@@ -497,37 +536,29 @@
           aa += (cur % 2 ? -1 : 1) * flow * mp * (0.14 + rr * 0.5); rr *= 1 + mp * 0.05;
           nx = Math.cos(aa) * rr; ny = Math.sin(aa) * rr;
         }
-        pos[ix] = cx + nx * R; pos[iy] = cy + ny * R;
-        if (accent[p]) continue;   // red dots drawn in a second pass
-        var sz = (0.5 + jit[p] * 0.5) * dotMax / 2 * (0.85 + 0.3 * Math.sin(phase[p] + now * 0.004)) * (1 + 0.5 * mp);
-        ctx.globalAlpha = clamp((0.25 + 0.5 * intro) + 0.5 * mp, 0, 1);
-        ctx.beginPath(); ctx.arc(pos[ix], pos[iy], Math.max(0.4, sz), 0, TAU); ctx.fill();
-      }
-      // red accent dots
-      if (redN) {
-        ctx.fillStyle = '#c8102e';
-        for (var q2 = 0; q2 < N; q2++) {
-          if (!accent[q2]) continue;
-          var sz2 = (0.5 + jit[q2] * 0.5) * dotMax / 2 * (1 + 0.4 * mp);
-          ctx.globalAlpha = clamp((0.22 + 0.4 * intro) + 0.4 * mp, 0, 1);
-          ctx.beginPath(); ctx.arc(pos[q2 * 2], pos[q2 * 2 + 1], Math.max(0.4, sz2), 0, TAU); ctx.fill();
-        }
+        var sz = (dotMin + dotSpan * ((jit[p] - 0.7) / 0.7)) * (0.9 + 0.18 * Math.sin(phase[p] + now * 0.004)) * swell;
+        if (sz < 0.1) sz = 0.1;
+        ctx.fillRect(cx + nx * R - sz * 0.5, cy + ny * R - sz * 0.5, sz, sz);
       }
       ctx.globalAlpha = 1;
       if (glow) ctx.globalCompositeOperation = 'source-over';
 
       // dust halo (prebaked), breathes in with the reveal
-      if (halo) { ctx.globalAlpha = intro; ctx.drawImage(halo, 0, 0, w, h); ctx.globalAlpha = 1; }
+      if (halo) { ctx.globalAlpha = 0.85 * intro; ctx.drawImage(halo, 0, 0, w, h); ctx.globalAlpha = 1; }
 
       // flaming sun — only the logo carries it; cross-fades + scales on reveal
       var sunA = ((figs[cur].sun ? 1 : 0) * (1 - k) + (figs[nxt].sun ? 1 : 0) * k) * fillReveal * (1 - 0.6 * mp);
       drawSun(cx, cy, R, grad, 0.5 + 0.5 * intro, sunA, now);
 
-      // vignette + grain
-      var vg = ctx.createRadialGradient(cx, cy, R * 0.72, cx, cy, R * 1.5);
-      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)');
-      ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+      // film grain, then a circular alpha mask so the whole piece FLOATS as a disc
+      // (no square panel) — the canvas fades to transparent toward the corners.
       if (grain) ctx.drawImage(grain, 0, 0, w, h);
+      var mask = ctx.createRadialGradient(cx, cy, R * 0.98, cx, cy, R * 1.16);
+      mask.addColorStop(0, 'rgba(0,0,0,0)');
+      mask.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = mask; ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
