@@ -49,6 +49,47 @@ ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist S
 | `/journal/dotwork-vs-linework.html` | Article, BreadcrumbList |
 | `/journal/designing-a-geometric-piece.html` | Article, HowTo, BreadcrumbList |
 
+## Cross-site linking (scottymassa.com → massatattoo.com)
+
+scottymassa.com (this site) and **massatattoo.com** — the Massa Tattoo Social
+Club studio site — are the same brand on two domains. We deep-link from here
+into the studio site's money pages so earned authority on the portfolio flows
+to the studio, and so both entities reinforce each other for branded and local
+queries ("Massa Tattoo", "Massa Tattoo Social Club", "tattoo studio Birkirkara").
+
+Rules we follow:
+- **Followed links** (no `rel="nofollow"`) — both properties are ours, so juice
+  should pass. External, so `target="_blank" rel="noopener"`.
+- **Deep links, not just the homepage** — point at the relevant inner page.
+- **Varied, descriptive anchors** — branded + topical, never repeated exact-match
+  (mirrors the anchor-text split in `LINK-BUILDING.md` §4).
+- **Only link live URLs.** Confirmed live in `massatattoo.com/page-sitemap.xml`
+  + `post-sitemap.xml`. `/mandala-tattoos/`, `/social-club/`, `/portfolio/`
+  exist only in `massatattoo/wordpress/` (not published yet) — do **not** link
+  them until they resolve.
+
+| From (scottymassa.com) | Anchor | To (massatattoo.com) |
+|---|---|---|
+| Footer (all pages, `partials/footer.html`) | "Massa Tattoo Social Club" | `/` |
+| Footer (all pages) | "Birkirkara, Malta" | `/contact/` |
+| Footer (all pages) | "Studio site" | `/` |
+| Footer (all pages) | "Scotty at the studio" | `/artists/scotty-massa/` |
+| Footer (all pages) | "Tattoo courses in Malta" | `/tattoo-course/` |
+| Footer (all pages) | "Studio journal" | `/articles/` |
+| `/about.html` (bio) | "Massa Tattoo Social Club" | `/artists/scotty-massa/` |
+| `/contact.html` (studio block) | "Massa Tattoo Social Club — studio site & directions" | `/contact/` |
+| `/geometric-tattoos.html` (FAQ) | "Massa Tattoo Social Club" | `/` |
+
+> The course nav/CTA still points at the dedicated funnel
+> (`massatattoocourse.aweb.page`) and `/booking.html` is kept clean of outbound
+> links (conversion page).
+
+**Reciprocal (to do on the studio side, where it's WordPress, not this repo):**
+link massatattoo.com back to scottymassa.com from Scotty's artist page and the
+footer with a varied anchor ("Scotty Massa's portfolio", "geometric tattoo
+portfolio"), and point the Skool community "About" back at both. Two-way linking
+between owned, topically-identical sites is the cheapest authority signal here.
+
 ## Off-page recommendations
 
 - **Google Business Profile** — claim and fully optimise the Massa Tattoo listing (categories: Tattoo Shop + Tattoo Artist; full NAP; hours; service area; weekly photo uploads of healed work; respond to every review).
