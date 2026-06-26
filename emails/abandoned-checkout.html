@@ -1,0 +1,170 @@
+<!--
+  New-U Research Compounds — abandoned checkout / order-recovery email
+  ------------------------------------------------------------------------
+  CORRECTED COPY. This is the reviewed source of truth for the recovery email.
+  The live version is generated inline in the new-u.io app; port these strings
+  across (or swap this file in if the app reads a template).
+
+  Recommended subject:  Your cart's still saved, {{first_name}} — finish in a minute
+  Recommended preheader: Your cart's saved — pick up checkout right where you left off.
+
+  Dynamic values use {{ }} placeholders. Adapt the delimiters to your engine.
+  NEVER hard-code a real customer email or a signed resume link (?email=&sig=)
+  into source control — pass them in at render time as {{resume_url}}.
+
+  Copy changes vs. the previous version:
+    - Removed "you're not the only one" (told customers checkout commonly fails).
+    - Removed "we'll get you onto a payment method that works" (implied yours
+      doesn't, and read like steering around declined cards).
+    - Reframed from "your payment failed / sorry" to "your cart is saved, finish it".
+    - Reassurance ("nothing charged / nothing shipped") stated once, not three times.
+-->
+<!DOCTYPE html>
+<html lang="en" style="background:#05080c">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>Your order is still available.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!--[if mso]><style>a,td,h1,h2,h3,p{font-family:'Segoe UI',Arial,sans-serif !important}</style><![endif]-->
+<style>
+  :root{color-scheme:dark;supported-color-schemes:dark}
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
+  img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
+  body{margin:0 !important;padding:0 !important;width:100% !important;background:#05080c !important;background-color:#05080c !important}
+  a{color:#4ab9cc;text-decoration:none}
+  .nu-shell,.np-canvas{background:#05080c !important;background-color:#05080c !important}
+  .nu-card{background:#080d16 !important;background-color:#080d16 !important;color:#e8f1f8 !important}
+  .nu-muted{color:#95afc2 !important}
+  .nu-brand{
+    background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%) !important;
+    -webkit-background-clip:text !important;background-clip:text !important;
+    -webkit-text-fill-color:transparent !important;color:#4ab9cc !important;
+    font-weight:700 !important;
+  }
+  @media (prefers-color-scheme: light){
+    .nu-shell,.np-canvas{background:#05080c !important;background-color:#05080c !important}
+    .nu-card{background:#080d16 !important;background-color:#080d16 !important;color:#e8f1f8 !important}
+    .nu-muted{color:#95afc2 !important}
+    .nu-brand{
+      background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%) !important;
+      -webkit-background-clip:text !important;background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;color:#4ab9cc !important;
+    }
+  }
+  @media only screen and (max-width:600px){
+    .nu-canvas-pad{padding:20px 10px !important}
+    .nu-card{padding:22px 18px !important;border-radius:12px !important}
+    .nu-title{font-size:24px !important;line-height:1.2 !important}
+    .nu-summary-pad{padding:14px 12px !important}
+    .nu-status-pad{padding:14px 12px !important}
+    .nu-row-img{width:44px !important;max-width:44px !important;padding-right:10px !important}
+    .nu-row-price{width:78px !important;padding-left:6px !important}
+    .nu-row-price-amt{font-size:15px !important}
+    .nu-row-name{font-size:14px !important}
+    .nu-resources td{padding:0 2px !important}
+    .nu-resources a{padding:12px 8px !important}
+    .nu-resources-title{font-size:13px !important;line-height:1.2 !important}
+  }
+  [data-ogsc] .nu-shell,[data-ogsc] .np-canvas{background:#05080c !important;background-color:#05080c !important}
+  [data-ogsc] .nu-card{background:#080d16 !important;background-color:#080d16 !important;color:#e8f1f8 !important}
+  [data-ogsc] .nu-muted{color:#95afc2 !important}
+  [data-ogsc] .nu-brand{
+    background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%) !important;
+    -webkit-background-clip:text !important;background-clip:text !important;
+    -webkit-text-fill-color:transparent !important;color:#4ab9cc !important;
+  }
+</style>
+</head>
+<body bgcolor="#05080c" class="nu-shell" style="background:#05080c;background-color:#05080c;margin:0;padding:0;width:100%;font-family:'Manrope','Segoe UI',system-ui,sans-serif;color:#e8f1f8">
+<div style="display:none;max-height:0;max-width:0;overflow:hidden;opacity:0;mso-hide:all;color:#05080c;font-size:1px;line-height:1px">Your cart's saved — pick up checkout right where you left off.</div><div style="display:none;max-height:0;max-width:0;overflow:hidden;opacity:0;mso-hide:all;color:#05080c;font-size:1px;line-height:1px">&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+<table role="presentation" class="np-canvas nu-shell" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#05080c" style="background:radial-gradient(900px 520px at 18% 12%,rgba(74,185,204,0.06),transparent 65%),radial-gradient(820px 540px at 82% 88%,rgba(160,121,207,0.07),transparent 65%),linear-gradient(180deg,#05080c 0%,#060b14 100%);background-color:#05080c;margin:0;padding:0;width:100%;min-width:100%">
+  <tr><td align="center" bgcolor="#05080c" class="nu-shell nu-canvas-pad" style="padding:40px 16px;background-color:#05080c">
+    <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto">
+      <tr><td align="center" style="padding:0 0 16px">
+        <img src="https://new-u.io/img/nu-logo.png" alt="New-U Research Compounds" width="88" height="64" style="display:block;width:88px;height:auto;max-width:88px;border:0;outline:none;text-decoration:none;margin:0 auto">
+      </td></tr>
+      <tr><td style="padding:0 0 20px">
+        <p style="font-family:'Outfit','Manrope','Segoe UI',system-ui,sans-serif;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;margin:0 0 6px;text-align:center"><span class="nu-brand" style="background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#4ab9cc;font-size:12px;font-weight:700;letter-spacing:-0.01em;letter-spacing:0.22em;">New-U Research Compounds</span></p>
+        <p class="nu-muted" style="font-family:'Manrope','Segoe UI',system-ui,sans-serif;font-size:11px;letter-spacing:0.15em;color:#95afc2;margin:0;text-align:center;text-transform:uppercase">Complete your order</p>
+      </td></tr>
+      <tr><td bgcolor="#080d16" class="nu-card" style="background:linear-gradient(140deg,rgba(255,255,255,0.025) 0%,transparent 28%),radial-gradient(420px 220px at 100% 0%,rgba(160,121,207,0.05),transparent 70%),#080d16;background-color:#080d16;border:1px solid #15203a;border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),0 24px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(74,185,204,0.06);padding:36px 36px 32px;color:#e8f1f8;font-family:'Manrope','Segoe UI',system-ui,sans-serif">
+        <h1 class="nu-title" style="font-family:'Outfit','Manrope','Segoe UI',system-ui,sans-serif;font-size:30px;margin:0 0 20px;line-height:1.15;letter-spacing:-0.01em;background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#4ab9cc;font-weight:700">Your order is still available.</h1>
+
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 22px">
+      <tr><td align="center" style="padding:0">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:linear-gradient(180deg,#0c1118 0%,#080c10 100%);background-color:#0c1118;border-radius:12px;border:1px solid #15203a;overflow:hidden">
+          <tr><td style="padding:0;height:4px;background:linear-gradient(90deg,#4ab9cc 0%,#7c84bf 50%,#a079cf 100%);line-height:0;font-size:0">&nbsp;</td></tr>
+          <tr><td style="padding:0" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto" aria-label="Pick up where you left off">
+              <tr><td align="center" valign="middle" width="560" style="padding:14px 8px">
+      <img src="{{product_image_url}}"
+           alt="{{product_name}}"
+           width="160" height="293"
+           style="display:block;width:160px;height:auto;max-width:100%;border:0;outline:none;text-decoration:none">
+    </td></tr>
+            </table>
+          </td></tr>
+          <tr><td style="padding:0;height:4px;background:linear-gradient(90deg,#4ab9cc 0%,#7c84bf 50%,#a079cf 100%);line-height:0;font-size:0">&nbsp;</td></tr>
+        </table>
+      </td></tr>
+    </table>
+    <p style="color:#e8f1f8;font-size:15px;line-height:1.6;margin:0 0 14px">
+      Hi <span class="nu-brand" style="background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#4ab9cc;font-weight:700">{{first_name}}</span>, your order is saved and ready to finish —
+      <strong style="color:#e8f1f8">nothing's been charged and nothing's
+      shipped yet</strong>. Pick up right where you left off with the link
+      below; it only takes a minute.
+    </p>
+
+    <div class="nu-status-pad" style="background:#080d16;border:1px solid #15203a;border-radius:10px;padding:14px 16px;margin:16px 0">
+      <p style="font-size:11px;color:#95afc2;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;word-break:break-word">Order {{order_ref}}</p>
+      <p style="margin:0 0 8px;word-break:break-word"><span class="nu-brand" style="background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 45%,#a079cf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#4ab9cc;font-size:16px;font-weight:700;letter-spacing:-0.01em;">{{order_total}} order</span></p>
+      <p style="font-size:13px;color:#e8f1f8;line-height:1.6;margin:0;word-break:break-word">Your cart's still reserved — finish secure checkout below in under a minute.</p>
+    </div>
+    <div style="text-align:center;margin:24px 0">
+      <a href="{{resume_url}}" style="display:inline-block;background-color:#4a8bdd;background-image:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 50%,#a079cf 100%);background:linear-gradient(135deg,#4ab9cc 0%,#8aa8d6 50%,#a079cf 100%);color:#ffffff;-webkit-text-fill-color:#ffffff;font-family:'Manrope','Segoe UI',system-ui,sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:14px 30px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),inset 0 -6px 12px rgba(20,0,60,0.22),0 0 18px rgba(138,168,214,0.32),0 5px 14px rgba(0,0,0,0.35);mso-padding-alt:0">Finish your order</a>
+    </div>
+    <p style="color:#95afc2;font-size:13px;line-height:1.6;margin:18px 0 0;text-align:center">
+      Questions before you check out? <a href="https://m.me/61590228185705" style="color:#8aa8d6;text-decoration:none;font-weight:600">Message us on Facebook</a> and we'll sort it out fast.
+    </p>
+    <p style="color:#95afc2;font-size:13px;margin-top:12px">
+    Need help? Email <a href="mailto:newu.io.peptides@gmail.com" style="color:#8aa8d6;text-decoration:none;font-weight:600">newu.io.peptides@gmail.com</a> or <a href="https://m.me/61590228185705" style="color:#8aa8d6;text-decoration:none;font-weight:600">message us on Facebook</a>.
+  </p>
+
+      </td></tr>
+      <tr><td class="nu-muted" style="padding:22px 8px 0;color:#95afc2;font-family:'Manrope','Segoe UI',system-ui,sans-serif">
+        <p style="margin:0 0 8px;font-size:12px;color:#95afc2;text-align:center;line-height:1.8">
+        <a href="https://new-u.io/blog" style="color:#8aa8d6;text-decoration:none;font-weight:600">Blog</a> &nbsp;·&nbsp;
+        <a href="https://new-u.io/protocols" style="color:#8aa8d6;text-decoration:none;font-weight:600">Protocols</a> &nbsp;·&nbsp;
+        <a href="https://new-u.io/peptide-101" style="color:#8aa8d6;text-decoration:none;font-weight:600">Peptide 101</a> &nbsp;·&nbsp;
+        <a href="https://www.facebook.com/profile.php?id=61590228185705" style="color:#8aa8d6;text-decoration:none;font-weight:600">Facebook</a>
+      </p><p style="margin:8px 0 0;font-size:11px;color:#95afc2;text-align:center;line-height:1.6">
+        Don't want these? <a href="https://new-u.io/unsubscribe" style="color:#95afc2;text-decoration:underline">Unsubscribe</a>
+        &nbsp;·&nbsp;
+        <a href="https://new-u.io/email-preferences" style="color:#95afc2;text-decoration:underline">Email preferences</a>
+      </p>
+        <p class="nu-muted" style="margin:12px 0 0;font-size:12px;color:#95afc2;line-height:1.6;text-align:center">
+          Questions? Email us at <a href="mailto:newu.io.peptides@gmail.com" style="color:#8aa8d6;text-decoration:none;font-weight:600">newu.io.peptides@gmail.com</a> or <a href="https://m.me/61590228185705" style="color:#8aa8d6;text-decoration:none;font-weight:600">message us on Facebook</a>
+        </p>
+        <p class="nu-muted" style="margin:14px 0 0;font-size:11px;color:#95afc2;line-height:1.6;text-align:center">
+          New-U Research Compounds · Automated notification · This mailbox is not monitored, please don't reply.
+        </p>
+
+    <p style="margin:12px 0 0;font-size:11px;color:#95afc2;line-height:1.6;text-align:center;font-family:'Manrope','Segoe UI',system-ui,sans-serif">
+      New-U Research Compounds is a brand operated by
+      <a href="{{registry_url}}" style="color:#95afc2;text-decoration:underline">Hilxera Distribution Services LLC</a>,
+      a limited liability company registered in the State of Wyoming, USA · Filing ID: {{filing_id}}.
+    </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
