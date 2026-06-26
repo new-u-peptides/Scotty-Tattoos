@@ -202,16 +202,18 @@
       T.heart(0.105);
       T.ring(0, 0, 1.0, 0.5, 0.42);
     },
-    // full, dense many-petal chrysanthemum, like the back / shoulder rosettes
+    // full, dense dahlia/chrysanthemum, like the back & shoulder rosettes —
+    // many SHORT, broad petals layered like scales across five concentric rings
     rosette: function (T, density) {
       petalRings(T, [
-        { m: 34, rIn: 0.66, rOut: 1.00, hw: 0.46 },
-        { m: 26, rIn: 0.46, rOut: 0.76, hw: 0.46 },
-        { m: 18, rIn: 0.27, rOut: 0.54, hw: 0.48 },
-        { m: 12, rIn: 0.14, rOut: 0.34, hw: 0.50 }
-      ], true, density);
-      T.heart(0.075);
-      T.ring(0, 0, 1.0, 0.5, 0.4);
+        { m: 38, rIn: 0.78, rOut: 1.00, hw: 0.62 },
+        { m: 31, rIn: 0.63, rOut: 0.85, hw: 0.66 },
+        { m: 24, rIn: 0.48, rOut: 0.70, hw: 0.68 },
+        { m: 18, rIn: 0.33, rOut: 0.55, hw: 0.70 },
+        { m: 12, rIn: 0.19, rOut: 0.40, hw: 0.72 }
+      ], true, density * 1.15);
+      T.heart(0.10);
+      T.ring(0, 0, 1.0, 0.5, 0.42);
     },
     // sacred-geometry star: a ring of triangles, layered hexagrams, seed of life
     geometric: function (T, density) {
