@@ -344,15 +344,19 @@
 
     // Build one design's dot list, scaled to the requested total dot count.
     // (Fills dominate, so scaling density converges to the target in a pass or two.)
-    function dotsFor(name) {
+    // capN (optional) is a size/DPR-aware ceiling: we never build more dots than
+    // the rendered disc can actually resolve as stipple, so a small mobile disc
+    // scales down instead of converging on the full desktop target.
+    function dotsFor(name, capN) {
       function build1(d) {
         var rnd = mulberry32(xmur3(seed + '|' + name)());
         var tk = toolkit(rnd); DESIGNS[name](tk, d); return tk.dots;
       }
+      var goal = (capN != null && capN < targetN) ? capN : targetN;
       var d = density, ds = build1(d);
-      if (targetN > 0) {
+      if (goal > 0) {
         for (var pass = 0; pass < 4 && ds.length > 50; pass++) {
-          var f = targetN / ds.length;
+          var f = goal / ds.length;
           if (f > 0.95 && f < 1.05) break;
           d = clamp(d * f, 0.03, 400); ds = build1(d);
         }
@@ -365,15 +369,23 @@
     function bakeInk(name) {
       var pw = canvas.width, ph = canvas.height, dpr = size.dpr;
       var cx = pw / 2, cy = ph / 2, R = Math.min(pw, ph) * 0.5 * fitK;
-      var ds = dotsFor(name);
+      // Cap the dot count to what the disc can resolve as stipple (~1 dot per
+      // CSS px²). A ~640px desktop hero clears the full 200k; a ~380px mobile
+      // disc scales down so 200k doesn't just overdraw into solid black.
+      var discCssR = R / dpr;
+      var capN = Math.max(8000, Math.round(Math.PI * discCssR * discCssR));
+      var ds = dotsFor(name, capN);
       var cv = document.createElement('canvas'); cv.width = pw; cv.height = ph;
       var g = cv.getContext('2d'); g.fillStyle = INK;
+      // Square stipple via fillRect (equal area to the old radius-rr circle, so
+      // the tonal weight is unchanged) — avoids per-dot path construction, which
+      // is what made baking 200k dots stall the main thread.
       for (var i = 0; i < ds.length; i++) {
         var d = ds[i];
         g.globalAlpha = clamp(d.a * inkA, 0, 1);
-        g.beginPath();
-        g.arc(cx + d.x * R, cy + d.y * R, Math.max(0.35 * dpr, d.r * dotMax * dpr), 0, TAU);
-        g.fill();
+        var rr = Math.max(0.35 * dpr, d.r * dotMax * dpr);
+        var s = rr * 1.7725;   // sqrt(PI)*rr — square of equal area to the circle
+        g.fillRect(cx + d.x * R - s * 0.5, cy + d.y * R - s * 0.5, s, s);
       }
       g.globalAlpha = 1;
       return cv;
