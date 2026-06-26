@@ -39,7 +39,7 @@
      data-morph-hold    : ms to hold each mandala            (default 3000)
      data-morph-blend   : ms to morph between mandalas        (default 2400)
      data-morph-reveal  : ms of the opening assemble          (default 2600)
-     data-morph-accent  : fraction of dots inked blood-red    (default 0.010)
+     data-morph-accent  : fraction of dots inked blood-red    (default 0 — off)
      data-morph-speed   : spin / motion multiplier            (default 1)
      data-morph-seed    : PRNG seed                           (default "scotty-massa")
      data-morph-animate : "false" -> one static frame         (default true)
@@ -260,12 +260,12 @@
     var dotMax  = num(canvas, 'dot', 2.0);
     var INK     = attr(canvas, 'ink', '#f4e3ad');
     var NV      = Math.max(2, Math.min(BUILDERS.length, Math.floor(num(canvas, 'variants', 6))));
-    var flow    = Math.max(0, num(canvas, 'flow', 0.42));
+    var flow    = Math.max(0, num(canvas, 'flow', 0.34));
     var fitK    = clamp(num(canvas, 'fit', 0.46), 0.30, 0.50);
     var HOLD    = Math.max(0, num(canvas, 'hold', 3000));
-    var BLEND   = Math.max(300, num(canvas, 'blend', 2400));
+    var BLEND   = Math.max(300, num(canvas, 'blend', 2800));
     var REVEAL  = Math.max(0, num(canvas, 'reveal', 2600));
-    var accentF = clamp(num(canvas, 'accent', 0.010), 0, 0.18);
+    var accentF = clamp(num(canvas, 'accent', 0), 0, 0.18);
     var speed   = Math.max(0, num(canvas, 'speed', 1));
     var seed    = attr(canvas, 'seed', 'scotty-massa');
     var animate = attr(canvas, 'animate', 'true') !== 'false';
@@ -319,7 +319,7 @@
       var hc = halo.getContext('2d'); hc.setTransform(dpr, 0, 0, dpr, 0, 0);
       hc.fillStyle = 'rgba(247,225,160,0.85)';
       for (var n = 0; n < 2600; n++) {
-        var a = grand() * TAU, rr = (0.965 + Math.pow(grand(), 2.2) * 0.27) * R;
+        var a = grand() * TAU, rr = (0.95 + Math.pow(grand(), 2.2) * 0.11) * R;
         hc.globalAlpha = 0.10 + grand() * 0.5;
         hc.beginPath(); hc.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 0.4 + grand() * 1.1, 0, TAU); hc.fill();
       }
@@ -353,7 +353,7 @@
       ctx.save();
       ctx.translate(cx, cy); ctx.rotate(rot); ctx.translate(-cx, -cy);
       ctx.globalAlpha = alpha; ctx.fillStyle = grad;
-      ctx.shadowColor = 'rgba(255,210,120,' + (0.5 * alpha) + ')'; ctx.shadowBlur = R * 0.045;
+      ctx.shadowColor = 'rgba(255,210,120,' + (0.45 * alpha) + ')'; ctx.shadowBlur = R * 0.032;
       var t = fig.tris;
       for (var i = 0; i < t.length; i++) {
         var q = t[i];
@@ -478,16 +478,14 @@
       drawFills(figs[cur], cx, cy, R, grad, fillMaster * (1 - k), rot);
       if (k > 0) drawFills(figs[nxt], cx, cy, R, grad, fillMaster * k, rot);
 
-      // DOTWORK — reflow morph + reveal converge; glows additively mid-morph
+      // DOTWORK — fine white stipple; reflows on morph, converges on reveal,
+      // glows additively through the swirl. One pass (no red accents).
       var src = clouds[cur], dst = clouds[nxt];
       var rc = Math.cos(rot), rs = Math.sin(rot);
-      var span = dotMax - Math.max(0.5, dotMax * 0.5);
       var glow = mp > 0.12;
-      var redN = 0;
       ctx.fillStyle = INK;
       if (glow) ctx.globalCompositeOperation = 'lighter';
       for (var p = 0; p < N; p++) {
-        if (accent[p]) { redN++; }
         var ix = p * 2, iy = ix + 1;
         var bx = src[ix] + (dst[ix] - src[ix]) * k, by = src[iy] + (dst[iy] - src[iy]) * k;
         if (intro < 1) { bx = scatter[ix] + (bx - scatter[ix]) * intro; by = scatter[iy] + (by - scatter[iy]) * intro; }
@@ -497,37 +495,31 @@
           aa += (cur % 2 ? -1 : 1) * flow * mp * (0.14 + rr * 0.5); rr *= 1 + mp * 0.05;
           nx = Math.cos(aa) * rr; ny = Math.sin(aa) * rr;
         }
-        pos[ix] = cx + nx * R; pos[iy] = cy + ny * R;
-        if (accent[p]) continue;   // red dots drawn in a second pass
-        var sz = (0.5 + jit[p] * 0.5) * dotMax / 2 * (0.85 + 0.3 * Math.sin(phase[p] + now * 0.004)) * (1 + 0.5 * mp);
-        ctx.globalAlpha = clamp((0.25 + 0.5 * intro) + 0.5 * mp, 0, 1);
-        ctx.beginPath(); ctx.arc(pos[ix], pos[iy], Math.max(0.4, sz), 0, TAU); ctx.fill();
-      }
-      // red accent dots
-      if (redN) {
-        ctx.fillStyle = '#c8102e';
-        for (var q2 = 0; q2 < N; q2++) {
-          if (!accent[q2]) continue;
-          var sz2 = (0.5 + jit[q2] * 0.5) * dotMax / 2 * (1 + 0.4 * mp);
-          ctx.globalAlpha = clamp((0.22 + 0.4 * intro) + 0.4 * mp, 0, 1);
-          ctx.beginPath(); ctx.arc(pos[q2 * 2], pos[q2 * 2 + 1], Math.max(0.4, sz2), 0, TAU); ctx.fill();
-        }
+        var x = cx + nx * R, y = cy + ny * R;
+        // small, dense stipple; only a gentle swell during the morph so it stays tidy
+        var sz = (0.5 + jit[p] * 0.5) * dotMax / 2 * (0.85 + 0.3 * Math.sin(phase[p] + now * 0.004)) * (1 + 0.28 * mp);
+        ctx.globalAlpha = clamp((0.3 + 0.45 * intro) + 0.42 * mp, 0, 1);
+        ctx.beginPath(); ctx.arc(x, y, Math.max(0.35, sz), 0, TAU); ctx.fill();
       }
       ctx.globalAlpha = 1;
       if (glow) ctx.globalCompositeOperation = 'source-over';
 
       // dust halo (prebaked), breathes in with the reveal
-      if (halo) { ctx.globalAlpha = intro; ctx.drawImage(halo, 0, 0, w, h); ctx.globalAlpha = 1; }
+      if (halo) { ctx.globalAlpha = 0.85 * intro; ctx.drawImage(halo, 0, 0, w, h); ctx.globalAlpha = 1; }
 
       // flaming sun — only the logo carries it; cross-fades + scales on reveal
       var sunA = ((figs[cur].sun ? 1 : 0) * (1 - k) + (figs[nxt].sun ? 1 : 0) * k) * fillReveal * (1 - 0.6 * mp);
       drawSun(cx, cy, R, grad, 0.5 + 0.5 * intro, sunA, now);
 
-      // vignette + grain
-      var vg = ctx.createRadialGradient(cx, cy, R * 0.72, cx, cy, R * 1.5);
-      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)');
-      ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+      // film grain, then a circular alpha mask so the whole piece FLOATS as a disc
+      // (no square panel) — the canvas fades to transparent toward the corners.
       if (grain) ctx.drawImage(grain, 0, 0, w, h);
+      var mask = ctx.createRadialGradient(cx, cy, R * 0.98, cx, cy, R * 1.16);
+      mask.addColorStop(0, 'rgba(0,0,0,0)');
+      mask.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = mask; ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
