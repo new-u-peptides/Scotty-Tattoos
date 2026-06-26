@@ -27,3 +27,27 @@
 }
 .style-card h3 { margin: 1.2rem 0 0.8rem; }
 .style-card p { color: var(--bone-2); font-size: 0.95rem; margin: 0; }
+
+/* Linked style cards (home "What I tattoo") behave like the rest of the grid
+   but inherit card colour and carry a small "view pieces" affordance. */
+a.style-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.style-card__cue {
+  display: inline-block;
+  margin-top: 1.4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rust-soft);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+a.style-card:hover .style-card__cue,
+a.style-card:focus-visible .style-card__cue {
+  color: var(--red-soft);
+  transform: translateX(3px);
+}
