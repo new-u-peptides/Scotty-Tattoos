@@ -42,50 +42,23 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 640px;
+  max-width: 760px;
   aspect-ratio: 1;
   margin-inline: auto;
 }
 
-/* Soft gold-and-blood glow behind the mandala — the "life". A warm gold core
-   over the brand red, so the luminous solar mark reads as gilded light. */
-.hero__sigil::before {
-  content: "";
-  position: absolute;
-  inset: -8%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(214, 170, 86, 0.30) 0%, rgba(214, 170, 86, 0.08) 38%, transparent 64%),
-    radial-gradient(circle, var(--red-18) 0%, var(--red-08) 48%, transparent 74%);
-  filter: blur(14px);
-  z-index: 0;
-  animation: sigil-pulse 7s ease-in-out infinite;
-}
-
-/* The hero canvas: the gold solar mandala. A near-black radial backing sits
-   behind the gold (through the canvas's transparent pixels) so the metal pops
-   off the dark hero instead of muddying against the portrait, fading to clear
-   at the rim so the piece floats. */
+/* The hero canvas: a black dotwork mandala sitting on its own soft, edgeless
+   skin-warm halo (baked into the canvas itself, fading to fully transparent —
+   no box). It floats free on the dark hero. */
 .mandala--hero {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
-  background: radial-gradient(circle, #0a0807 52%, rgba(10, 8, 7, 0.6) 70%, transparent 82%);
-}
-
-@keyframes sigil-pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.05); }
+  background: transparent;
 }
 
 @media (max-width: 920px) {
-  .hero__sigil { max-width: 380px; }
-}
-
-/* Stillness for anyone who asks for it. The JS already renders a
-   static frame under reduced motion; kill the CSS glow too. */
-@media (prefers-reduced-motion: reduce) {
-  .hero__sigil::before { animation: none; }
+  .hero__sigil { max-width: 440px; }
 }
