@@ -30,9 +30,13 @@
      <canvas data-mandala-morph></canvas>
 
    Data attributes (all optional):
-     data-morph-count   : dotwork dot count                  (default 5200)
+     data-morph-count   : dotwork dot count (auto-capped to canvas size) (default 5200)
      data-morph-dot     : max dot size in CSS px             (default 2.0)
-     data-morph-ink     : dotwork colour (a light gold)      (default #f4e3ad)
+     data-morph-dotmin  : min dot size in CSS px             (default dot*0.45)
+     data-morph-ink     : highlight/linework dot colour      (default #f4e3ad)
+     data-morph-shadowtone: dark "shadow" stipple colour     (default #2e1d08)
+     data-morph-shadowamt : shadow-dot fraction near facet edges (0–1, default 0.90)
+     data-morph-shadowstr : shadow-dot draw strength         (0–1.5, default 1.05)
      data-morph-variants: number of mandalas in the loop     (default 6)
      data-morph-flow    : morph swirl strength               (default 0.42)
      data-morph-fit     : figure scale inside the canvas     (default 0.46)
@@ -212,12 +216,13 @@
 
   var BUILDERS = [figLogo, figStar, figLotus, figGirih, figDiamond, figYantra];
 
-  /* ---------- dotwork cloud sampled along the triangle edges ---------- */
-  function cloudFromTris(tris, N, rand) {
+  /* ---------- dotwork cloud sampled from the triangles ----------
+     Returns { pos, tone }. tone[i] === 1 marks a dark "shadow" stipple dot
+     (drawn in bronze to build hand-dotted tone on the gold); 0 is a pale
+     highlight/linework dot. Shadow dots pool toward the facet edges and thin
+     toward the bright centre, so each gilded facet reads as an inked bevel. */
+  function cloudFromTris(tris, N, rand, shadowAmt) {
     var pts = [], i, j, k, m;
-    // Measure the figure so the point budget distributes cleanly to ANY N:
-    // ~34% along the edges (crisp linework) and the rest filling the interiors
-    // (dotwork tone). This scales from a few thousand up to 40k+ dots.
     var totLen = 0, totArea = 0, G = [];
     for (i = 0; i < tris.length; i++) {
       var t = tris[i];
@@ -226,8 +231,10 @@
       var area = Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) * 0.5;
       totLen += per; totArea += area; G.push([A, B, C, area]);
     }
-    var lineDens = (N * 0.34) / (totLen || 1e-6);
-    var areaDens = (N * 1.00) / (totArea || 1e-6);
+    // ~22% of the budget is crisp edge linework (the dark outline already
+    // carries the seam); the rest fills interiors as tonal dotwork.
+    var lineDens = (N * 0.22) / (totLen || 1e-6);
+    var areaDens = (N * 1.05) / (totArea || 1e-6);
     for (i = 0; i < G.length; i++) {
       var A = G[i][0], B = G[i][1], C = G[i][2];
       var edges = [[A, B], [B, C], [C, A]];
@@ -237,15 +244,19 @@
         var cnt = Math.max(1, Math.round(len * lineDens));
         for (k = 0; k < cnt; k++) {
           var u = (k + 0.5) / cnt;
-          pts.push([p0[0] + dx * u + (rand() - 0.5) * 0.004, p0[1] + dy * u + (rand() - 0.5) * 0.004]);
+          pts.push([p0[0] + dx * u + (rand() - 0.5) * 0.004, p0[1] + dy * u + (rand() - 0.5) * 0.004, 0]);
         }
       }
       var fillCnt = Math.round(G[i][3] * areaDens);
       for (m = 0; m < fillCnt; m++) {
         var r1 = rand(), r2 = rand();
         if (r1 + r2 > 1) { r1 = 1 - r1; r2 = 1 - r2; }
-        pts.push([A[0] + r1 * (B[0] - A[0]) + r2 * (C[0] - A[0]),
-                  A[1] + r1 * (B[1] - A[1]) + r2 * (C[1] - A[1])]);
+        var r3 = 1 - r1 - r2;
+        var px = A[0] + r1 * (B[0] - A[0]) + r2 * (C[0] - A[0]);
+        var py = A[1] + r1 * (B[1] - A[1]) + r2 * (C[1] - A[1]);
+        var edgeNear = Math.min(r1, r2, r3);                 // 0 at an edge, ~0.33 at the centre
+        var shadowP = clamp(1 - edgeNear / 0.20, 0, 1) * shadowAmt;
+        pts.push([px, py, rand() < shadowP ? 1 : 0]);
       }
     }
     if (pts.length > N) {
@@ -253,7 +264,7 @@
       pts.length = N;
     } else {
       var L = pts.length || 1;
-      while (pts.length < N) { var p = pts[(rand() * L) | 0] || [0, 0]; pts.push([p[0] + (rand() - 0.5) * 0.01, p[1] + (rand() - 0.5) * 0.01]); }
+      while (pts.length < N) { var p = pts[(rand() * L) | 0] || [0, 0, 0]; pts.push([p[0] + (rand() - 0.5) * 0.01, p[1] + (rand() - 0.5) * 0.01, p[2]]); }
     }
     // angle-sort so dot #i corresponds across figures (the morph reflows)
     pts.sort(function (a, b) {
@@ -261,9 +272,9 @@
       if (aa !== ba) return aa - ba;
       return (a[0] * a[0] + a[1] * a[1]) - (b[0] * b[0] + b[1] * b[1]);
     });
-    var f = new Float32Array(N * 2);
-    for (i = 0; i < N; i++) { f[i * 2] = pts[i][0]; f[i * 2 + 1] = pts[i][1]; }
-    return f;
+    var pos = new Float32Array(N * 2), tone = new Uint8Array(N);
+    for (i = 0; i < N; i++) { pos[i * 2] = pts[i][0]; pos[i * 2 + 1] = pts[i][1]; tone[i] = pts[i][2]; }
+    return { pos: pos, tone: tone };
   }
 
   /* ---------- engine ---------- */
@@ -277,6 +288,9 @@
     var dotMin  = Math.max(0.08, num(canvas, 'dotmin', dotMax * 0.45));
     var dotSpan = Math.max(0, dotMax - dotMin);
     var INK     = attr(canvas, 'ink', '#f4e3ad');
+    var SHADOW_TONE = attr(canvas, 'shadowtone', '#2e1d08');
+    var SHADOW_AMT  = clamp(num(canvas, 'shadowamt', 0.90), 0, 1);
+    var SHADOW_STR  = clamp(num(canvas, 'shadowstr', 1.05), 0, 1.5);
     var NV      = Math.max(2, Math.min(BUILDERS.length, Math.floor(num(canvas, 'variants', 6))));
     var flow    = Math.max(0, num(canvas, 'flow', 0.34));
     var fitK    = clamp(num(canvas, 'fit', 0.46), 0.30, 0.50);
@@ -291,6 +305,13 @@
     var lockFig = lockRaw == null ? -1 : (parseInt(lockRaw, 10) || 0);
     var SEG     = HOLD + BLEND;
 
+    // Performance: cap the effective dot count to the canvas size so small
+    // (mobile) heroes stay smooth; desktop keeps the full requested count.
+    var rect0 = canvas.getBoundingClientRect();
+    if (rect0.width > 0 && rect0.height > 0) {
+      N = Math.min(N, Math.max(6000, Math.round(rect0.width * rect0.height * 0.13)));
+    }
+
     var rand = mulberry32(xmur3(seed)());
 
     // Build the figures + their dot clouds (figure 0 = the logo).
@@ -298,7 +319,7 @@
     for (v = 0; v < NV; v++) {
       var f = (BUILDERS[v] || figLogo)();
       figs.push(f);
-      clouds.push(cloudFromTris(f.tris, N, rand));
+      clouds.push(cloudFromTris(f.tris, N, rand, SHADOW_AMT));
     }
     var F = figs.length;
 
@@ -515,16 +536,13 @@
       drawFills(figs[cur], cx, cy, R, grad, fillMaster * (1 - k), rot);
       if (k > 0) drawFills(figs[nxt], cx, cy, R, grad, fillMaster * k, rot);
 
-      // DOTWORK — fine white stipple; reflows on morph, converges on reveal,
-      // glows additively through the swirl. One pass (no red accents).
-      var src = clouds[cur], dst = clouds[nxt];
+      // DOTWORK — two-tone stipple. Positions are computed once into pos[],
+      // then drawn in two flat passes: dark "shadow" dots build hand-dotted
+      // tone on the gold (bronze, source-over), pale dots are highlight +
+      // linework (glow additively through the swirl). Reflows on morph.
+      var src = clouds[cur].pos, dst = clouds[nxt].pos, tn = clouds[cur].tone;
       var rc = Math.cos(rot), rs = Math.sin(rot);
       var glow = mp > 0.12;
-      ctx.fillStyle = INK;
-      if (glow) ctx.globalCompositeOperation = 'lighter';
-      // ultra-fine stipple: one alpha for the whole pass, drawn as tiny rects
-      // (far cheaper than arcs at 40k+ dots). Gentle swell during the morph.
-      ctx.globalAlpha = clamp((0.38 + 0.4 * intro) + 0.4 * mp, 0, 1);
       var swell = 1 + 0.28 * mp;
       for (var p = 0; p < N; p++) {
         var ix = p * 2, iy = ix + 1;
@@ -536,9 +554,30 @@
           aa += (cur % 2 ? -1 : 1) * flow * mp * (0.14 + rr * 0.5); rr *= 1 + mp * 0.05;
           nx = Math.cos(aa) * rr; ny = Math.sin(aa) * rr;
         }
-        var sz = (dotMin + dotSpan * ((jit[p] - 0.7) / 0.7)) * (0.9 + 0.18 * Math.sin(phase[p] + now * 0.004)) * swell;
-        if (sz < 0.1) sz = 0.1;
-        ctx.fillRect(cx + nx * R - sz * 0.5, cy + ny * R - sz * 0.5, sz, sz);
+        pos[ix] = cx + nx * R; pos[iy] = cy + ny * R;
+      }
+      function dotSize(idx, sw) {
+        var s = (dotMin + dotSpan * ((jit[idx] - 0.7) / 0.7)) * (0.9 + 0.18 * Math.sin(phase[idx] + now * 0.004)) * sw;
+        return s < 0.1 ? 0.1 : s;
+      }
+      // shadow pass — dark bronze tone, eased out through the morph swirl
+      var shA = clamp(0.32 + 0.5 * intro, 0, 1) * SHADOW_STR * (1 - 0.7 * mp);
+      if (shA > 0.01) {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = SHADOW_TONE; ctx.globalAlpha = shA;
+        for (var s2 = 0; s2 < N; s2++) {
+          if (tn[s2] !== 1) continue;
+          var szS = dotSize(s2, 1);
+          ctx.fillRect(pos[s2 * 2] - szS * 0.5, pos[s2 * 2 + 1] - szS * 0.5, szS, szS);
+        }
+      }
+      // highlight + linework pass — pale, glows additively during the morph
+      if (glow) ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = INK; ctx.globalAlpha = clamp((0.38 + 0.4 * intro) + 0.4 * mp, 0, 1);
+      for (var q = 0; q < N; q++) {
+        if (tn[q] === 1) continue;
+        var szH = dotSize(q, swell);
+        ctx.fillRect(pos[q * 2] - szH * 0.5, pos[q * 2 + 1] - szH * 0.5, szH, szH);
       }
       ctx.globalAlpha = 1;
       if (glow) ctx.globalCompositeOperation = 'source-over';
