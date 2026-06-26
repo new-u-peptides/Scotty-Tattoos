@@ -343,54 +343,57 @@
     }
 
     // Build one design's dot list, scaled to the requested total dot count.
-    // (Fills dominate, so scaling density converges to the target in a pass or two.)
-    // capN (optional) is a size/DPR-aware ceiling: we never build more dots than
-    // the rendered disc can actually resolve as stipple, so a small mobile disc
-    // scales down instead of converging on the full desktop target.
+    // One calibration build at density 1, then one final build at the scaled
+    // density — two builds, kept cheap so it never stalls a frame for long.
+    // capN (optional) is a size/DPR-aware ceiling: never build more dots than
+    // the disc can resolve as stipple, so a small mobile disc scales down.
     function dotsFor(name, capN) {
       function build1(d) {
         var rnd = mulberry32(xmur3(seed + '|' + name)());
         var tk = toolkit(rnd); DESIGNS[name](tk, d); return tk.dots;
       }
       var goal = (capN != null && capN < targetN) ? capN : targetN;
-      var d = density, ds = build1(d);
-      if (goal > 0) {
-        for (var pass = 0; pass < 4 && ds.length > 50; pass++) {
-          var f = goal / ds.length;
-          if (f > 0.95 && f < 1.05) break;
-          d = clamp(d * f, 0.03, 400); ds = build1(d);
-        }
-      }
-      return ds;
+      if (goal <= 0) return build1(density);
+      var probe = build1(1);
+      if (probe.length >= goal) return probe;
+      return build1(clamp(goal / probe.length, 0.05, 400));
     }
 
-    // Pre-bake a design to its own transparent dotwork layer (done once per
-    // design per size). Per frame we only composite these — cheap even at 100k.
-    function bakeInk(name) {
+    // Progressive bake: each design draws into its own layer across several
+    // frames (a bounded budget of dots per frame) so a 200k-dot bake never
+    // freezes the animation — the rotation stays smooth while it stipples in.
+    function startBake(name) {
+      if (layers[name]) return layers[name];
       var pw = canvas.width, ph = canvas.height, dpr = size.dpr;
-      var cx = pw / 2, cy = ph / 2, R = Math.min(pw, ph) * 0.5 * fitK;
-      // Cap the dot count to what the disc can resolve as stipple (~1 dot per
-      // CSS px²). A ~640px desktop hero clears the full 200k; a ~380px mobile
-      // disc scales down so 200k doesn't just overdraw into solid black.
+      var R = Math.min(pw, ph) * 0.5 * fitK;
+      // Cap dots to what the disc can resolve as stipple (~1 dot/CSS px²) so a
+      // small mobile disc scales down instead of overdrawing into solid black.
       var discCssR = R / dpr;
       var capN = Math.max(8000, Math.round(Math.PI * discCssR * discCssR));
-      var ds = dotsFor(name, capN);
       var cv = document.createElement('canvas'); cv.width = pw; cv.height = ph;
       var g = cv.getContext('2d'); g.fillStyle = INK;
-      // Square stipple via fillRect (equal area to the old radius-rr circle, so
-      // the tonal weight is unchanged) — avoids per-dot path construction, which
-      // is what made baking 200k dots stall the main thread.
-      for (var i = 0; i < ds.length; i++) {
+      layers[name] = {
+        cv: cv, g: g, dots: dotsFor(name, capN), i: 0, done: false,
+        cx: pw / 2, cy: ph / 2, R: R, dpr: dpr
+      };
+      return layers[name];
+    }
+    function stepBake(name, budget) {
+      var e = layers[name]; if (!e || e.done) return;
+      var g = e.g, ds = e.dots, end = Math.min(e.i + budget, ds.length);
+      var cx = e.cx, cy = e.cy, R = e.R, minR = 0.35 * e.dpr, sz = dotMax * e.dpr;
+      // Square stipple via fillRect (equal area to a radius-rr circle, so tonal
+      // weight is unchanged) — far cheaper per dot than arc()+fill().
+      for (var i = e.i; i < end; i++) {
         var d = ds[i];
         g.globalAlpha = clamp(d.a * inkA, 0, 1);
-        var rr = Math.max(0.35 * dpr, d.r * dotMax * dpr);
-        var s = rr * 1.7725;   // sqrt(PI)*rr — square of equal area to the circle
+        var rr = Math.max(minR, d.r * sz), s = rr * 1.7725;
         g.fillRect(cx + d.x * R - s * 0.5, cy + d.y * R - s * 0.5, s, s);
       }
-      g.globalAlpha = 1;
-      return cv;
+      e.i = end;
+      if (end >= ds.length) { e.done = true; e.dots = null; g.globalAlpha = 1; }
     }
-    function ensureBaked(name) { return layers[name] || (layers[name] = bakeInk(name)); }
+    function bakeFull(name) { startBake(name); stepBake(name, 1e9); return layers[name].cv; }
 
     function bakeHalo() {
       var pw = canvas.width, ph = canvas.height;
@@ -409,7 +412,7 @@
 
     // ASCII: downsample a baked design into a glyph grid (avg ink alpha per cell)
     function buildGrid(name) {
-      var src = ensureBaked(name), w = size.w, h = size.h, pw = canvas.width, ph = canvas.height;
+      var src = bakeFull(name), w = size.w, h = size.h, pw = canvas.width, ph = canvas.height;
       var cw = Math.max(3, cellPx * 0.58), chh = Math.max(5, cellPx);
       var cols = Math.max(8, Math.round(w / cw)), rows = Math.max(8, Math.round(h / chh));
       var tmp = document.createElement('canvas'); tmp.width = cols; tmp.height = rows;
@@ -471,8 +474,9 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       var cx = canvas.width / 2, cy = canvas.height / 2;
       var breath = 1 + 0.012 * Math.sin(elapsed * 0.0006 * speed);
-      var rot = elapsed * 0.00002 * speed;
+      var rot = elapsed * 0.00010 * speed;   // steady, continuous turn (~60s/rev)
       var base = 0.965 + 0.035 * intro;
+      var bud = staticMode ? 1e9 : 12000;    // dots baked per frame (chunked so rotation stays smooth)
 
       // halo (steady skin-glow; transparent when halo=0)
       if (halo) { ctx.globalAlpha = intro; ctx.drawImage(halo, 0, 0); ctx.globalAlpha = 1; }
@@ -484,26 +488,28 @@
         k = into <= HOLD ? 0 : smooth((into - HOLD) / BLEND);
         nxt = (cur + 1) % N;
       }
-      ensureBaked(names[cur]);
-      // bake the next design during the hold so the dissolve never hitches
-      if (N > 1 && (k > 0 || into > HOLD * 0.5)) ensureBaked(names[nxt]);
+      // bake current; start the next early in the hold so it's ready for the
+      // dissolve. Both are chunked so no single frame stalls the rotation.
+      startBake(names[cur]); stepBake(names[cur], bud);
+      if (N > 1 && (k > 0 || into > HOLD * 0.25)) { startBake(names[nxt]); stepBake(names[nxt], staticMode ? 1e9 : 9000); }
 
-      function blit(name, alpha, scl, rota) {
-        if (alpha <= 0.003 || !layers[name]) return;
+      function blit(name, alpha, scl) {
+        var e = layers[name];
+        if (alpha <= 0.003 || !e) return;
         ctx.save();
-        ctx.translate(cx, cy); ctx.rotate(rota); ctx.scale(scl, scl); ctx.translate(-cx, -cy);
+        ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(scl, scl); ctx.translate(-cx, -cy);
         ctx.globalAlpha = clamp(alpha, 0, 1);
-        ctx.drawImage(layers[name], 0, 0);
+        ctx.drawImage(e.cv, 0, 0);
         ctx.restore();
       }
 
       if (k <= 0) {
-        blit(names[cur], intro, base * breath, rot);
+        blit(names[cur], intro, base * breath);
       } else {
-        // cross-dissolve: current drifts out + scales up, next settles in — a
-        // smooth morph, no burst. Slight counter-rotation sells the transform.
-        blit(names[cur], intro * (1 - k), base * (1 + 0.05 * k) * breath, rot - k * 0.10);
-        blit(names[nxt], intro * k,       base * (0.95 + 0.05 * k) * breath, rot + (1 - k) * 0.12);
+        // cross-dissolve: current scales up + fades out, next settles in — a
+        // smooth morph over one steady rotation. No burst, no rotation wobble.
+        blit(names[cur], intro * (1 - k), base * (1 + 0.05 * k) * breath);
+        blit(names[nxt], intro * k,       base * (0.95 + 0.05 * k) * breath);
       }
       ctx.globalAlpha = 1;
     }
