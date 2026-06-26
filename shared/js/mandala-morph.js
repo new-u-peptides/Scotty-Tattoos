@@ -345,15 +345,18 @@
     // Build one design's dot list, scaled to the requested total dot count.
     // One calibration build at density 1, then one final build at the scaled
     // density — two builds, kept cheap so it never stalls a frame for long.
-    function dotsFor(name) {
+    // capN (optional) is a size/DPR-aware ceiling: never build more dots than
+    // the disc can resolve as stipple, so a small mobile disc scales down.
+    function dotsFor(name, capN) {
       function build1(d) {
         var rnd = mulberry32(xmur3(seed + '|' + name)());
         var tk = toolkit(rnd); DESIGNS[name](tk, d); return tk.dots;
       }
-      if (targetN <= 0) return build1(density);
+      var goal = (capN != null && capN < targetN) ? capN : targetN;
+      if (goal <= 0) return build1(density);
       var probe = build1(1);
-      if (probe.length >= targetN) return probe;
-      return build1(clamp(targetN / probe.length, 0.05, 400));
+      if (probe.length >= goal) return probe;
+      return build1(clamp(goal / probe.length, 0.05, 400));
     }
 
     // Progressive bake: each design draws into its own layer across several
@@ -361,12 +364,17 @@
     // freezes the animation — the rotation stays smooth while it stipples in.
     function startBake(name) {
       if (layers[name]) return layers[name];
-      var pw = canvas.width, ph = canvas.height;
+      var pw = canvas.width, ph = canvas.height, dpr = size.dpr;
+      var R = Math.min(pw, ph) * 0.5 * fitK;
+      // Cap dots to what the disc can resolve as stipple (~1 dot/CSS px²) so a
+      // small mobile disc scales down instead of overdrawing into solid black.
+      var discCssR = R / dpr;
+      var capN = Math.max(8000, Math.round(Math.PI * discCssR * discCssR));
       var cv = document.createElement('canvas'); cv.width = pw; cv.height = ph;
       var g = cv.getContext('2d'); g.fillStyle = INK;
       layers[name] = {
-        cv: cv, g: g, dots: dotsFor(name), i: 0, done: false,
-        cx: pw / 2, cy: ph / 2, R: Math.min(pw, ph) * 0.5 * fitK, dpr: size.dpr
+        cv: cv, g: g, dots: dotsFor(name, capN), i: 0, done: false,
+        cx: pw / 2, cy: ph / 2, R: R, dpr: dpr
       };
       return layers[name];
     }
@@ -374,12 +382,13 @@
       var e = layers[name]; if (!e || e.done) return;
       var g = e.g, ds = e.dots, end = Math.min(e.i + budget, ds.length);
       var cx = e.cx, cy = e.cy, R = e.R, minR = 0.35 * e.dpr, sz = dotMax * e.dpr;
+      // Square stipple via fillRect (equal area to a radius-rr circle, so tonal
+      // weight is unchanged) — far cheaper per dot than arc()+fill().
       for (var i = e.i; i < end; i++) {
         var d = ds[i];
         g.globalAlpha = clamp(d.a * inkA, 0, 1);
-        g.beginPath();
-        g.arc(cx + d.x * R, cy + d.y * R, Math.max(minR, d.r * sz), 0, TAU);
-        g.fill();
+        var rr = Math.max(minR, d.r * sz), s = rr * 1.7725;
+        g.fillRect(cx + d.x * R - s * 0.5, cy + d.y * R - s * 0.5, s, s);
       }
       e.i = end;
       if (end >= ds.length) { e.done = true; e.dots = null; g.globalAlpha = 1; }
