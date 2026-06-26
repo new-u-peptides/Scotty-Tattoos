@@ -214,22 +214,38 @@
 
   /* ---------- dotwork cloud sampled along the triangle edges ---------- */
   function cloudFromTris(tris, N, rand) {
-    var pts = [], i, j;
+    var pts = [], i, j, k, m;
+    // Measure the figure so the point budget distributes cleanly to ANY N:
+    // ~34% along the edges (crisp linework) and the rest filling the interiors
+    // (dotwork tone). This scales from a few thousand up to 40k+ dots.
+    var totLen = 0, totArea = 0, G = [];
     for (i = 0; i < tris.length; i++) {
       var t = tris[i];
-      var edges = [
-        [t[0], t[1], t[2], t[3]],
-        [t[2], t[3], t[4], t[5]],
-        [t[4], t[5], t[0], t[1]]
-      ];
+      var A = [t[0], t[1]], B = [t[2], t[3]], C = [t[4], t[5]];
+      var per = Math.hypot(B[0] - A[0], B[1] - A[1]) + Math.hypot(C[0] - B[0], C[1] - B[1]) + Math.hypot(A[0] - C[0], A[1] - C[1]);
+      var area = Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) * 0.5;
+      totLen += per; totArea += area; G.push([A, B, C, area]);
+    }
+    var lineDens = (N * 0.34) / (totLen || 1e-6);
+    var areaDens = (N * 1.00) / (totArea || 1e-6);
+    for (i = 0; i < G.length; i++) {
+      var A = G[i][0], B = G[i][1], C = G[i][2];
+      var edges = [[A, B], [B, C], [C, A]];
       for (j = 0; j < 3; j++) {
-        var e = edges[j], dx = e[2] - e[0], dy = e[3] - e[1];
-        var len = Math.sqrt(dx * dx + dy * dy), cnt = Math.max(1, Math.round(len * 42));
-        for (var k = 0; k < cnt; k++) {
+        var p0 = edges[j][0], p1 = edges[j][1];
+        var dx = p1[0] - p0[0], dy = p1[1] - p0[1], len = Math.hypot(dx, dy);
+        var cnt = Math.max(1, Math.round(len * lineDens));
+        for (k = 0; k < cnt; k++) {
           var u = (k + 0.5) / cnt;
-          pts.push([e[0] + dx * u + (rand() - 0.5) * 0.006,
-                    e[1] + dy * u + (rand() - 0.5) * 0.006]);
+          pts.push([p0[0] + dx * u + (rand() - 0.5) * 0.004, p0[1] + dy * u + (rand() - 0.5) * 0.004]);
         }
+      }
+      var fillCnt = Math.round(G[i][3] * areaDens);
+      for (m = 0; m < fillCnt; m++) {
+        var r1 = rand(), r2 = rand();
+        if (r1 + r2 > 1) { r1 = 1 - r1; r2 = 1 - r2; }
+        pts.push([A[0] + r1 * (B[0] - A[0]) + r2 * (C[0] - A[0]),
+                  A[1] + r1 * (B[1] - A[1]) + r2 * (C[1] - A[1])]);
       }
     }
     if (pts.length > N) {
@@ -258,6 +274,8 @@
 
     var N       = Math.max(800, Math.floor(num(canvas, 'count', 5200)));
     var dotMax  = num(canvas, 'dot', 2.0);
+    var dotMin  = Math.max(0.08, num(canvas, 'dotmin', dotMax * 0.45));
+    var dotSpan = Math.max(0, dotMax - dotMin);
     var INK     = attr(canvas, 'ink', '#f4e3ad');
     var NV      = Math.max(2, Math.min(BUILDERS.length, Math.floor(num(canvas, 'variants', 6))));
     var flow    = Math.max(0, num(canvas, 'flow', 0.34));
@@ -348,24 +366,43 @@
       return g;
     }
 
+    function triPath(q, cx, cy, R) {
+      ctx.beginPath();
+      ctx.moveTo(cx + q[0] * R, cy + q[1] * R);
+      ctx.lineTo(cx + q[2] * R, cy + q[3] * R);
+      ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
+      ctx.closePath();
+    }
     function drawFills(fig, cx, cy, R, grad, alpha, rot) {
       if (alpha <= 0.004) return;
       ctx.save();
       ctx.translate(cx, cy); ctx.rotate(rot); ctx.translate(-cx, -cy);
-      ctx.globalAlpha = alpha; ctx.fillStyle = grad;
-      ctx.shadowColor = 'rgba(255,210,120,' + (0.45 * alpha) + ')'; ctx.shadowBlur = R * 0.032;
-      var t = fig.tris;
-      for (var i = 0; i < t.length; i++) {
-        var q = t[i];
-        ctx.beginPath();
-        ctx.moveTo(cx + q[0] * R, cy + q[1] * R);
-        ctx.lineTo(cx + q[2] * R, cy + q[3] * R);
-        ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
-        ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = alpha;
+      var t = fig.tris, i, q;
+      // Pass 1 — base gilded fill with a soft bloom
+      ctx.fillStyle = grad;
+      ctx.shadowColor = 'rgba(255,210,120,' + (0.38 * alpha) + ')'; ctx.shadowBlur = R * 0.028;
+      for (i = 0; i < t.length; i++) { triPath(t[i], cx, cy, R); ctx.fill(); }
+      // Pass 2 — facet light + inked outline. A fixed light (upper-left) lifts
+      // the facets that face it and shades those turned away, so the gold reads
+      // as dimensional gilt; a thin dark outline gives the inked-linework edge.
+      ctx.shadowBlur = 0; ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(0.6, R * 0.0042);
+      var lightA = -2.15;
+      for (i = 0; i < t.length; i++) {
+        q = t[i];
+        var ca = Math.atan2((q[1] + q[3] + q[5]) / 3, (q[0] + q[2] + q[4]) / 3);
+        var facing = Math.cos(ca + rot - lightA);
+        triPath(q, cx, cy, R);
+        ctx.fillStyle = facing > 0
+          ? 'rgba(255,247,219,' + (facing * 0.20 * alpha) + ')'
+          : 'rgba(24,15,4,' + (-facing * 0.30 * alpha) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(22,13,4,' + (0.42 * alpha) + ')';
+        ctx.stroke();
       }
       // thin dark band separators carve the concentric rings apart
       if (fig.rings) {
-        ctx.shadowBlur = 0;
         ctx.strokeStyle = 'rgba(8,6,5,' + (0.5 * alpha) + ')';
         ctx.lineWidth = Math.max(1, R * 0.007);
         for (var ri = 0; ri < fig.rings.length; ri++) {
@@ -485,6 +522,10 @@
       var glow = mp > 0.12;
       ctx.fillStyle = INK;
       if (glow) ctx.globalCompositeOperation = 'lighter';
+      // ultra-fine stipple: one alpha for the whole pass, drawn as tiny rects
+      // (far cheaper than arcs at 40k+ dots). Gentle swell during the morph.
+      ctx.globalAlpha = clamp((0.38 + 0.4 * intro) + 0.4 * mp, 0, 1);
+      var swell = 1 + 0.28 * mp;
       for (var p = 0; p < N; p++) {
         var ix = p * 2, iy = ix + 1;
         var bx = src[ix] + (dst[ix] - src[ix]) * k, by = src[iy] + (dst[iy] - src[iy]) * k;
@@ -495,11 +536,9 @@
           aa += (cur % 2 ? -1 : 1) * flow * mp * (0.14 + rr * 0.5); rr *= 1 + mp * 0.05;
           nx = Math.cos(aa) * rr; ny = Math.sin(aa) * rr;
         }
-        var x = cx + nx * R, y = cy + ny * R;
-        // small, dense stipple; only a gentle swell during the morph so it stays tidy
-        var sz = (0.5 + jit[p] * 0.5) * dotMax / 2 * (0.85 + 0.3 * Math.sin(phase[p] + now * 0.004)) * (1 + 0.28 * mp);
-        ctx.globalAlpha = clamp((0.3 + 0.45 * intro) + 0.42 * mp, 0, 1);
-        ctx.beginPath(); ctx.arc(x, y, Math.max(0.35, sz), 0, TAU); ctx.fill();
+        var sz = (dotMin + dotSpan * ((jit[p] - 0.7) / 0.7)) * (0.9 + 0.18 * Math.sin(phase[p] + now * 0.004)) * swell;
+        if (sz < 0.1) sz = 0.1;
+        ctx.fillRect(cx + nx * R - sz * 0.5, cy + ny * R - sz * 0.5, sz, sz);
       }
       ctx.globalAlpha = 1;
       if (glow) ctx.globalCompositeOperation = 'source-over';
