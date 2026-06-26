@@ -160,7 +160,8 @@
       var B = LOGO_BANDS[b], o = B.off * (TAU / (B.m * 2));
       triRing(tris, B.rIn, B.rOut, B.m, b & 1, o);
     }
-    return { tris: tris, sun: true };
+    // thin dark separators between the bands (the logo's layered concentric rings)
+    return { tris: tris, sun: true, rings: [0.30, 0.44, 0.58, 0.72, 0.86, 0.985] };
   }
   // Figure 1 — a 12-point star burst.
   function figStar() {
@@ -283,6 +284,10 @@
     }
     var F = figs.length;
 
+    // Flaming-sun blades (seeded once, so the swirl is stable per load).
+    var sunFlames = [];
+    (function () { var Nf = 16; for (var s = 0; s < Nf; s++) sunFlames.push({ base: (s / Nf) * TAU, curl: 0.85 + rand() * 0.30, len: 0.86 + rand() * 0.18 }); })();
+
     // Stable per-dot styling + a scattered "dust" start position for the reveal.
     var accent = new Uint8Array(N);
     var jit = new Float32Array(N), phase = new Float32Array(N), scatter = new Float32Array(N * 2);
@@ -358,39 +363,80 @@
         ctx.lineTo(cx + q[4] * R, cy + q[5] * R);
         ctx.closePath(); ctx.fill();
       }
+      // thin dark band separators carve the concentric rings apart
+      if (fig.rings) {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(8,6,5,' + (0.5 * alpha) + ')';
+        ctx.lineWidth = Math.max(1, R * 0.007);
+        for (var ri = 0; ri < fig.rings.length; ri++) {
+          ctx.beginPath(); ctx.arc(cx, cy, fig.rings[ri] * R, 0, TAU); ctx.stroke();
+        }
+      }
       ctx.restore();
       ctx.globalAlpha = 1; ctx.shadowBlur = 0;
     }
 
+    // A flaming sun built from tapered, curved blades that all swirl one way
+    // (an ammonite/solar vortex) around a dark gilded core with a bright corona.
+    function flamePath(baseAng, innerR, outerR, curl, t, idx) {
+      var steps = 20, Lx = [], Ly = [], Rx = [], Ry = [], s;
+      for (s = 0; s <= steps; s++) {
+        var f = s / steps, rad = innerR + (outerR - innerR) * f;
+        var bend = curl * 0.62 * f * f, sway = Math.sin(t * 1.1 + idx * 0.7 + f * 2.0) * 0.03 * f;
+        var ang = baseAng + bend + sway;
+        var w = (0.20 * innerR) * (1 - f) * (0.6 + 0.4 * Math.sin(f * Math.PI));
+        var nx = Math.cos(ang + Math.PI / 2), ny = Math.sin(ang + Math.PI / 2);
+        var px = Math.cos(ang) * rad, py = Math.sin(ang) * rad;
+        Lx[s] = px + nx * w; Ly[s] = py + ny * w; Rx[s] = px - nx * w; Ry[s] = py - ny * w;
+      }
+      ctx.beginPath(); ctx.moveTo(Lx[0], Ly[0]);
+      for (var i = 1; i <= steps; i++) ctx.lineTo(Lx[i], Ly[i]);
+      for (var j = steps; j >= 0; j--) ctx.lineTo(Rx[j], Ry[j]);
+      ctx.closePath();
+    }
+
     function drawSun(cx, cy, R, grad, scale, alpha, now) {
       if (alpha <= 0.004) return;
-      ctx.save(); ctx.globalAlpha = alpha;
-      var pulse = 1 + Math.sin(now * 0.0016 * speed) * 0.03;
-      var coreR = 0.072 * R * scale, sunR = 0.30 * R * scale * pulse;
-      ctx.fillStyle = '#0a0807'; ctx.beginPath(); ctx.arc(cx, cy, sunR * 0.82, 0, TAU); ctx.fill();
-      var cg = ctx.createRadialGradient(cx, cy, coreR * 0.3, cx, cy, sunR);
-      cg.addColorStop(0, 'rgba(255,238,185,0.9)'); cg.addColorStop(0.45, 'rgba(236,196,98,0.5)'); cg.addColorStop(1, 'rgba(236,196,98,0)');
-      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(cx, cy, sunR, 0, TAU); ctx.fill();
-      var flames = 13;
-      ctx.shadowColor = 'rgba(10,8,7,0.85)'; ctx.shadowBlur = R * 0.012;
-      for (var i = 0; i < flames; i++) {
-        var a = (i / flames) * TAU - Math.PI / 2, step = TAU / flames, half = step * 0.40, curl = step * 0.95;
-        var bR = 0.085 * R * scale, tR = 0.255 * R * scale;
-        var blx = cx + Math.cos(a - half) * bR, bly = cy + Math.sin(a - half) * bR;
-        var brx = cx + Math.cos(a + half) * bR, bry = cy + Math.sin(a + half) * bR;
-        var tx = cx + Math.cos(a + curl) * tR, ty = cy + Math.sin(a + curl) * tR;
-        var c1x = cx + Math.cos(a - half + curl * 0.55) * tR * 0.86, c1y = cy + Math.sin(a - half + curl * 0.55) * tR * 0.86;
-        var c2x = cx + Math.cos(a + half + curl * 0.55) * bR * 1.7, c2y = cy + Math.sin(a + half + curl * 0.55) * bR * 1.7;
-        ctx.beginPath(); ctx.moveTo(blx, bly); ctx.quadraticCurveTo(c1x, c1y, tx, ty); ctx.quadraticCurveTo(c2x, c2y, brx, bry); ctx.closePath();
-        ctx.fillStyle = grad; ctx.fill();
-      }
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#0a0807'; ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, TAU); ctx.fill();
-      ctx.strokeStyle = 'rgba(247,222,150,0.8)'; ctx.lineWidth = R * 0.006; ctx.beginPath(); ctx.arc(cx, cy, coreR, 0, TAU); ctx.stroke();
-      var bd = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 0.75);
-      bd.addColorStop(0, 'rgba(255,244,210,1)'); bd.addColorStop(0.6, 'rgba(236,196,110,0.85)'); bd.addColorStop(1, 'rgba(236,196,110,0)');
-      ctx.fillStyle = bd; ctx.beginPath(); ctx.arc(cx, cy, coreR * 0.75, 0, TAU); ctx.fill();
+      var t = now * 0.001, pulse = Math.sin(now * 0.0016 * speed);
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(now * 0.00004 * speed); ctx.scale(scale, scale);
+      ctx.globalAlpha = alpha;
+      var sunR = 0.30 * R, coreR = sunR * 0.34, innerR = sunR * 0.40, outerR = sunR * 0.99 * (1 + 0.02 * pulse);
+      // corona (additive, so it glows)
+      var corR = sunR * (1.30 + 0.05 * pulse);
+      var cor = ctx.createRadialGradient(0, 0, coreR * 0.4, 0, 0, corR);
+      cor.addColorStop(0, 'rgba(255,244,210,' + (1.0 * alpha) + ')');
+      cor.addColorStop(0.24, 'rgba(248,216,140,' + (0.62 * alpha) + ')');
+      cor.addColorStop(0.55, 'rgba(190,140,56,' + (0.22 * alpha) + ')');
+      cor.addColorStop(1, 'rgba(110,78,22,0)');
+      ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = cor;
+      ctx.beginPath(); ctx.arc(0, 0, corR, 0, TAU); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = alpha;
+      // main flame blades
+      var fg = ctx.createRadialGradient(0, 0, coreR, 0, 0, outerR * 1.05);
+      fg.addColorStop(0, '#fff1c4'); fg.addColorStop(0.45, '#e7c069'); fg.addColorStop(1, '#9a7026');
+      ctx.fillStyle = fg;
+      var Nf = sunFlames.length, step = TAU / Nf, i;
+      for (i = 0; i < Nf; i++) { var fl = sunFlames[i]; flamePath(fl.base, innerR, outerR * fl.len, fl.curl, t, i); ctx.fill(); }
+      // interleaved shorter counter-blades (depth)
+      var fg2 = ctx.createRadialGradient(0, 0, coreR, 0, 0, outerR * 0.7);
+      fg2.addColorStop(0, '#ffe7b0'); fg2.addColorStop(1, '#8a6422');
+      ctx.fillStyle = fg2;
+      for (i = 0; i < Nf; i++) { var fk = sunFlames[i]; flamePath(fk.base + step * 0.5, innerR * 0.92, outerR * 0.62, -fk.curl * 0.8, t, i + 50); ctx.fill(); }
+      // dark gilded core + rim + hot spark
+      var coreGrad = ctx.createRadialGradient(0, 0, coreR * 0.1, 0, 0, coreR * 1.15);
+      coreGrad.addColorStop(0, '#1c140a'); coreGrad.addColorStop(0.6, '#120c06'); coreGrad.addColorStop(1, '#0a0604');
+      ctx.fillStyle = coreGrad; ctx.beginPath(); ctx.arc(0, 0, coreR, 0, TAU); ctx.fill();
+      ctx.lineWidth = Math.max(1.2, coreR * 0.10); ctx.strokeStyle = '#d8ad53';
+      ctx.beginPath(); ctx.arc(0, 0, coreR * 1.02, 0, TAU); ctx.stroke();
+      var spark = ctx.createRadialGradient(0, 0, 0, 0, 0, coreR * 0.7);
+      spark.addColorStop(0, 'rgba(255,248,222,' + (0.85 * alpha) + ')');
+      spark.addColorStop(0.5, 'rgba(246,227,168,' + (0.30 * alpha) + ')');
+      spark.addColorStop(1, 'rgba(246,227,168,0)');
+      ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = spark;
+      ctx.beginPath(); ctx.arc(0, 0, coreR * 0.7, 0, TAU); ctx.fill();
       ctx.restore();
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
     }
 
     function draw(now) {
