@@ -47,14 +47,14 @@
   padding: 6rem 0;
 }
 .hero__content {
-  max-width: 620px;
+  max-width: 720px;
   position: relative;
   z-index: 2;
 }
 .hero__name {
-  font-size: clamp(3.2rem, 9vw, 7.5rem);
-  line-height: 0.95;
-  letter-spacing: 0.06em;
+  font-size: clamp(3.6rem, 11vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0 0 0.2em;
 }
