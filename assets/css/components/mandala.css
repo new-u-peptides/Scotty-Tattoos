@@ -42,36 +42,37 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 560px;
+  max-width: 640px;
   aspect-ratio: 1;
   margin-inline: auto;
 }
 
-/* Soft blood-red glow behind the mandala — the "life". */
+/* Soft gold-and-blood glow behind the mandala — the "life". A warm gold core
+   over the brand red, so the luminous solar mark reads as gilded light. */
 .hero__sigil::before {
   content: "";
   position: absolute;
-  inset: -6%;
+  inset: -8%;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    var(--red-25) 0%,
-    var(--red-08) 45%,
-    transparent 72%
-  );
-  filter: blur(10px);
+  background:
+    radial-gradient(circle, rgba(214, 170, 86, 0.30) 0%, rgba(214, 170, 86, 0.08) 38%, transparent 64%),
+    radial-gradient(circle, var(--red-18) 0%, var(--red-08) 48%, transparent 74%);
+  filter: blur(14px);
   z-index: 0;
   animation: sigil-pulse 7s ease-in-out infinite;
 }
 
-/* The hero canvas: white linework on the dark hero — no blend mode,
-   so the light ink stays bright instead of multiplying to black. */
+/* The hero canvas: the gold solar mandala. A near-black radial backing sits
+   behind the gold (through the canvas's transparent pixels) so the metal pops
+   off the dark hero instead of muddying against the portrait, fading to clear
+   at the rim so the piece floats. */
 .mandala--hero {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
+  background: radial-gradient(circle, #0a0807 52%, rgba(10, 8, 7, 0.6) 70%, transparent 82%);
 }
 
 @keyframes sigil-pulse {

@@ -180,6 +180,16 @@
                width="1067" height="1600" loading="eager" decoding="async"
                alt="Scotty Massa tattooing a large ornamental back piece at his Birkirkara studio in Malta" />
         </figure>
+      <div class="hero__sigil" aria-hidden="true">
+        <!-- Scotty's living solar mandala: assembles out of gold ink (dotwork +
+             linework) into the brand's tessellated-triangle sun logo, holds
+             luminous, then slowly morphs through a set of geometric mandalas
+             and returns home. Engine: shared/js/mandala-morph.js -->
+        <canvas class="mandala mandala--hero" data-mandala-morph
+          data-morph-count="40000" data-morph-dot="0.2" data-morph-dotmin="0.1" data-morph-ink="#f5ead6"
+          data-morph-variants="6" data-morph-seed="scotty-massa" data-morph-accent="0"
+          data-morph-hold="3000" data-morph-blend="2800" data-morph-reveal="2600"
+          data-morph-flow="0.34"></canvas>
       </div>
     </div>
   </section>
@@ -536,7 +546,7 @@
     <div data-include="partials/footer.html"></div>
 
   <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala.js"></script>
+  <script src="shared/js/mandala-morph.js"></script>
   <script src="shared/js/main.js"></script>
   <script src="shared/js/consult-popup.js"></script>
 </body>
