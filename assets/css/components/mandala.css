@@ -42,7 +42,7 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 760px;
+  max-width: 620px;
   aspect-ratio: 1;
   margin-inline: auto;
 }

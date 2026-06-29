@@ -281,10 +281,62 @@
       T.ring(0, 0, 0.82, 0.42, 0.5);
       T.ring(0, 0, 0.50, 0.42, 0.5);
       T.heart(0.14);
+    },
+
+    // pure LINEWORK sacred geometry — Scotty's fine-line language: concentric
+    // frames, radiating rays, a layered 12-point star and petal *outlines*
+    // (no solid fill), built almost entirely from crisp dotted lines so it
+    // reads as drawn geometry rather than a stippled mass.
+    linework: function (T, density) {
+      // a closed polygon FRAME of dotted lines
+      function frame(rO, sides, rot, size, alpha) {
+        var prev = P(rO, rot);
+        for (var k = 1; k <= sides; k++) {
+          var p = P(rO, rot + k * (TAU / sides));
+          T.line(prev, p, size, alpha);
+          prev = p;
+        }
+      }
+      // two interlocking triangles -> a six-point star, in line only
+      function hexagram(rO, rot, size, alpha) {
+        var V = [];
+        for (var k = 0; k < 6; k++) V.push(P(rO, rot + k * (TAU / 6)));
+        T.line(V[0], V[2], size, alpha); T.line(V[2], V[4], size, alpha); T.line(V[4], V[0], size, alpha);
+        T.line(V[1], V[3], size, alpha); T.line(V[3], V[5], size, alpha); T.line(V[5], V[1], size, alpha);
+      }
+
+      // outer double rim
+      T.ring(0, 0, 1.00, 0.55, 0.72);
+      T.ring(0, 0, 0.965, 0.45, 0.5);
+
+      // a band of fine radiating rays between the rim and the petal ring
+      var rays = 72;
+      for (var i = 0; i < rays; i++) {
+        var a = -Math.PI / 2 + i * (TAU / rays);
+        T.line(P(0.80, a), P(0.95, a), 0.5, 0.66);
+      }
+
+      // a ring of pointed petal OUTLINES (fillN = 0 -> just the ogee edges)
+      var pet = 24, hw = (TAU / pet) * 0.62;
+      for (var j = 0; j < pet; j++) {
+        T.petal(-Math.PI / 2 + j * (TAU / pet), hw, 0.62, 0.84, 0);
+      }
+      T.ring(0, 0, 0.62, 0.5, 0.6);
+
+      // layered 12-point star + dodecagon / hexagon frames
+      hexagram(0.56, -Math.PI / 2, 0.55, 0.86);
+      hexagram(0.56, -Math.PI / 2 + TAU / 12, 0.55, 0.86);
+      frame(0.44, 12, -Math.PI / 2, 0.5, 0.7);
+      frame(0.34, 6, -Math.PI / 2, 0.5, 0.7);
+      frame(0.34, 6, -Math.PI / 2 + TAU / 12, 0.48, 0.6);
+
+      // inner ring + flower-of-life heart
+      T.ring(0, 0, 0.30, 0.45, 0.6);
+      T.heart(0.135);
     }
   };
 
-  var DESIGN_ORDER = ['lotus', 'rosette', 'geometric', 'star', 'seed', 'lace'];
+  var DESIGN_ORDER = ['linework', 'lotus', 'geometric', 'seed', 'rosette', 'lace'];
 
   /* ---------- engine ---------- */
 
