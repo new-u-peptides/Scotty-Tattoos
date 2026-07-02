@@ -1,16 +1,24 @@
 /* =========================================================
    mandala.css — the living mandala system
    ---------------------------------------------------------
-   Styling layer that pairs with shared/js/mandala.js. The JS
-   draws the mandala onto any <canvas data-mandala>; this sheet
-   places it. The homepage hero renders it as WHITE linework +
-   dotwork on the dark hero (data-mandala-theme="white"), floating
-   free with a soft blood-red glow behind it.
+   Styling layer for the animated canvas mandala. shared/js/mandala.js
+   draws a layered, hand-stippled mandala onto any <canvas data-mandala>
+   (dotwork → lotus → linework → shading, cross-fading forever); this
+   sheet places it and gives it life.
+
+   The homepage hero is a separate, richer piece rendered by
+   shared/js/mandala-morph.js on <canvas data-mandala-morph>; this sheet
+   still owns its stage (.hero__sigil) — the breathing ember glow behind
+   the floating sigil lives here, so index.html needs no edits.
+
+   All colour comes from tokens.css RGB triplets — no literal rgba().
 
    Variants:
-     .mandala            base canvas (full-bleed in its parent)
-     .mandala--hero      the homepage centerpiece (white ink on black)
-     .mandala--ornament  subtle decorative use elsewhere
+     .mandala             base canvas (full-bleed in its positioned parent)
+     .mandala--hero       the homepage centerpiece stage occupant
+     .mandala--ornament   subtle decorative use (low opacity, self-masked)
+     .mandala--corner     a quarter-mandala bleeding off a section corner
+     .mandala--seal       a small centred stamp (end-of-article / footer mark)
    ========================================================= */
 
 /* Base canvas: full-bleed within its positioned parent. */
@@ -21,18 +29,16 @@
   height: 100%;
   display: block;
   pointer-events: none;
-}
-
-/* Subtle decorative use (section corners, cards, etc.). */
-.mandala--ornament {
-  z-index: 1;
-  opacity: 0.65;
+  contain: strict;
 }
 
 /* ---------------------------------------------------------
-   HERO SIGIL
-   The living mandala that anchors the homepage — white linework
-   and dotwork on the dark hero, with a soft red life-glow behind.
+   HERO SIGIL STAGE
+   The living mandala that anchors the homepage. The canvas itself is
+   rendered by mandala-morph.js; here we build the stage around it — a
+   soft blood-red ember that breathes behind the floating ink, and a
+   whisper of warm bone paper so black-ink themes never sit on a void.
+   The canvas is never given a CSS transform, so the stipple stays crisp.
    .hero__sigil   — centred square stage (holds the glow + canvas)
    .mandala--hero — the canvas itself
    --------------------------------------------------------- */
@@ -45,11 +51,48 @@
   max-width: 620px;
   aspect-ratio: 1;
   margin-inline: auto;
+  isolation: isolate;
 }
 
-/* The hero canvas: a black dotwork mandala sitting on its own soft, edgeless
-   skin-warm halo (baked into the canvas itself, fading to fully transparent —
-   no box). It floats free on the dark hero. */
+/* Ember: a breathing blood-red life-glow behind the sigil. */
+.hero__sigil::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--red-rgb), 0.20) 0%,
+    rgba(var(--red-rgb), 0.08) 40%,
+    transparent 68%
+  );
+  filter: blur(22px);
+  animation: sigil-ember 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+/* Bone paper: a faint warm ground so black ink floats rather than voids. */
+.hero__sigil::after {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--bone-rgb), 0.05) 0%,
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+@keyframes sigil-ember {
+  from { opacity: 0.72; transform: scale(0.98); }
+  to   { opacity: 1;    transform: scale(1.03); }
+}
+
+/* The hero canvas: floats free on the dark hero, above its glow. */
 .mandala--hero {
   position: absolute;
   inset: 0;
@@ -59,6 +102,65 @@
   background: transparent;
 }
 
+/* ---------------------------------------------------------
+   ORNAMENT VARIANTS
+   Tasteful decorative uses of mandala.js elsewhere on the site. Each
+   melts into the page via a radial mask so there is never a hard canvas
+   edge — the geometry itself is the ornament (sharp-edge aesthetic: no
+   borders, no radius).
+   --------------------------------------------------------- */
+.mandala--ornament {
+  z-index: 1;
+  opacity: 0.6;
+}
+
+/* A quarter-mandala bleeding off a section's corner. The host section
+   must set position: relative and overflow: hidden to crop it. */
+.mandala--corner {
+  position: absolute;
+  top: clamp(-96px, -8vw, -44px);
+  right: clamp(-96px, -8vw, -44px);
+  width: clamp(220px, 30vw, 380px);
+  height: clamp(220px, 30vw, 380px);
+  inset-inline-start: auto;
+  opacity: 0.16;
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 26%, transparent 76%);
+          mask-image: radial-gradient(circle at 100% 0%, #000 26%, transparent 76%);
+}
+
+/* A small centred stamp — an end-of-article seal or a footer mark. */
+.mandala--seal {
+  position: relative;
+  inset: auto;
+  width: clamp(140px, 22vw, 200px);
+  height: clamp(140px, 22vw, 200px);
+  margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+  opacity: 0.5;
+  -webkit-mask-image: radial-gradient(circle, #000 56%, transparent 78%);
+          mask-image: radial-gradient(circle, #000 56%, transparent 78%);
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE + MOTION/CONTRAST PREFERENCES
+   --------------------------------------------------------- */
 @media (max-width: 920px) {
   .hero__sigil { max-width: 440px; }
+  .mandala--corner {
+    width: clamp(160px, 40vw, 240px);
+    height: clamp(160px, 40vw, 240px);
+  }
+}
+
+/* Small screens earn their whitespace — drop the corner ornament. */
+@media (max-width: 560px) {
+  .mandala--corner { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__sigil::before { animation: none; opacity: 0.85; transform: none; }
+}
+
+@media (prefers-contrast: more) {
+  .mandala--ornament { opacity: 0.32; }
+  .mandala--corner   { opacity: 0.10; }
 }
