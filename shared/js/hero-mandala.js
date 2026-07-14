@@ -638,8 +638,10 @@
     function targetN() {
       var cssR = size.R / size.dpr;
       var vw = window.innerWidth || 1024;
-      var deviceMax = vw <= 560 ? 5000 : (vw <= 1024 ? 11000 : 18000);
-      var n = Math.round(cssR * cssR * 0.22 * densK);
+      // desktop carries a 3x-density budget; the adaptive quality
+      // controller trims it gracefully on machines that can't hold it
+      var deviceMax = vw <= 560 ? 5000 : (vw <= 1024 ? 11000 : 54000);
+      var n = Math.round(cssR * cssR * 0.66 * densK);
       return clamp(n, 3000, deviceMax);
     }
 
@@ -878,7 +880,8 @@
       var Br, Bth, Bs, Ba, Bsp, Bch, Bimp;
       if (morphing) { Br = B.r; Bth = B.th; Bs = B.s; Ba = B.a; Bsp = B.sp; Bch = B.ch; Bimp = B.imp; }
       var useB = morphing && k >= 0.5;      // colour/importance hand over mid-blend
-      var dotK = BASE_DOT * size.dpr;
+      // at 3x density the grain goes finer, not blobbier
+      var dotK = BASE_DOT * (N > 30000 ? 0.8 : 1) * size.dpr;
       var lastAlpha = -1, curCh = -1;
 
       for (var i = 0; i < N; i++) {
