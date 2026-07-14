@@ -26,13 +26,16 @@
   isolation: isolate;
 }
 
-/* Near-black ground. No photo, no grey panel — the gold owns the dark. */
+/* The studio portrait sits deep under a heavy ink wash — present as
+   atmosphere behind the mandala, never competing with the gold. */
 .hero__bg {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
     radial-gradient(circle 38vmin at 50% 46%, rgba(var(--gold-rgb), 0.035), transparent 72%),
+    linear-gradient(180deg, rgba(var(--ink-rgb), 0.88) 0%, rgba(var(--ink-rgb), 0.97) 100%),
+    url('../../images/artist/portrait-bw-chair.webp') 22% center / cover no-repeat,
     var(--ink);
 }
 /* Barely-there paper grain so the black isn't a dead void. */
