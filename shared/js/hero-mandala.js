@@ -585,9 +585,9 @@
   /* Per-state live-core parameters (black disc + crisp gold ring),
      interpolated continuously between states. */
   var CORE = {
-    sigil: { disc: 0.132, ring: 0.147, ringW: 0.020, a: 1.0 },
-    weave: { disc: 0.085, ring: 0.105, ringW: 0.007, a: 0.85 },
-    bloom: { disc: 0.075, ring: 0.115, ringW: 0.009, a: 0.9 }
+    sigil: { disc: 0.118, ring: 0.140, ringW: 0.0075, a: 0.72 },
+    weave: { disc: 0.078, ring: 0.100, ringW: 0.005,  a: 0.6 },
+    bloom: { disc: 0.070, ring: 0.110, ringW: 0.006,  a: 0.62 }
   };
 
   /* =============================================================
@@ -814,17 +814,22 @@
       var ringW = lerp(A.ringW, B.ringW, k) * R;
       var a = lerp(A.a, B.a, k) * alpha;
       if (a <= 0.01) return;
+      // A soft black centre bed (radial, edgeless) — gives the wordmark's
+      // middle letters a dark ground for legibility without reading as a
+      // hard disc, then a single fine gold line. Kept subordinate to the
+      // wordmark: the ring tucks between the words, it doesn't crown a letter.
+      var bed = ctx.createRadialGradient(cx, cy, 0, cx, cy, disc + ringW * 6);
+      bed.addColorStop(0, 'rgba(8, 8, 8, ' + (0.92 * a / 0.72) + ')');
+      bed.addColorStop(0.68, 'rgba(8, 8, 8, ' + (0.72 * a / 0.72) + ')');
+      bed.addColorStop(1, 'rgba(8, 8, 8, 0)');
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = bed;
+      ctx.beginPath(); ctx.arc(cx, cy, disc + ringW * 6, 0, TAU); ctx.fill();
+      // one fine gold line
       ctx.globalAlpha = a;
-      ctx.fillStyle = '#0A0A0A';
-      ctx.beginPath(); ctx.arc(cx, cy, disc + ringW, 0, TAU); ctx.fill();
       ctx.strokeStyle = '#E8B653';
-      ctx.lineWidth = ringW;
+      ctx.lineWidth = Math.max(0.75, ringW);
       ctx.beginPath(); ctx.arc(cx, cy, ring, 0, TAU); ctx.stroke();
-      // a hair-thin bright pass on the ring's outer edge (restrained relief)
-      ctx.globalAlpha = a * 0.55;
-      ctx.strokeStyle = '#F3CC76';
-      ctx.lineWidth = Math.max(0.75, ringW * 0.18);
-      ctx.beginPath(); ctx.arc(cx, cy, ring + ringW * 0.42, 0, TAU); ctx.stroke();
       ctx.globalAlpha = 1;
     }
 

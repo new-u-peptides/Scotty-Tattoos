@@ -46,19 +46,18 @@
     if (section.dataset.sequenceBound) return;
     section.dataset.sequenceBound = '1';
 
-    var sticky   = section.querySelector('.reveal-sequence__sticky');
-    var mandala  = section.querySelector('.reveal-sequence__mandala');
-    var images   = section.querySelectorAll('.reveal-sequence__images > [data-slot]');
-    var captions = section.querySelectorAll('.reveal-sequence__captions > [data-slot]');
-    var dots     = section.querySelectorAll('.reveal-sequence__dots > [data-slot]');
-    if (!sticky || !images.length) return;
+    var sticky  = section.querySelector('.reveal-sequence__sticky');
+    var mandala = section.querySelector('.reveal-sequence__mandala');
+    var slots   = section.querySelectorAll('.reveal-sequence__slots > [data-slot]');
+    var dots    = section.querySelectorAll('.reveal-sequence__dots > [data-slot]');
+    if (!sticky || !slots.length) return;
 
-    var N = images.length;
+    var N = slots.length;
 
     // Reduced motion: no scroll coupling — CSS stacks every slot, visible.
     if (prefersReducedMotion) {
       section.classList.add('is-reduced-motion');
-      activate(images, 0); activate(captions, 0); activate(dots, 0);
+      activate(slots, 0); activate(dots, 0);
       return;
     }
 
@@ -86,8 +85,7 @@
       var idx = Math.min(N - 1, Math.floor(t * N));
       if (idx !== lastIdx) {
         lastIdx = idx;
-        activate(images, idx);
-        activate(captions, idx);
+        activate(slots, idx);
         activate(dots, idx);
       }
     }
