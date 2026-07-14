@@ -167,12 +167,31 @@
   <section class="hero">
     <div class="hero__bg"></div>
     <div class="container hero__inner">
-      <div class="hero__content">
-        <p class="eyebrow">Geometric &amp; Ornamental — Birkirkara, Malta</p>
-        <h1 class="hero__name">Scotty<span>Massa</span></h1>
+      <p class="eyebrow hero__eyebrow">Geometric &amp; Ornamental — Birkirkara, Malta</p>
+
+      <div class="hero__stage">
+        <!-- The Scotty Massa sigil: the canonical brand mandala rebuilt as
+             particles (28 wavy solar rays, four bands of 28 curved triangle
+             cells, gold ring + black centre disc). It tattoos itself in from
+             the centre out, settles into a slow rotation, then continuously
+             reorganises through two more intricate tattoo mandalas and back —
+             a seamless geometric morph, never a crossfade.
+             Engine: shared/js/hero-mandala.js -->
+        <canvas class="hero__mandala" data-hero-mandala
+          data-hero-seed="scotty-massa" data-hero-fit="0.94"
+          aria-hidden="true"></canvas>
+
+        <!-- The wordmark is real HTML in its own layer above the canvas:
+             perfectly static while the artwork rotates and morphs behind it.
+             Its reveal is pure CSS, timed to land just after the constructed
+             logo starts turning. -->
+        <h1 class="hero__wordmark"><span class="hero__wordmark-text">Scotty&nbsp;Massa</span></h1>
+      </div>
+
+      <div class="hero__copy">
         <p class="hero__tagline">Geometry, built to last.</p>
-        <p class="lead">Large-scale custom geometric and ornamental tattoos — sleeves, backs, full legs and longer-term builds. Designed one-to-one, around your body, to hold their shape and clarity for decades.</p>
-        <div class="hero__actions mt-2">
+        <p class="hero__lead">Large-scale custom geometric and ornamental tattoos — sleeves, backs, full legs and longer-term builds. Designed one-to-one, around your body, to hold their shape and clarity for decades.</p>
+        <div class="hero__actions">
           <a href="booking.html" class="btn btn--primary">Start an Enquiry</a>
           <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
         </div>
@@ -181,21 +200,6 @@
           <div><strong>1:1</strong> Every piece custom</div>
           <div><strong>Malta</strong> Birkirkara studio</div>
         </div>
-      </div>
-
-      <div class="hero__sigil" aria-hidden="true">
-        <!-- Scotty's hero mandala: fine bone LINEWORK in the language of his
-             tattoos — concentric frames, radiating rays, a layered 12-point
-             star and petal outlines, drawn as crisp dotted lines (not a
-             stippled mass). Breathes between two sacred-geometry line designs
-             with a slow turn and gentle cross-dissolve, no burst.
-             Engine: shared/js/mandala-morph.js -->
-        <canvas class="mandala mandala--hero" data-mandala-morph
-          data-morph-cycle="linework,geometric" data-morph-ink="#e9ddca"
-          data-morph-fit="0.92" data-morph-dot="1.0"
-          data-morph-alpha="0.95" data-morph-density="1.1" data-morph-halo="0"
-          data-morph-reveal="1700" data-morph-hold="4200" data-morph-blend="2200"
-          data-morph-seed="scotty-massa"></canvas>
       </div>
     </div>
   </section>
@@ -562,7 +566,7 @@
     <div data-include="partials/footer.html"></div>
 
   <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala-morph.js"></script>
+  <script src="shared/js/hero-mandala.js"></script>
   <script src="shared/js/main.js"></script>
   <script src="shared/js/consult-popup.js"></script>
 </body>

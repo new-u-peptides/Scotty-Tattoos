@@ -1,26 +1,41 @@
-/* Hero — type on the left, the living mandala sigil on the right: one
-   sacred-geometry piece in white linework on the dark hero that
-   cross-fades through Scotty's techniques (dotwork → lotus → linework →
-   shading). The engine lives in shared/js/mandala.js; the sigil stage
-   and red glow are styled in mandala.css. */
+/* =========================================================
+   Hero — the Scotty Massa sigil stage.
+   ---------------------------------------------------------
+   A cinematic, centred hero: the canonical brand mandala builds
+   itself from stippled gold particles on near-black (engine:
+   shared/js/hero-mandala.js), rotates slowly, and evolves through
+   more intricate tattoo mandalas. The SCOTTY MASSA wordmark is a
+   real <h1> in its own layer across the exact centre — it never
+   rotates, never morphs, and reveals via a pure-CSS centre-out
+   mask ~4.3s in (just after the constructed logo starts turning),
+   so it needs no JS coupling and still appears if scripting fails.
+
+   Layers, bottom to top:
+     .hero__bg        near-black ground + faintest gold vignette
+     .hero__stage::before  restrained warm bloom under the ink
+     .hero__mandala   the particle canvas (aria-hidden)
+     .hero__wordmark  static HTML wordmark + its black separation band
+   ========================================================= */
 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   overflow: hidden;
   isolation: isolate;
 }
+
+/* Near-black ground. No photo, no grey panel — the gold owns the dark. */
 .hero__bg {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(var(--ink-rgb), 0.82) 0%, rgba(var(--ink-rgb), 0.96) 100%),
-    radial-gradient(ellipse at 20% 28%, var(--red-18), transparent 55%),
-    url('../../images/artist/portrait-bw-chair.webp') 22% center / cover no-repeat,
+    radial-gradient(circle 38vmin at 50% 46%, rgba(var(--gold-rgb), 0.035), transparent 72%),
     var(--ink);
 }
+/* Barely-there paper grain so the black isn't a dead void. */
 .hero__bg::after {
   content: "";
   position: absolute;
@@ -30,98 +45,231 @@
       0deg,
       transparent 0,
       transparent 2px,
-      rgba(var(--bone-rgb), 0.012) 2px,
-      rgba(var(--bone-rgb), 0.012) 3px
+      rgba(var(--bone-rgb), 0.010) 2px,
+      rgba(var(--bone-rgb), 0.010) 3px
     );
   pointer-events: none;
 }
 
-/* Two-column: copy on the left, mandala field on the right.
-   minmax(0, …) on both tracks is load-bearing: without it the giant
-   uppercase headline forces its column to min-content width, which
-   shrinks the mandala column and makes the sigil a different size at
-   every desktop breakpoint. With it, the split stays proportional and
-   the mandala is a consistent, prominent size across all desktops. */
 .hero__inner {
   position: relative;
   z-index: 2;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(2rem, 5vw, 4.5rem);
-  padding: 6rem 0;
+  justify-content: center;
+  gap: clamp(0.6rem, 1.6vh, 1.4rem);
+  padding: clamp(1.2rem, 2.6vh, 2.2rem) 0 clamp(2rem, 3.5vh, 3rem);
+  width: 100%;
 }
-.hero__content {
-  max-width: 640px;
-  min-width: 0;
+
+.hero__eyebrow { margin: 0; }
+
+/* ---------------------------------------------------------
+   THE STAGE — a square arena for the mandala, ~3/4 of the hero's
+   height on desktop, never clipped, with generous black around
+   the outer particle halo.
+   --------------------------------------------------------- */
+.hero__stage {
   position: relative;
-  z-index: 2;
+  width: min(70vh, 88vw, 760px);
+  aspect-ratio: 1;
+  flex: none;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
 }
-/* Capped so the headline always fits its proportional track (no overflow,
-   no stealing width from the mandala). */
-.hero__name {
-  font-size: clamp(3.4rem, 7.6vw, 8rem);
-  line-height: 0.92;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin: 0 0 0.2em;
+
+/* Restrained warm bloom under the brightest gold — no neon, no gloss. */
+.hero__stage::before {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--gold-rgb), 0.10) 0%,
+    rgba(var(--gold-rgb), 0.035) 46%,
+    transparent 70%
+  );
+  filter: blur(26px);
+  animation: sigil-bloom 11s ease-in-out infinite alternate;
+  pointer-events: none;
 }
-.hero__name span {
+@keyframes sigil-bloom {
+  from { opacity: 0.7; transform: scale(0.985); }
+  to   { opacity: 1;   transform: scale(1.02); }
+}
+
+/* The canvas: full-bleed in the stage, never transformed or filtered
+   (stipple blurs fast if composited after render). */
+.hero__mandala {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  color: var(--rust-soft);
+  pointer-events: none;
+  contain: layout paint;
+  background: transparent;
+}
+
+/* ---------------------------------------------------------
+   THE WORDMARK — static HTML across the exact centre.
+   Reveal: a horizontal mask opening from the centre while the
+   tracking settles and the gold materialises. Runs once, ~4.3s
+   after load; the wordmark then stays for the life of the page.
+   --------------------------------------------------------- */
+.hero__wordmark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  margin: 0;
+  padding: 0.18em 0.55em;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 6vw, 4.4rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--gold);
+  animation: wordmark-in 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+}
+
+/* Separation without a panel: a soft dark halo that hugs the
+   letterforms only (drop-shadow follows the glyph alpha, so there is
+   no box and no band — just quiet dark air around each letter). */
+.hero__wordmark {
+  filter:
+    drop-shadow(0 0 6px rgba(5, 5, 5, 0.95))
+    drop-shadow(0 0 18px rgba(5, 5, 5, 0.85))
+    drop-shadow(0 0 44px rgba(5, 5, 5, 0.65));
+}
+
+.hero__wordmark-text {
+  display: inline-block;
+  letter-spacing: 0.18em;
+  margin-right: -0.18em; /* rebalance the trailing tracking */
+  background: linear-gradient(
+    180deg,
+    var(--gold-hi) 0%,
+    var(--gold) 52%,
+    #B98A3A 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wordmark-tracking 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+}
+
+@keyframes wordmark-in {
+  from {
+    opacity: 0;
+    clip-path: inset(-20% 50% -20% 50%);
+  }
+  30% { opacity: 1; }
+  to {
+    opacity: 1;
+    clip-path: inset(-20% -6% -20% -6%);
+  }
+}
+/* a very small tracking settle — materialises, not slides */
+@keyframes wordmark-tracking {
+  from { letter-spacing: 0.28em; }
+  to   { letter-spacing: 0.18em; }
+}
+
+/* ---------------------------------------------------------
+   COPY — tagline, lead, actions, meta. Centred below the stage.
+   --------------------------------------------------------- */
+.hero__copy {
+  max-width: 760px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 4;
+  /* tuck the copy into the sparse halo edge — cinematic, not cramped */
+  margin-top: calc(-1 * clamp(1.5rem, 5.5vh, 4.5rem));
 }
 .hero__tagline {
   font-family: var(--font-script);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  color: var(--red);
-  margin: 1.2rem 0 2rem;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  color: var(--gold-hi);
+  margin: 0 0 0.6rem;
+}
+.hero__lead {
+  font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+  line-height: 1.65;
+  color: var(--bone-2);
+  max-width: 62ch;
+  margin: 0 0 1.6rem;
+}
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .hero__meta {
   display: flex;
-  gap: 2rem;
+  gap: 2.4rem;
   flex-wrap: wrap;
+  justify-content: center;
   font-size: 0.78rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--smoke);
-  margin: 3rem 0 0;
-  padding-top: 2rem;
+  margin: 2rem 0 0;
+  padding-top: 1.6rem;
   border-top: var(--line);
 }
 .hero__meta strong { color: var(--bone); font-weight: 500; }
 
-.hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-/* The sigil sits in the right column, centred. A real studio photo —
-   Scotty mid-piece — framed on the dark hero. */
-.hero__photo {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 500px;
-  margin-inline: auto;
-  aspect-ratio: 3 / 4;
-  border: var(--line);
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 32px 90px -28px rgba(0, 0, 0, 0.85);
-}
-.hero__photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 30%;
-  display: block;
-}
-
-/* Stack on narrow screens — the photo leads, the copy follows. */
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
 @media (max-width: 920px) {
   .hero { min-height: auto; }
-  .hero__inner {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    padding: 3.5rem 0;
+  .hero__stage { width: min(88vw, 62vh, 560px); }
+}
+@media (max-width: 560px) {
+  .hero__stage { width: min(92vw, 58vh); }
+  .hero__meta { gap: 1.4rem; }
+}
+/* Short landscape viewports: keep the full silhouette visible. */
+@media (max-height: 620px) and (min-width: 921px) {
+  .hero__stage { width: min(64vh, 88vw); }
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION — the complete canonical logo, a calm opacity
+   reveal for the wordmark, no bloom breathing.
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .hero__stage::before { animation: none; opacity: 0.85; transform: none; }
+  .hero__wordmark {
+    clip-path: none;
+    animation: wordmark-rm 0.9s ease 0.6s both;
   }
-  .hero__content { order: 2; max-width: none; }
-  .hero__sigil { order: 1; }
+  .hero__wordmark-text { animation: none; letter-spacing: 0.18em; }
+}
+@keyframes wordmark-rm {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-contrast: more) {
+  .hero__stage::before { opacity: 0.4; }
+  .hero__wordmark {
+    filter:
+      drop-shadow(0 0 4px rgba(5, 5, 5, 1))
+      drop-shadow(0 0 12px rgba(5, 5, 5, 1))
+      drop-shadow(0 0 30px rgba(5, 5, 5, 0.9));
+  }
 }

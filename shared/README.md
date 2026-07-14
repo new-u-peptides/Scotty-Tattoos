@@ -9,7 +9,8 @@ copy/paste, no drift.
 | File          | Purpose                                                                                  |
 | ------------- | ---------------------------------------------------------------------------------------- |
 | `js/main.js`     | Nav toggle, reveal-on-scroll, chip filter, active-nav marker. Safe no-op when the matching markup isn't present. |
-| `js/mandala.js`  | Animated canvas mandala — dotwork → **lotus** → linework → shading phases. The lotus phase echoes Scotty's signature petal-arch ornament. |
+| `js/mandala.js`  | Animated canvas mandala ornaments — dotwork → **lotus** → linework → shading phases. The lotus phase echoes Scotty's signature petal-arch ornament. |
+| `js/hero-mandala.js` | The homepage hero sigil: the canonical Scotty Massa logo rebuilt as particles, which assembles itself, rotates slowly, and morphs through more intricate tattoo mandalas (`<canvas data-hero-mandala>`). |
 | `js/includes.js` | HTML partial loader (`<div data-include="...">`) plus active-nav marking after partials hydrate. |
 
 ## How the sites load them
