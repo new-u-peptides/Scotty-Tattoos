@@ -20,6 +20,15 @@
   --rust:       var(--red);
   --rust-soft:  var(--red-soft);
 
+  /* Brand golds — sampled from the canonical Scotty Massa logo
+     (assets/brand/logo-mark.png). Warm antique gold, never yellow,
+     never glossy. Used by the hero sigil + wordmark. */
+  --gold:       #E8B653;   /* main gold */
+  --gold-hi:    #F3CC76;   /* highlight gold */
+  --gold-deep:  #9B6C25;   /* shadow gold */
+  --gold-line:  #D7C6AE;   /* fine-line bone gold */
+  --gold-rgb:   232, 182, 83;
+
   /* Type */
   --font-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
   --font-script:  "Tangerine", "Brush Script MT", cursive;

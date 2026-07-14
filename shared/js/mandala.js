@@ -11,7 +11,7 @@
      Phase 2 — LINEWORK  — seed of life + 12-point star + mehndi ray fringe
      Phase 3 — SHADING   — density-graded value bands + whip-fade crescents
 
-   ARCHITECTURE (bake & composite, same family as mandala-morph.js):
+   ARCHITECTURE (bake & composite):
    each phase is generated once from a seeded PRNG into a list of
    {x, y, r, a} dots in unit space (radius 1 = rim), then baked into
    its own offscreen canvas using equal-area fillRect stipple (far
@@ -146,8 +146,8 @@
 
   /* ---------- a dot toolkit bound to one figure (unit space, radius 1 = rim).
      Every helper appends dots {x, y, r, a, c} (c = colour key: dot|stroke|
-     accent) that get baked to a pixel layer once. Mirrors the primitives in
-     mandala-morph.js so the two engines draw in the same visual dialect. */
+     accent) that get baked to a pixel layer once. Draws in the same visual
+     dialect as the hero engine (shared/js/hero-mandala.js). */
   function toolkit(rand) {
     var dots = [];
     function jit(p, amt) { return [p[0] + (rand() - 0.5) * amt, p[1] + (rand() - 0.5) * amt]; }
@@ -191,20 +191,32 @@
         T.dot(p[0], p[1], size * (0.75 + rand() * 0.4), alpha * (0.8 + rand() * 0.3), c);
       }
     };
-    // one pointed ogee petal: two curved sides to a sharp tip, a confident inner
-    // echo outline, a base arc, and a stipple fill whose density (its darkness)
-    // climbs toward the tip — near-solid ink at the tip fading to open skin at
-    // the base, exactly how Scotty shades a petal. fillN 0 -> outline only.
+    // one refined ogee petal. The sides are S-curves — a rounded shoulder
+    // that bulges past the base width, easing concave into a tapered tip —
+    // capped with a small arc so the point reads sculpted, not spiked.
+    // A confident inner echo outline, a base arc, highlight ridge dots along
+    // the outer third of each edge (accent ink), a shadow pool at the base
+    // for tonal separation from the ring beneath, and a stipple fill whose
+    // density climbs toward the tip. fillN 0 -> outline + ridge only.
     T.petal = function (a, hw, rIn, rOut, fillN, edgeC, fillC) {
-      var tip = P(rOut, a);
+      var span = rOut - rIn;
+      var tipR = rOut - span * 0.05;
       var bL = P(rIn, a - hw), bR = P(rIn, a + hw);
-      var cR = P(rOut * 0.80, a + hw * 0.55), cL = P(rOut * 0.80, a - hw * 0.55);
-      T.curve(bR, cR, tip, 30, 0.6, 1.0, edgeC);
-      T.curve(tip, cL, bL, 30, 0.6, 1.0, edgeC);
+      var tL = P(tipR, a - hw * 0.10), tR = P(tipR, a + hw * 0.10);
+      // S-curve sides via two quadratic passes: shoulder, then taper
+      var shR = P(rIn + span * 0.34, a + hw * 1.10), shL = P(rIn + span * 0.34, a - hw * 1.10);
+      var mdR = P(rIn + span * 0.58, a + hw * 0.66), mdL = P(rIn + span * 0.58, a - hw * 0.66);
+      var tpR = P(rIn + span * 0.80, a + hw * 0.28), tpL = P(rIn + span * 0.80, a - hw * 0.28);
+      T.curve(bR, shR, mdR, 16, 0.6, 1.0, edgeC);
+      T.curve(mdR, tpR, tR, 16, 0.6, 1.0, edgeC);
+      T.curve(bL, shL, mdL, 16, 0.6, 1.0, edgeC);
+      T.curve(mdL, tpL, tL, 16, 0.6, 1.0, edgeC);
+      // rounded tip cap
+      T.arc(0, 0, tipR + span * 0.012, a - hw * 0.11, a + hw * 0.11, 0.5, 0.95, edgeC);
       // inner echo outline (the tattooer's confident second pass)
-      var rIe = rIn + (rOut - rIn) * 0.08;
-      var tip2 = P(rOut * 0.88, a), bL2 = P(rIe, a - hw * 0.86), bR2 = P(rIe, a + hw * 0.86);
-      var cR2 = P(rOut * 0.70, a + hw * 0.5), cL2 = P(rOut * 0.70, a - hw * 0.5);
+      var rIe = rIn + span * 0.10;
+      var tip2 = P(rOut * 0.88, a), bL2 = P(rIe, a - hw * 0.82), bR2 = P(rIe, a + hw * 0.82);
+      var cR2 = P(rIn + span * 0.62, a + hw * 0.48), cL2 = P(rIn + span * 0.62, a - hw * 0.48);
       T.curve(bR2, cR2, tip2, 22, 0.5, 0.7, edgeC);
       T.curve(tip2, cL2, bL2, 22, 0.5, 0.7, edgeC);
       // base arc
@@ -213,13 +225,32 @@
         var aa = a - hw + (2 * hw) * (s / arcN), p = jit(P(rIn, aa), 0.005);
         T.dot(p[0], p[1], 0.52 * (0.8 + rand() * 0.4), 0.9, edgeC);
       }
+      // highlight ridge: bright accent dots riding the outer third of each edge
+      for (var hR = 0; hR < 2; hR++) {
+        var sgn = hR ? 1 : -1;
+        for (var q = 0; q < 6; q++) {
+          var uu = 0.64 + 0.32 * (q / 5);
+          var ww = hw * Math.pow(1 - uu, 0.72) * 1.02;
+          var hp = jit(P(rIn + span * uu, a + sgn * ww), 0.004);
+          T.dot(hp[0], hp[1], 0.6, 0.8, 'accent');
+        }
+      }
+      // base shadow pool — quiet tonal step between this petal and the ring
+      // below (skipped for outline-only petals)
+      var nS = fillN > 0 ? Math.max(6, Math.round(fillN * 0.12)) : 0;
+      for (var b = 0; b < nS; b++) {
+        var us = Math.pow(rand(), 2.2) * 0.20;
+        var vs = (rand() * 2 - 1) * hw * 0.85;
+        var sp = jit(P(rIn + span * us, a + vs), 0.006);
+        T.dot(sp[0], sp[1], 0.5, 0.22 + rand() * 0.2, fillC);
+      }
       // tip-weighted fill
       for (var i = 0; i < fillN; i++) {
         var u = rand();                              // 0 base -> 1 tip
         if (rand() > 0.55 + 0.45 * u) continue;      // denser toward the tip
         var hwAt = hw * Math.pow(1 - u, 0.62);       // petal narrows to the tip
         var v = (rand() * 2 - 1); v = v * (1 - 0.18 * v * v);
-        var p2 = jit(P(rIn + (rOut - rIn) * u, a + v * hwAt), 0.008);
+        var p2 = jit(P(rIn + span * u, a + v * hwAt), 0.008);
         T.dot(p2[0], p2[1], 0.55 * (0.7 + rand() * 0.6), 0.5 + 0.42 * u + 0.05 * rand(), fillC);
       }
     };
@@ -265,13 +296,16 @@
     T.ring(0, 0, 0.905, 0.36, 0.42, 'dot');
   }
 
-  // LOTUS — three concentric crowns of pointed ogee petals at golden-ratio
-  // radii, alternate crowns offset so tips nestle in the notches behind.
+  // LOTUS — three concentric crowns of ogee petals at golden-ratio radii,
+  // alternate crowns offset so tips nestle in the notches behind. The outer
+  // crown carries the ornamental edge: an alternating long/short petal
+  // rhythm, tip beads on the long petals, and scallop arcs bridging the
+  // bases so the perimeter flows as a crafted crown, not a ring of spikes.
   function buildLotus(T, o) {
     var crowns = [
-      { m: Math.max(12, o.rings * 3),             rIn: 0.585, rOut: 0.95, hw: 0.80, off: false },
-      { m: Math.max(8,  o.rings * 2),             rIn: 0.38,  rOut: 0.62, hw: 0.82, off: true  },
-      { m: Math.max(6,  Math.round(o.rings * 1.5)), rIn: 0.20, rOut: 0.40, hw: 0.85, off: false }
+      { m: Math.max(12, o.rings * 3),             rIn: 0.585, rOut: 0.95, hw: 0.80, off: false, alt: true  },
+      { m: Math.max(8,  o.rings * 2),             rIn: 0.38,  rOut: 0.62, hw: 0.82, off: true,  alt: false },
+      { m: Math.max(6,  Math.round(o.rings * 1.5)), rIn: 0.20, rOut: 0.40, hw: 0.85, off: false, alt: false }
     ];
     for (var ci = 0; ci < crowns.length; ci++) {
       var C = crowns[ci], hw = (Math.PI / C.m) * C.hw;
@@ -279,7 +313,20 @@
       var fillN = Math.max(28, Math.round((C.rOut - C.rIn) * C.rOut * 500 * o.density));
       for (var i = 0; i < C.m; i++) {
         var a = a0 + i * (TAU / C.m);
-        T.petal(a, hw, C.rIn, C.rOut, fillN, (i % 3 === 0) ? 'accent' : 'stroke', 'dot');
+        var isLong = !C.alt || (i % 2 === 0);
+        var rOut = isLong ? C.rOut : C.rIn + (C.rOut - C.rIn) * 0.82;
+        T.petal(a, hw, C.rIn, rOut, fillN, (i % 3 === 0) ? 'accent' : 'stroke', 'dot');
+        if (C.alt && isLong) {
+          T.dot(Math.cos(a) * (rOut + 0.02), Math.sin(a) * (rOut + 0.02), 1.0, 0.95, 'accent');
+        }
+      }
+      // scallop arcs riding between the outer crown's petal bases
+      if (C.alt) {
+        for (var sI = 0; sI < C.m; sI++) {
+          var sa = a0 + (sI + 0.5) * (TAU / C.m);
+          T.arc(Math.cos(sa) * (C.rIn + 0.012), Math.sin(sa) * (C.rIn + 0.012), 0.026,
+                sa - Math.PI * 0.9, sa + Math.PI * 0.9, 0.42, 0.55, 'stroke');
+        }
       }
     }
     T.heart(0.105);

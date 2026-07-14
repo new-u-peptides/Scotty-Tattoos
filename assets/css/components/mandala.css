@@ -1,11 +1,13 @@
 /* =========================================================
-   mandala.css — the living mandala system
+   mandala.css — the living mandala system (ornament pages)
    ---------------------------------------------------------
-   Styling layer for the animated canvas mandala. shared/js/mandala.js
-   draws layered dotwork/lotus/linework onto any <canvas data-mandala>;
-   the homepage hero is a richer piece from shared/js/mandala-morph.js
-   on <canvas data-mandala-morph>. This sheet owns placement, the hero
-   stage (.hero__sigil), variants, and motion/contrast preferences.
+   Styling layer for the animated canvas mandalas that decorate the
+   inner pages: shared/js/mandala.js draws layered dotwork/lotus/
+   linework onto any <canvas data-mandala>. This sheet owns placement,
+   the ornament variants, and motion/contrast preferences.
+
+   (The homepage hero has its own engine — shared/js/hero-mandala.js —
+   and its own stage styling in hero.css.)
 
    Creative direction: a living blackwork mandala with a quiet blood-red
    ember under the ink — skin, ink, stencil, ritual. Not a glowing sigil.
@@ -13,12 +15,11 @@
    All colour flows through the --mandala-*-rgb tokens below, which fall
    back to safe brand values if tokens.css loads late or partially.
 
-   The hero canvas is never given transform/filter/blur — stipple and
+   Canvases are never given transform/filter/blur — stipple and
    dotted linework blur fast if composited after render.
 
    Variants:
      .mandala               base canvas (full-bleed in positioned parent)
-     .mandala--hero         the homepage centerpiece stage occupant
      .mandala--ornament     subtle decorative use (low opacity)
      .mandala--corner       quarter-mandala bleeding off a section corner
      .mandala--seal         small centred stamp (end-of-article / footer)
@@ -47,87 +48,6 @@
   display: block;
   pointer-events: none;
   contain: layout paint;
-}
-
-/* ---------------------------------------------------------
-   HERO SIGIL STAGE
-   The stage around the mandala-morph canvas: bone-paper warmth under
-   the ink, a restrained red ember beneath it — irritation under fresh
-   ink, not a portal. Canvas stays untransformed and crisp.
-   --------------------------------------------------------- */
-.hero__sigil {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: min(100%, clamp(320px, 42vw, 620px));
-  aspect-ratio: 1;
-  margin-inline: auto;
-  isolation: isolate; /* contains the glow layers' compositing */
-  /* Faintest bone wash so black ink floats rather than voids. */
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(var(--mandala-bone-rgb), 0.028) 0%,
-    transparent 64%
-  );
-}
-
-/* Ember: a low red warmth breathing under the ink. Kept dim and slow —
-   skin flush, not neon. */
-.hero__sigil::before {
-  content: "";
-  position: absolute;
-  inset: -8%;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(var(--mandala-red-rgb), 0.16) 0%,
-    rgba(var(--mandala-red-rgb), 0.06) 42%,
-    transparent 68%
-  );
-  filter: blur(22px);
-  animation: sigil-ember 9s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-/* Ink wash: warm paper ground with an off-centre ink shadow, so the
-   piece reads as ink on a surface rather than light in a void. */
-.hero__sigil::after {
-  content: "";
-  position: absolute;
-  inset: 7%;
-  z-index: -1;
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(var(--mandala-bone-rgb), 0.055) 0%,
-      rgba(var(--mandala-bone-rgb), 0.026) 36%,
-      transparent 66%
-    ),
-    radial-gradient(
-      circle at 48% 52%,
-      rgba(var(--mandala-ink-rgb), 0.10) 0%,
-      transparent 58%
-    );
-  pointer-events: none;
-}
-
-@keyframes sigil-ember {
-  from { opacity: 0.72; transform: scale(0.98); }
-  to   { opacity: 1;    transform: scale(1.03); }
-}
-
-/* The hero canvas: floats free above its glow. No transform, filter,
-   or opacity animation here — ever. */
-.mandala--hero {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background: transparent;
 }
 
 /* ---------------------------------------------------------
@@ -190,7 +110,7 @@
 }
 
 /* Opt-in blend modes for placing a mandala over textured or photographic
-   surfaces. Never applied globally — and never to .mandala--hero. */
+   surfaces. Never applied globally. */
 .mandala--soft-light { mix-blend-mode: soft-light; }
 .mandala--screen     { mix-blend-mode: screen; }
 
@@ -198,9 +118,6 @@
    RESPONSIVE + MOTION/CONTRAST PREFERENCES
    --------------------------------------------------------- */
 @media (max-width: 920px) {
-  .hero__sigil {
-    width: min(100%, clamp(280px, 72vw, 440px));
-  }
   .mandala--corner {
     width: clamp(160px, 40vw, 240px);
     height: clamp(160px, 40vw, 240px);
@@ -213,12 +130,7 @@
   .mandala--tattoo-card { display: none; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero__sigil::before { animation: none; opacity: 0.85; transform: none; }
-}
-
 @media (prefers-contrast: more) {
-  .hero__sigil::before  { opacity: 0.5; }
   .mandala--ornament    { opacity: 0.32; }
   .mandala--corner      { opacity: 0.10; }
   .mandala--background  { opacity: 0.05; }
