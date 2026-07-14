@@ -1,0 +1,235 @@
+/* scroll-sequence.css — sticky-scroll "selected work" reveal panel.
+   -----------------------------------------------------------------
+   Sits below the home-page hero. As the section scrolls, the ornament
+   mandala canvas travels left → right across a pinned stage while four
+   portfolio pieces cross-fade in step, each paired with a caption and
+   tracked by progress ticks. Driven by shared/js/scroll-sequence.js.
+
+   (Hero styling is NOT here — the home hero is the particle sigil,
+   styled in hero.css. This sheet owns only the reveal sequence.) */
+
+.reveal-sequence {
+  /* Section height drives the scroll length: ~1 viewport per slot, so
+     four slots = 400vh of scroll. The sticky child stays pinned. */
+  position: relative;
+  height: 400vh;
+  background: var(--ink);
+}
+.reveal-sequence__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* Faint warm depth anchored right, so the stage isn't a flat void as the
+   mandala travels across it. */
+.reveal-sequence__sticky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(var(--gold-rgb, 232, 182, 83), 0.08), transparent 62%),
+    radial-gradient(ellipse at 24% 42%, rgba(var(--red-rgb), 0.07), transparent 58%);
+  pointer-events: none;
+}
+
+/* Image stack — left half of the stage. Slots cross-fade. */
+.reveal-sequence__images {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 37%;
+  aspect-ratio: 4 / 5;
+  max-height: 78vh;
+  z-index: 1;
+}
+.reveal-sequence__images > [data-slot] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1),
+              transform 0.8s cubic-bezier(.2,.7,.2,1);
+  background: var(--ink-3);
+  border: 1px solid var(--bone-08);
+  overflow: hidden;
+  box-shadow: 0 32px 90px -28px rgba(0, 0, 0, 0.85);
+}
+.reveal-sequence__images > [data-slot] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.reveal-sequence__images > [data-slot].is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* The travelling mandala — its transform is set by scroll-sequence.js.
+   No filter/transform beyond the JS translate; screen blend so the gold
+   stipple reads as light on the dark stage. */
+.reveal-sequence__mandala {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate3d(0, -50%, 0);
+  width: 42vw;
+  max-width: 560px;
+  aspect-ratio: 1;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Captions — right side of the stage, cross-fading with the images. */
+.reveal-sequence__captions {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30%;
+  z-index: 3;
+}
+.reveal-sequence__captions > [data-slot] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-sequence__captions > [data-slot].is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-sequence__caption-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold, #E8B653);
+  margin: 0 0 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.reveal-sequence__caption-eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: var(--gold, #E8B653);
+}
+.reveal-sequence__captions h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 1.05;
+  margin: 0 0 1rem;
+  color: var(--bone);
+}
+.reveal-sequence__captions p {
+  color: var(--bone-2);
+  margin: 0 0 1.4rem;
+  max-width: 36ch;
+}
+.reveal-sequence__captions .btn {
+  margin-top: 0.6rem;
+}
+
+/* Progress ticks — where you are in the sequence. */
+.reveal-sequence__dots {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 4;
+}
+.reveal-sequence__dots span {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--bone-18);
+  transition: background 0.4s ease, transform 0.4s ease;
+}
+.reveal-sequence__dots span.is-active {
+  background: var(--gold, #E8B653);
+  transform: scaleY(2);
+}
+
+/* Smaller screens: drop the sticky-scroll trick, stack vertically. */
+@media (max-width: 880px) {
+  .reveal-sequence { height: auto; }
+  .reveal-sequence__sticky {
+    position: static;
+    height: auto;
+    padding: 4rem 0;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .reveal-sequence__images,
+  .reveal-sequence__captions {
+    position: relative;
+    inset: auto;
+    transform: none;
+    width: auto;
+    margin: 0 var(--gutter);
+  }
+  .reveal-sequence__images {
+    aspect-ratio: 4 / 5;
+    max-width: 480px;
+  }
+  .reveal-sequence__captions { padding-top: 1.5rem; }
+  .reveal-sequence__captions > [data-slot] {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    transform: none;
+    padding-bottom: 3rem;
+  }
+  .reveal-sequence__images > [data-slot] {
+    opacity: 1;
+    transform: none;
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .reveal-sequence__mandala,
+  .reveal-sequence__dots { display: none; }
+}
+
+/* Reduced motion: stack like mobile, nothing moves, everything visible. */
+.reveal-sequence.is-reduced-motion {
+  height: auto;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__sticky {
+  position: static;
+  height: auto;
+  padding: 4rem 0;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__images,
+.reveal-sequence.is-reduced-motion .reveal-sequence__captions {
+  position: relative;
+  inset: auto;
+  transform: none;
+  width: auto;
+  margin: 0 var(--gutter);
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__captions > [data-slot] {
+  position: relative;
+  inset: auto;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__mandala,
+.reveal-sequence.is-reduced-motion .reveal-sequence__dots {
+  display: none;
+}
+.reveal-sequence.is-reduced-motion .reveal-sequence__images > [data-slot],
+.reveal-sequence.is-reduced-motion .reveal-sequence__captions > [data-slot] {
+  opacity: 1;
+  transform: none;
+  margin-bottom: 1.5rem;
+}

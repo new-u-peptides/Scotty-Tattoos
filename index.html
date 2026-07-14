@@ -215,6 +215,75 @@
   </div>
 
   <!-- =========================================================
+       REVEAL SEQUENCE — a pinned stage where the mandala travels
+       left→right as you scroll, revealing one portfolio piece per
+       slot with its caption. Engine: shared/js/scroll-sequence.js
+  ========================================================= -->
+  <section class="reveal-sequence" data-sequence aria-label="Selected work">
+    <div class="reveal-sequence__sticky">
+      <div class="reveal-sequence__images">
+        <div data-slot="0">
+          <img src="assets/images/tattoos/chest-mandala.jpg" alt="Chest mandala — dotwork sternum tattoo" loading="lazy" />
+        </div>
+        <div data-slot="1">
+          <img src="assets/images/tattoos/back-mandala.jpg" alt="Back mandala — geometric dotwork across the shoulder" loading="lazy" />
+        </div>
+        <div data-slot="2">
+          <img src="assets/images/tattoos/leg-sleeve-mandala.jpg" alt="Mandala leg sleeve — geometric tattoo hip to ankle" loading="lazy" />
+        </div>
+        <div data-slot="3">
+          <img src="assets/images/tattoos/wrist-mandala.jpg" alt="Wrist mandala — dense dotwork on the wrist" loading="lazy" />
+        </div>
+      </div>
+
+      <canvas class="reveal-sequence__mandala"
+              data-mandala
+              data-mandala-theme="gold"
+              data-mandala-phases="lotus,linework"
+              data-mandala-rings="4"
+              data-mandala-dots="104"
+              data-mandala-density="1.2"
+              data-mandala-speed="0.85"
+              data-mandala-cycle="20000"
+              aria-hidden="true"></canvas>
+
+      <div class="reveal-sequence__captions">
+        <div data-slot="0">
+          <p class="reveal-sequence__caption-eyebrow">Piece 01 — Sternum</p>
+          <h2>Chest Mandala</h2>
+          <p>A dotwork lotus across the sternum — built in layers over three sittings so the density reads clean for decades.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more dotwork →</a>
+        </div>
+        <div data-slot="1">
+          <p class="reveal-sequence__caption-eyebrow">Piece 02 — Shoulder</p>
+          <h2>Back Mandala</h2>
+          <p>Eight-fold symmetry graded edge-to-centre. Large-scale geometry designed to read from across the room.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more mandalas →</a>
+        </div>
+        <div data-slot="2">
+          <p class="reveal-sequence__caption-eyebrow">Piece 03 — Full leg</p>
+          <h2>Mandala Sleeve</h2>
+          <p>Hip to ankle across five sessions — a study in proportion wrapped around a moving canvas.</p>
+          <a class="btn btn--ghost" href="portfolio.html">See more sleeves →</a>
+        </div>
+        <div data-slot="3">
+          <p class="reveal-sequence__caption-eyebrow">Piece 04 — Wrist</p>
+          <h2>Wrist Mandala</h2>
+          <p>Small, dense and exacting in a single sitting — the kind of piece that takes years to learn how to hold.</p>
+          <a class="btn btn--ghost" href="portfolio.html">Browse the archive →</a>
+        </div>
+      </div>
+
+      <div class="reveal-sequence__dots" aria-hidden="true">
+        <span data-slot="0"></span>
+        <span data-slot="1"></span>
+        <span data-slot="2"></span>
+        <span data-slot="3"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
        INTRO
   ========================================================= -->
   <section class="section">
@@ -567,6 +636,8 @@
 
   <script src="shared/js/includes.js"></script>
   <script src="shared/js/hero-mandala.js"></script>
+  <script src="shared/js/mandala.js"></script>
+  <script src="shared/js/scroll-sequence.js"></script>
   <script src="shared/js/main.js"></script>
   <script src="shared/js/consult-popup.js"></script>
 </body>
