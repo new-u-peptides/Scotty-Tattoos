@@ -1,1 +1,22 @@
 /* home-bands — placeholder, filled in by the enquiry-funnel rebuild. */
+
+/* Typed enquiry band — portfolio.html, and any page that wants to offer the
+   project types rather than one generic button. */
+.enquiry-band {
+  text-align: center;
+  padding: clamp(2.5rem, 6vw, 4rem) var(--gutter);
+  border-top: 1px solid var(--bone-14);
+  border-bottom: 1px solid var(--bone-14);
+}
+.enquiry-band h2 { margin-bottom: 0.4em; }
+.enquiry-band .lead { margin-bottom: 2rem; }
+.enquiry-band__actions {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media (max-width: 560px) {
+  .enquiry-band__actions { flex-direction: column; align-items: stretch; }
+  .enquiry-band__actions .btn { justify-content: center; }
+}

@@ -71,6 +71,17 @@ const SCALES = Object.freeze([
   'Not sure yet',
 ]);
 
+// Where the work would happen. Scotty is based at the Birkirkara studio and
+// travels for the right project, so this is a qualifying question rather than
+// a logistics detail — it belongs in step 1, and it changes how an enquiry is
+// read: a full sleeve that needs travel is a different proposition from the
+// same sleeve booked into the studio.
+const LOCATIONS = Object.freeze([
+  "Malta — I'll travel to the studio",
+  'I’d like Scotty to travel to me',
+  "Either — let's discuss",
+]);
+
 const EXISTING_TATTOOS = Object.freeze([
   'No',
   'Yes, working around existing tattoo',
@@ -445,6 +456,7 @@ module.exports = {
 
   PROJECT_TYPES,
   SCALES,
+  LOCATIONS,
   EXISTING_TATTOOS,
   TIMINGS,
   HEARD_FROM,

@@ -1,1 +1,47 @@
-/* enquiry-next — placeholder, filled in by the enquiry-funnel rebuild. */
+/* Confirmation page (enquiry-received.html). */
+
+.enquiry-ref {
+  margin: 1.4rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.enquiry-ref strong { color: var(--gold); font-weight: 600; letter-spacing: 0.12em; }
+
+.next-steps {
+  list-style: none;
+  margin: 0 0 clamp(2.5rem, 6vw, 4rem);
+  padding: 0;
+  display: grid;
+  gap: 0;
+  counter-reset: none;
+}
+.next-steps__item {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.4rem 0;
+  border-top: 1px solid var(--bone-14);
+}
+.next-steps__item:last-child { border-bottom: 1px solid var(--bone-14); }
+.next-steps__item p { margin: 0; font-size: 1.05rem; color: var(--bone-2); max-width: 46ch; }
+
+.next-steps__num {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+
+.next-steps__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .next-steps__item { grid-template-columns: 3rem 1fr; gap: 0.75rem; }
+  .next-steps__actions { flex-direction: column; align-items: stretch; }
+  .next-steps__actions .btn { justify-content: center; }
+}

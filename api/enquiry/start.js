@@ -22,7 +22,7 @@ const {
   normaliseProjectType,
   matchOption,
   addSegment,
-  SCALES,
+  SCALES, LOCATIONS,
 } = require('../_lib/enquiry');
 const { isValidEmail, cleanText, readRawBody, nowIso } = require('../_lib/util');
 
@@ -107,6 +107,7 @@ module.exports = async (req, res) => {
       instagram: normaliseInstagram(body.instagram),
       project_type: project ? project.label : cleanText(body.projectType, 60),
       scale: matchOption(SCALES, body.scale) || cleanText(body.scale, 60),
+      location: matchOption(LOCATIONS, body.location) || cleanText(body.location, 80),
       utm_source: cleanText(body.utmSource, 120),
       utm_medium: cleanText(body.utmMedium, 120),
       utm_campaign: cleanText(body.utmCampaign, 120),

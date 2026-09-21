@@ -1,1 +1,61 @@
-/* enquiry-form — placeholder, filled in by the enquiry-funnel rebuild. */
+/* Two-step enquiry form (booking.html). Leans on the existing .form, .field
+   and .btn components — only what genuinely did not exist is defined here. */
+
+/* A measured column: a 1280px-wide form would be unreadable and would make a
+   short enquiry feel like paperwork. */
+.container--form {
+  max-width: 780px;
+}
+
+.enquiry-form {
+  gap: 1.5rem;
+}
+
+.enquiry-step {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+.enquiry-step[hidden] { display: none; }
+
+.enquiry-step__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.4rem;
+}
+@media (max-width: 480px) {
+  .enquiry-step__actions { flex-direction: column-reverse; align-items: stretch; }
+  .enquiry-step__actions .btn { justify-content: center; }
+}
+
+/* "optional" sits inside the label so it is announced with the field name
+   rather than being a visual-only cue. */
+.field__opt {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--smoke);
+  text-transform: uppercase;
+}
+
+/* A failed field is marked, not shouted at: the message in the status region
+   carries the detail. */
+.field [aria-invalid="true"] {
+  border-bottom-color: var(--red-soft);
+}
+
+.divider--tight { margin: 0.6rem 0; }
+
+/* The empty "Choose one…" option should read as a placeholder, not a value. */
+.field select:invalid,
+.field select option[value=""] { color: var(--bone-3); }
+.field select { color: var(--bone); }
+
+.policy-grid--stack {
+  display: grid;
+  gap: 1.6rem;
+  align-content: start;
+}

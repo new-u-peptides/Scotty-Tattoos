@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>document.documentElement.classList.add('js');</script>
+  <title>Enquiry Received — Scotty Massa</title>
+  <meta name="description" content="Your tattoo enquiry is with Scotty. Here's what happens next." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://scottymassa.com/enquiry-received.html" />
+  <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0a0706" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body data-nav-current="booking">
+
+    <div data-include="partials/header.html"></div>
+
+
+    <main id="main">
+  <section class="page-header page-header--compact">
+    <div class="container">
+      <p class="eyebrow" style="justify-content:center;">Enquiry received</p>
+      <h1>Enquiry received.</h1>
+      <!-- Reads correctly with no name: someone opening this URL directly, or
+           with sessionStorage unavailable, gets the second sentence only. -->
+      <p class="lead mx-auto" data-thanks>Thanks — your project details are safely with me.</p>
+      <p class="enquiry-ref" data-enquiry-ref-wrap hidden>Your reference · <strong data-enquiry-ref></strong></p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container container--form">
+      <p class="eyebrow">What happens next</p>
+      <ol class="next-steps">
+        <li class="next-steps__item">
+          <span class="next-steps__num">01</span>
+          <p>I review your project.</p>
+        </li>
+        <li class="next-steps__item">
+          <span class="next-steps__num">02</span>
+          <p>You'll receive an email with the relevant next steps.</p>
+        </li>
+        <li class="next-steps__item">
+          <span class="next-steps__num">03</span>
+          <p>If the project is suitable, we'll discuss design, timing and pricing.</p>
+        </li>
+        <li class="next-steps__item">
+          <span class="next-steps__num">04</span>
+          <p>A 30% deposit confirms your booking.</p>
+        </li>
+      </ol>
+
+      <div class="next-steps__actions">
+        <a href="portfolio.html" class="btn btn--primary">Back to the portfolio</a>
+        <a href="https://www.instagram.com/scottymassa" class="btn btn--ghost" target="_blank" rel="noopener">Follow Scotty on Instagram</a>
+      </div>
+    </div>
+  </section>
+    </main>
+
+
+    <div data-include="partials/footer.html"></div>
+
+  <script src="shared/js/includes.js"></script>
+  <script src="shared/js/mandala.js"></script>
+  <script src="shared/js/main.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var name = '', ref = '';
+      try {
+        name = sessionStorage.getItem('sm-enquiry-name') || '';
+        ref = sessionStorage.getItem('sm-enquiry-ref') || '';
+      } catch (e) { /* private mode — the generic copy stands */ }
+
+      if (name) {
+        var p = document.querySelector('[data-thanks]');
+        if (p) p.textContent = 'Thanks, ' + name + '. Your project details are safely with me.';
+      }
+      if (ref) {
+        var wrap = document.querySelector('[data-enquiry-ref-wrap]');
+        var slot = document.querySelector('[data-enquiry-ref]');
+        if (wrap && slot) { slot.textContent = ref; wrap.hidden = false; }
+      }
+    })();
+  </script>
+</body>
+</html>

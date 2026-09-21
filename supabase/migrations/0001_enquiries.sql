@@ -49,6 +49,8 @@ create table if not exists public.enquiries (
   instagram           text,
   project_type        text,
   scale               text,
+  -- Where the work happens: studio in Malta, Scotty travels, or undecided.
+  location            text,
 
   -- Step 2
   idea                text,

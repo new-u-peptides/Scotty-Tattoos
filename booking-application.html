@@ -1,204 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Booking Application — Scotty Massa</title>
-  <meta name="description" content="The full booking application for a custom tattoo with Scotty Massa — your idea, placement, size, references and photos." />
-  <meta name="robots" content="noindex, follow" />
-  <link rel="canonical" href="https://scottymassa.com/booking-application.html" />
-  <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Start your enquiry — Scotty Massa</title>
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://scottymassa.com/booking.html" />
+<link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
+<meta http-equiv="refresh" content="0; url=booking.html" />
+<style>
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:#0A0A0A;
+         color:#C8C5BF; font:400 1rem/1.7 -apple-system,"Segoe UI",Arial,sans-serif; padding:2rem; text-align:center; }
+  a { color:#E8B653; }
+</style>
 </head>
-<body data-nav-current="booking">
-
-    <div data-include="partials/header.html"></div>
-
-
-    <main id="main">
-  <section class="page-header">
-    <div class="container">
-      <p class="eyebrow" style="justify-content:center;">Booking — Step 2 of 2</p>
-      <h1>The full application</h1>
-      <p class="lead mx-auto">Everything here goes straight to Scotty. The more detail, the faster and more accurate his answer — he reviews every application personally, usually within 48 working hours.</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <form class="form" data-booking-application-form novalidate enctype="multipart/form-data">
-        <div class="visually-hidden" aria-hidden="true">
-          <label for="app-company">Leave this field empty</label>
-          <input type="text" id="app-company" name="company" tabindex="-1" autocomplete="off" />
-        </div>
-
-        <p class="eyebrow">You</p>
-        <div class="form__row">
-          <div class="field">
-            <label for="app-name">Full name</label>
-            <input id="app-name" name="name" type="text" required autocomplete="name" />
-          </div>
-          <div class="field">
-            <label for="app-email">Email</label>
-            <input id="app-email" name="email" type="email" required autocomplete="email" />
-          </div>
-        </div>
-        <div class="form__row">
-          <div class="field">
-            <label for="app-phone">Phone number</label>
-            <input id="app-phone" name="phone" type="tel" required autocomplete="tel" placeholder="+356…" />
-          </div>
-          <div class="field">
-            <label for="app-origin">Travelling from</label>
-            <select id="app-origin" name="origin">
-              <option>Malta (local)</option>
-              <option>Elsewhere in the EU</option>
-              <option>UK</option>
-              <option>International</option>
-            </select>
-          </div>
-        </div>
-
-        <hr class="divider" style="margin: 1rem 0;" />
-
-        <p class="eyebrow">The piece</p>
-        <div class="form__row">
-          <div class="field">
-            <label for="app-project-type">Project</label>
-            <select id="app-project-type" name="projectType">
-              <option>Sleeve / half-sleeve</option>
-              <option>Leg</option>
-              <option>Back</option>
-              <option>Chest</option>
-              <option>Standalone piece</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="app-style">Style</label>
-            <select id="app-style" name="style">
-              <option>Geometric</option>
-              <option>Sacred geometry</option>
-              <option>Mandala</option>
-              <option>Dotwork</option>
-              <option>Ornamental</option>
-              <option>Blackwork</option>
-              <option>Not sure yet</option>
-            </select>
-          </div>
-        </div>
-        <div class="form__row">
-          <div class="field">
-            <label for="app-placement">Placement</label>
-            <input id="app-placement" name="placement" type="text" placeholder="Forearm, ribs, thigh, full back…" />
-          </div>
-          <div class="field">
-            <label for="app-scale">Scale</label>
-            <select id="app-scale" name="scale">
-              <option>Small (under 10cm)</option>
-              <option>Medium (10–20cm)</option>
-              <option>Large (20cm+)</option>
-              <option>Sleeve / half-sleeve</option>
-              <option>Back or full leg</option>
-              <option>Bodysuit / long-term build</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="app-work-type">Work type</label>
-          <select id="app-work-type" name="workType">
-            <option>New piece</option>
-            <option>Continuation of existing work</option>
-            <option>Cover-up</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="app-concept">Describe the piece</label>
-          <textarea id="app-concept" name="concept" rows="6" required placeholder="Tell me about the idea — story, references, symbolism, anything that helps."></textarea>
-        </div>
-
-        <div class="form__row">
-          <div class="field">
-            <label for="app-references">Reference images</label>
-            <input id="app-references" name="referenceImages" type="file" accept="image/*" multiple />
-            <p class="field__hint">Up to 3 images, 2MB each. Anything that shows the style or idea you're after.</p>
-          </div>
-          <div class="field">
-            <label for="app-body-photos">Photos of the area</label>
-            <input id="app-body-photos" name="bodyPhotos" type="file" accept="image/*" multiple required />
-            <p class="field__hint">At least 1, up to 3 images, 2MB each. Helps Scotty judge scale and placement before consultation.</p>
-          </div>
-        </div>
-
-        <hr class="divider" style="margin: 1rem 0;" />
-
-        <p class="eyebrow">Timing</p>
-        <div class="form__row">
-          <div class="field">
-            <label for="app-timing">Timeframe</label>
-            <select id="app-timing" name="timing">
-              <option>As soon as possible</option>
-              <option>In the next few months</option>
-              <option>Later this year</option>
-              <option>Just planning ahead</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="app-travel">Travel to Malta</label>
-            <select id="app-travel" name="travel">
-              <option>Already in Malta</option>
-              <option>Willing to travel to Malta</option>
-              <option>Already planning a trip to Malta</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="app-notes">Anything else Scotty should know</label>
-          <textarea id="app-notes" name="notes" rows="4" placeholder="Optional — allergies, previous work in the area, scheduling constraints…"></textarea>
-        </div>
-
-        <hr class="divider" style="margin: 1rem 0;" />
-
-        <div class="field field--check">
-          <input id="app-age" name="ageConfirm" type="checkbox" value="true" required />
-          <label for="app-age">I confirm I am 18 years of age or older.</label>
-        </div>
-        <div class="field field--check">
-          <input id="app-id" name="idConfirm" type="checkbox" value="true" required />
-          <label for="app-id">I understand I'll need to bring valid photo ID to my appointment.</label>
-        </div>
-        <div class="field field--check">
-          <input id="app-pricing" name="pricingAck" type="checkbox" value="true" required />
-          <label for="app-pricing">I understand pricing is hourly or flat-rate depending on the piece, confirmed after consultation, and that a 30% deposit is required to lock in a date.</label>
-        </div>
-
-        <p class="form__status" data-form-status role="status" aria-live="polite"></p>
-
-        <button type="submit" class="btn btn--primary">Submit Application</button>
-        <p style="font-size:0.85rem; color: var(--smoke); margin:0;">Your details are used only to review and respond to this application. See the <a href="privacy.html">privacy notice</a>.</p>
-      </form>
-    </div>
-  </section>
-    </main>
-
-
-    <div data-include="partials/footer.html"></div>
-
-  <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala.js"></script>
-  <script src="shared/js/main.js"></script>
-  <script src="shared/js/booking-application-form.js"></script>
+<body>
+  <!-- The enquiry is one two-step form now. This page only survives so that
+       links in older emails still land somewhere useful; the query string is
+       preserved so a ?project= deep link keeps working. -->
+  <main>
+    <p>The application and the enquiry are one form now — taking you there.</p>
+    <p><a href="booking.html" data-stub-link>Continue here</a> if nothing happens.</p>
+  </main>
+  <script>
+    (function () {
+      var target = 'booking.html';
+      var link = document.querySelector('[data-stub-link]');
+      if (link) link.href = target + location.search;
+      location.replace(target + location.search);
+    })();
+  </script>
 </body>
 </html>

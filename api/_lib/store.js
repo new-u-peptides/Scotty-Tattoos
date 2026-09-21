@@ -35,7 +35,7 @@ const MAX_CANDIDATES = 200;
 const ENQUIRY_COLUMNS = new Set([
   'enquiry_ref', 'status', 'segments',
   'first_name', 'last_name', 'email', 'country', 'instagram',
-  'project_type', 'scale', 'idea', 'placement', 'existing_tattoos',
+  'project_type', 'scale', 'location', 'idea', 'placement', 'existing_tattoos',
   'preferred_timing', 'heard_from', 'additional_info', 'reference_count',
   'lead_score', 'lead_label',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',

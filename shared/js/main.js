@@ -119,6 +119,80 @@
     });
   }
 
+
+  // ---------------------------------------------------------------
+  // Marketing attribution.
+  //
+  // Captured on every page because a visitor almost never lands on the
+  // enquiry form directly — they arrive on a portfolio page from Instagram
+  // and navigate. Without this, every enquiry would be attributed to
+  // booking.html with no source.
+  //
+  // First touch wins for the landing page and referrer (where they actually
+  // came from); the most recent non-empty campaign wins for the UTM fields
+  // (the campaign that brought them back). Stored for 90 days.
+  // ---------------------------------------------------------------
+  var ATTR_KEY = 'sm-attribution';
+  var ATTR_TTL = 90 * 24 * 60 * 60 * 1000;
+  var UTM_KEYS = ['utmSource', 'utmMedium', 'utmCampaign', 'utmContent', 'utmTerm'];
+
+  function attrStore() {
+    try { return window.localStorage; } catch (e) { return null; }
+  }
+
+  function readParam(name) {
+    var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+    if (!m) return '';
+    try { return decodeURIComponent(m[1].replace(/\+/g, ' ')).slice(0, 200); } catch (e) { return ''; }
+  }
+
+  function blankAttribution() {
+    return { utmSource: '', utmMedium: '', utmCampaign: '', utmContent: '', utmTerm: '',
+             landingPage: '', referrer: '', firstSeen: 0 };
+  }
+
+  function captureAttribution() {
+    var store = attrStore();
+    var saved = null;
+    if (store) {
+      try {
+        var raw = store.getItem(ATTR_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) { saved = null; }
+    }
+    if (saved && saved.firstSeen && (Date.now() - saved.firstSeen) > ATTR_TTL) saved = null;
+
+    var data = saved && typeof saved === 'object' ? saved : blankAttribution();
+    if (!data.firstSeen) data.firstSeen = Date.now();
+
+    // Later campaigns overwrite earlier ones, but an ordinary visit with no
+    // UTM parameters must never blank out the campaign that brought them in.
+    var incoming = {};
+    var sawAny = false;
+    UTM_KEYS.forEach(function (key) {
+      var value = readParam(key.replace(/([A-Z])/g, '_$1').toLowerCase());
+      incoming[key] = value;
+      if (value) sawAny = true;
+    });
+    if (sawAny) UTM_KEYS.forEach(function (key) { data[key] = incoming[key]; });
+
+    if (!data.landingPage) data.landingPage = location.href.slice(0, 500);
+    if (!data.referrer) {
+      var ref = document.referrer || '';
+      if (ref && ref.indexOf(location.origin) !== 0) data.referrer = ref.slice(0, 500);
+    }
+
+    if (store) {
+      try { store.setItem(ATTR_KEY, JSON.stringify(data)); } catch (e) { /* quota / private mode */ }
+    }
+    return data;
+  }
+
+  window.SM = window.SM || {};
+  window.SM.attribution = function () {
+    try { return captureAttribution(); } catch (e) { return blankAttribution(); }
+  };
+
   function bootstrap() {
     bindNavToggle();
     bindReveal();
@@ -127,6 +201,7 @@
     applyUrlFilter();
     bindActiveNav();
     bindWhatsApp();
+    try { captureAttribution(); } catch (e) { /* storage disabled */ }
   }
 
   if (document.readyState === 'loading') {

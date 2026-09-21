@@ -258,8 +258,19 @@
 
       </div>
 
-      <div class="text-center mt-4" style="margin-top: clamp(3rem, 8vw, 6rem);">
-        <a href="booking.html" class="btn btn--primary">Book your piece</a>
+      <!-- Typed CTAs rather than one generic button: the project type travels
+           in the query string and preselects on the form, so the visitor
+           arrives with one decision already made. -->
+      <div class="enquiry-band" style="margin-top: clamp(3rem, 8vw, 6rem);">
+        <p class="eyebrow" style="justify-content:center;">Start here</p>
+        <h2>Seen something that fits?</h2>
+        <p class="lead mx-auto">Tell me which kind of project you have in mind and I'll take it from there.</p>
+        <div class="enquiry-band__actions">
+          <a href="booking.html?project=sleeve" class="btn btn--primary">Enquire About A Sleeve</a>
+          <a href="booking.html?project=backpiece" class="btn btn--ghost">Enquire About A Backpiece</a>
+          <a href="booking.html?project=full-leg" class="btn btn--ghost">Enquire About A Full Leg</a>
+          <a href="booking.html?project=long-term" class="btn btn--ghost">Discuss Your Project</a>
+        </div>
       </div>
     </div>
   </section>
