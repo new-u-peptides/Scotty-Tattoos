@@ -41,6 +41,14 @@
   color: var(--bone-2);
 }
 .nav__menu a:hover, .nav__menu a.is-active { color: var(--bone); }
+
+/* Secondary destinations: in the drawer on mobile, in the footer everywhere. */
+.nav__menu-extra { display: none; }
+
+/* One label, two widths. The long form is the real one; the short form only
+   appears where the long one cannot fit, and is hidden from assistive tech
+   because the link's aria-label already states the full action. */
+.nav__enquire-short { display: none; }
 .nav__cta { display: flex; align-items: center; gap: 1rem; }
 .nav__toggle {
   display: none;
@@ -66,6 +74,12 @@
     letter-spacing: 0.1em;
   }
   .nav__toggle { font-size: 1.35rem; line-height: 1; padding: 0 0.15rem; }
+
+  /* Below the desktop bar the full label stops fitting beside brand + toggle. */
+  .nav__enquire-long { display: none; }
+  .nav__enquire-short { display: inline; }
+
+  .nav__menu.is-open .nav__menu-extra { display: block; }
 }
 
 @media (max-width: 380px) {
