@@ -94,6 +94,27 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <!-- JSON-LD: Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scottymassa.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Portfolio",
+        "item": "https://scottymassa.com/portfolio.html"
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-nav-current="portfolio">
 
@@ -104,6 +125,9 @@
   <section class="page-header">
     <div class="container">
       <p class="eyebrow" style="justify-content:center;">Portfolio</p>
+        <nav aria-label="Breadcrumb" style="font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--smoke); margin-bottom: 1.4rem;">
+          <a href="index.html" style="color: var(--smoke);">Home</a> / <span style="color: var(--bone);">Portfolio</span>
+        </nav>
       <h1>Selected Work</h1>
       <p class="lead mx-auto">Sixteen years of needle, ink and trust. Filter by style, then scroll through the archive piece by piece.</p>
     </div>

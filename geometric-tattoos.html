@@ -144,6 +144,27 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <!-- JSON-LD: Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scottymassa.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Geometric Tattoos",
+        "item": "https://scottymassa.com/geometric-tattoos.html"
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-nav-current="geometric">
 
@@ -159,6 +180,9 @@
   <section class="page-header">
     <div class="container">
       <p class="eyebrow" style="justify-content:center;">Style Guide</p>
+        <nav aria-label="Breadcrumb" style="font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--smoke); margin-bottom: 1.4rem;">
+          <a href="index.html" style="color: var(--smoke);">Home</a> / <span style="color: var(--bone);">Geometric Tattoos</span>
+        </nav>
       <h1>Geometric Tattoos</h1>
       <p class="lead mx-auto">Sacred geometry, dotwork and razor-clean linework — custom geometric and ornamental tattoos, designed one-to-one in Birkirkara, Malta.</p>
     </div>

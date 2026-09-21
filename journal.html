@@ -366,6 +366,27 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <!-- JSON-LD: Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scottymassa.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Journal",
+        "item": "https://scottymassa.com/journal.html"
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-nav-current="journal">
 
