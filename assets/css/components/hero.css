@@ -62,7 +62,11 @@
   align-items: center;
   justify-content: center;
   gap: clamp(0.6rem, 1.6vh, 1.4rem);
-  padding: clamp(1.2rem, 2.6vh, 2.2rem) 0 clamp(2rem, 3.5vh, 3rem);
+  /* Horizontal padding must stay var(--gutter). This element also carries
+     .container, so a `0` in the shorthand here wipes out the container's own
+     gutter — which is what let the mandala's outer halo run into both viewport
+     edges on a phone. */
+  padding: clamp(1.2rem, 2.6vh, 2.2rem) var(--gutter) clamp(2rem, 3.5vh, 3rem);
   width: 100%;
 }
 
@@ -136,7 +140,10 @@
   text-align: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.85rem, 6vw, 4.4rem);
+  /* The lower bound has to stay under the stage width at 320px: the wordmark
+     is nowrap, so a floor that is too high pushes it past both edges of the
+     smallest phones rather than scaling it down. */
+  font-size: clamp(1.35rem, 5.8vw, 4.4rem);
   line-height: 1;
   text-transform: uppercase;
   color: var(--gold);
@@ -243,7 +250,9 @@
   .hero__stage { width: min(88vw, 62vh, 560px); }
 }
 @media (max-width: 560px) {
-  .hero__stage { width: min(92vw, 58vh); }
+  /* 84vw rather than 92vw: the particle halo extends past the geometry it is
+     drawn from, so a stage sized to the full column clips the outer ring. */
+  .hero__stage { width: min(84vw, 56vh); }
   .hero__meta { gap: 1.4rem; }
 }
 /* Short landscape viewports: keep the full silhouette visible. */
