@@ -137,6 +137,25 @@ class Page:
         return crumbs
 
     def lastmod(self) -> str:
+        """When the page's *content* last changed.
+
+        An article's own `dateModified` wins: it is author-controlled, it is
+        what Google already reads off the page, and a sitemap that disagrees
+        with the on-page date is worse than no date at all. Only pages that
+        declare nothing fall back to git — which is honest, but blunt: a
+        commit that touches every page (a footer change, a regenerated
+        breadcrumb) flattens all their dates to that one day.
+        """
+        for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', self.src, re.S):
+            try:
+                data = json.loads(m.group(1))
+            except json.JSONDecodeError:
+                continue
+            pool = data.get("@graph", [data]) if isinstance(data, dict) else data
+            for node in pool:
+                if isinstance(node, dict) and node.get("dateModified"):
+                    return str(node["dateModified"])[:10]
+
         out = subprocess.run(
             ["git", "log", "-1", "--format=%cs", "--", self.rel],
             cwd=ROOT, capture_output=True, text=True,
