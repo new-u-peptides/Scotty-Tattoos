@@ -436,6 +436,9 @@ async function persistEnquiry(ref, row) {
 async function recordSend(ref, template) {
   if (!store.isConfigured()) return;
   try {
+    // markEmailSent keeps `emails_sent` accurate, which is what follow-up
+    // suppression reads; the event is the human-readable timeline entry.
+    await store.markEmailSent(ref, template);
     await store.recordEvent(ref, 'email_sent', { template: template });
   } catch (err) {
     console.error('[enquiry/submit] could not record email_sent for ' + ref + ' / ' + template, err);

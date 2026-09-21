@@ -92,6 +92,11 @@ async function resolveRef(event) {
   const tagged = refFromTags(event.tags);
   if (tagged) return tagged;
   if (!event.recipient || !store.isConfigured()) return '';
+  // The tag is the reliable path; matching on the recipient address is the
+  // fallback for mail sent before the ref tag existed. Feature-detected so a
+  // store without it degrades to an unmatched activity row rather than
+  // throwing on every delivery.
+  if (typeof store.findEnquiryByEmail !== 'function') return '';
   try {
     const match = await store.findEnquiryByEmail(event.recipient);
     return (match && match.enquiry_ref) || '';

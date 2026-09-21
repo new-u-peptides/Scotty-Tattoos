@@ -217,6 +217,24 @@ const getEnquiryByRef = guarded('getEnquiryByRef', NONE, async (creds, ref) => {
   return firstRow(rows);
 });
 
+// The webhook's fallback attribution path. Every message we send now carries a
+// `ref:SM-YYYY-NNNNN` tag, so this is only reached for mail sent before that
+// tag existed, or for an event whose tags were stripped in transit. Matching on
+// the address alone cannot be exact — one person may hold several enquiries —
+// so the newest is the best available guess, and the caller treats a miss as an
+// unattributed activity row rather than an error.
+const findEnquiryByEmail = guarded('findEnquiryByEmail', NONE, async (creds, email) => {
+  const address = cleanText(email, 254).toLowerCase();
+  if (!address) return null;
+  const rows = await request(
+    creds,
+    'GET',
+    TABLE_ENQUIRIES + '?select=*&email=ilike.' + encodeURIComponent(address)
+      + '&order=created_at.desc&limit=1'
+  );
+  return firstRow(rows);
+});
+
 const listEnquiries = guarded('listEnquiries', EMPTY_LIST, async (creds, options) => {
   const opts = options || {};
   const limit = clampInt(opts.limit, 1, MAX_LIST_LIMIT, DEFAULT_LIST_LIMIT);
@@ -317,6 +335,7 @@ module.exports = {
   createEnquiry,
   updateEnquiry,
   getEnquiryByRef,
+  findEnquiryByEmail,
   listEnquiries,
   recordEvent,
   recordEmailActivity,
