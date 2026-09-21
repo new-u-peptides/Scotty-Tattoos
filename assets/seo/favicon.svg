@@ -1,10 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#0A0A0A"/>
-  <g fill="none" stroke="#C8102E" stroke-width="1.4">
-    <circle cx="32" cy="32" r="22"/>
-    <circle cx="32" cy="32" r="14"/>
-    <circle cx="32" cy="32" r="6"/>
-    <path d="M32 4 L48 32 L32 60 L16 32 Z" opacity="0.55"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Scotty Massa">
+  <title>Scotty Massa</title>
+  <rect width="64" height="64" fill="#0A0A0A"/>
+  <g fill="#E8B653">
+    <polygon points="32.00,1.28 27.18,11.11 36.82,11.11"/>
+    <polygon points="47.36,5.40 38.27,11.50 46.62,16.32"/>
+    <polygon points="58.60,16.64 47.68,17.38 52.50,25.73"/>
+    <polygon points="62.72,32.00 52.89,27.18 52.89,36.82"/>
+    <polygon points="58.60,47.36 52.50,38.27 47.68,46.62"/>
+    <polygon points="47.36,58.60 46.62,47.68 38.27,52.50"/>
+    <polygon points="32.00,62.72 36.82,52.89 27.18,52.89"/>
+    <polygon points="16.64,58.60 25.73,52.50 17.38,47.68"/>
+    <polygon points="5.40,47.36 16.32,46.62 11.50,38.27"/>
+    <polygon points="1.28,32.00 11.11,36.82 11.11,27.18"/>
+    <polygon points="5.40,16.64 11.50,25.73 16.32,17.38"/>
+    <polygon points="16.64,5.40 17.38,16.32 25.73,11.50"/>
   </g>
-  <circle cx="32" cy="32" r="2.4" fill="#F5F2EC"/>
+  <circle cx="32" cy="32" r="21.44" fill="none" stroke="#E8B653" stroke-width="1.15"/>
+  <circle cx="32" cy="32" r="13.12" fill="#F3CC76"/>
+  <circle cx="32" cy="32" r="5.44" fill="#0A0A0A"/>
 </svg>
