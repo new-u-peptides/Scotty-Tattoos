@@ -25,7 +25,7 @@
   <meta name="theme-color" content="#0a0706" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
   <script type="application/ld+json">
   {
@@ -167,7 +167,7 @@
   <section class="hero">
     <div class="hero__bg"></div>
     <div class="container hero__inner">
-      <p class="eyebrow hero__eyebrow">Geometric &amp; Ornamental — Birkirkara, Malta</p>
+      <p class="eyebrow hero__eyebrow">Geometric &amp; Ornamental · Malta</p>
 
       <div class="hero__stage">
         <!-- The Scotty Massa sigil: the canonical brand mandala rebuilt as
@@ -184,21 +184,27 @@
         <!-- The wordmark is real HTML in its own layer above the canvas:
              perfectly static while the artwork rotates and morphs behind it.
              Its reveal is pure CSS, timed to land just after the constructed
-             logo starts turning. -->
-        <h1 class="hero__wordmark"><span class="hero__wordmark-text">Scotty&nbsp;Massa</span></h1>
+             logo starts turning.
+
+             It is a <p>, not the <h1>: the page's heading is the positioning
+             line below, and the brand name is already the first thing in the
+             document via .nav__brand. hero.css restates the size and margin
+             that the h1 element rules used to supply. -->
+        <p class="hero__wordmark"><span class="hero__wordmark-text">Scotty&nbsp;Massa</span></p>
       </div>
 
       <div class="hero__copy">
-        <p class="hero__tagline">Geometry, built to last.</p>
-        <p class="hero__lead">Large-scale custom geometric and ornamental tattoos — sleeves, backs, full legs and longer-term builds. Designed one-to-one, around your body, to hold their shape and clarity for decades.</p>
+        <h1 class="hero__tagline">Geometry, built to last.</h1>
+        <p class="hero__lead">Large-scale custom geometric and ornamental tattoos, designed around your body and built to hold their shape, balance and clarity for years to come.</p>
         <div class="hero__actions">
-          <a href="booking.html" class="btn btn--primary">Start an Enquiry</a>
-          <a href="portfolio.html" class="btn btn--ghost">View Portfolio</a>
+          <a href="booking.html" class="btn btn--primary">Start a Tattoo Enquiry</a>
+          <a href="portfolio.html" class="btn btn--ghost">View the Work</a>
         </div>
+        <p class="hero__qualifier">Sleeves · Backs · Full Legs · Long-term Builds</p>
         <div class="hero__meta">
           <div><strong>16</strong> Years tattooing</div>
           <div><strong>1:1</strong> Every piece custom</div>
-          <div><strong>Malta</strong> Birkirkara studio</div>
+          <div><strong>Malta</strong> Studio &amp; travel</div>
         </div>
       </div>
     </div>

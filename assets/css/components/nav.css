@@ -26,7 +26,7 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
-.nav__brand span { color: var(--rust-soft); }
+.nav__brand span { color: var(--gold); }
 .nav__menu {
   display: flex;
   gap: 2.2rem;
