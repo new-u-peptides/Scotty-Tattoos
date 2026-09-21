@@ -27,4 +27,4 @@
   text-transform: uppercase;
   color: var(--smoke);
 }
-.quote cite strong { color: var(--bone); font-weight: 500; }
+.quote cite strong { color: var(--text-strong); font-weight: 500; }

@@ -18,6 +18,9 @@
   /* --red only reaches 3.4:1 on --ink, so text that must read as red uses
      this lighter tone (5.1:1). Reserve --red itself for non-text ink. */
   --red-text:   var(--red-soft);
+  /* The colour that makes a run of text stand out against the current
+     ground. Flipped to --ink by .section--bone. */
+  --text-strong: var(--bone);
 
   /* Back-compat aliases (older selectors still reference these) */
   --rust:       var(--red);
