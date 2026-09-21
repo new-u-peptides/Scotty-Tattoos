@@ -44,6 +44,17 @@
   font-size: 1.5rem;
 }
 
+/* The primary nav carries nine links. Between the mobile collapse and a
+   wide desktop there isn't room for the full rhythm, so tighten the gap and
+   tracking through that band rather than letting the brand and the CTA
+   collide. */
+@media (min-width: 881px) and (max-width: 1320px) {
+  .nav__menu { gap: 1.15rem; }
+  .nav__menu a { font-size: 0.7rem; letter-spacing: 0.1em; }
+  .nav__brand { font-size: 0.95rem; letter-spacing: 0.18em; }
+  .nav__cta { gap: 0.6rem; }
+}
+
 @media (max-width: 880px) {
   .nav__menu, .nav__cta .btn--text { display: none; }
   .nav__toggle { display: block; }
