@@ -119,6 +119,21 @@
     });
   }
 
+  // The contact page's note form is a front-end stub: it acknowledges the
+  // submission and discards it. That behaviour is unchanged — it just lives
+  // here now instead of in an inline onsubmit attribute, so the CSP does not
+  // have to allow 'unsafe-inline'. Point it at an /api route to make it real.
+  function bindStubForms() {
+    document.querySelectorAll('form[data-stub-form]').forEach(function (form) {
+      if (form.dataset.stubBound) return;
+      form.dataset.stubBound = '1';
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        window.alert(form.getAttribute('data-stub-form') || 'Thanks — message received.');
+      });
+    });
+  }
+
   function bootstrap() {
     bindNavToggle();
     bindReveal();
@@ -127,6 +142,7 @@
     applyUrlFilter();
     bindActiveNav();
     bindWhatsApp();
+    bindStubForms();
   }
 
   if (document.readyState === 'loading') {

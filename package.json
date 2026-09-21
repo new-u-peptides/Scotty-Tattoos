@@ -4,12 +4,18 @@
   "description": "Scotty Massa - Geometric & Ornamental Tattoo Artist website",
   "private": true,
   "scripts": {
-    "dev": "echo 'Static site - open index.html in browser'",
-    "build": "echo 'Static site - no build needed'"
+    "dev": "echo 'Static site — run npm run build after editing assets/css/components/ or shared/js/, then open index.html'",
+    "build": "npm run build:seo && npm run build:assets",
+    "build:images": "python3 tools/optimise-images.py",
+    "build:seo": "python3 tools/build-seo.py",
+    "build:assets": "node tools/build-assets.mjs",
+    "check": "python3 tools/build-seo.py --check"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
     "busboy": "^1.6.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
 }

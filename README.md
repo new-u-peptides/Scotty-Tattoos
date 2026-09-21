@@ -43,9 +43,15 @@ Scotty-Tattos/
 │   ├── header.html
 │   └── footer.html
 ├── assets/
-│   ├── css/styles.css      Component index — see assets/css/components/
+│   ├── css/styles.css      Authoring index of @imports — see components/
+│   ├── css/styles.min.css  GENERATED: the flattened, minified bundle
 │   ├── seo/                OG image + favicon
-│   └── images/             Photography
+│   └── images/             Photography (WebP, plus -480 srcset rungs)
+├── tools/
+│   ├── build-assets.mjs    CSS bundle, JS minify, asset hashes, CSP
+│   ├── build-seo.py        Breadcrumbs, sitemap.xml, robots.txt
+│   └── optimise-images.py  JPEG -> WebP + responsive variants
+├── vercel.json             Cache + security headers (CSP is generated)
 │
 │  ─── massatattoo.com (subdirectory)
 └── massatattoo/
@@ -70,11 +76,54 @@ deployment must include `shared/` above its own site root — see
 
 ---
 
+## Build step (scottymassa.com)
+
+The pages are still hand-authored HTML, but the CSS, JS and SEO files they
+reference are generated. **Edit the sources, then run the build:**
+
+```bash
+npm install          # once — pulls esbuild
+npm run build        # build:seo, then build:assets
+```
+
+| You edit                      | The build produces                      |
+| ----------------------------- | --------------------------------------- |
+| `assets/css/components/*.css` | `assets/css/styles.min.css` (one file)  |
+| `shared/js/*.js`              | `shared/js/*.min.js`                    |
+| any page's `<h1>`, canonical  | its breadcrumb, `sitemap.xml`, `robots.txt` |
+| any inline `<script>`         | the CSP `script-src` hashes in `vercel.json` |
+
+Never edit a `.min.*` file, `sitemap.xml`, `robots.txt`, or anything between
+the `BREADCRUMB:begin/end` markers — the next build overwrites them.
+`npm run check` exits non-zero if the generated SEO files are stale, so it
+works as a pre-deploy or CI guard.
+
+Two things the build deliberately does:
+
+- **`assets/css/styles.css` stays an `@import` index for authoring only.**
+  Shipped as-is it cost 30 chained round trips, because the browser cannot
+  discover `hero.css` until `styles.css` has arrived and parsed. The build
+  flattens it into one file and rewrites the `url()` paths.
+- **Asset URLs carry a `?v=<content hash>`,** which is what lets
+  `vercel.json` serve them `immutable` for a year. The hash changes when the
+  file does, so there is nothing to purge.
+
+Photography is converted separately, when a photo is added or replaced:
+
+```bash
+pip install pillow && npm run build:images
+```
+
+That re-encodes any JPEG under `assets/images/` as WebP and writes the
+`-480.webp` rung that the `srcset`s in `index.html` and `portfolio.html`
+point at.
+
+---
+
 ## Quick start
 
-Both sites are pure HTML/CSS/JS — no build step. The studio site
-(`massatattoo/`) uses `fetch()` to load header/footer partials, so it must
-be served over HTTP, not opened as `file://`.
+The studio site (`massatattoo/`) uses `fetch()` to load header/footer
+partials, so it must be served over HTTP, not opened as `file://`.
 
 ```bash
 # Serve the whole monorepo
@@ -96,8 +145,8 @@ python3 -m http.server 8001           # scottymassa.com (root)
 
 ## scottymassa.com (root)
 
-Single-artist personal portfolio. Plain HTML + CSS + a small `main.js`.
-No build step.
+Single-artist personal portfolio. Hand-authored HTML + CSS + a small
+`main.js`; see **Build step** above for the generated files.
 
 - **Pages** — Home, About, Portfolio, Tour, Booking, Aftercare, Contact.
 - **Palette** — ink black, bone white, rust red, antique gold.

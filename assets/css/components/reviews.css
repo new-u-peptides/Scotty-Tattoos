@@ -31,7 +31,7 @@
 .reviews__badge { flex: 0 0 auto; display: grid; place-items: center; }
 .reviews__badge svg { display: block; }
 .reviews__stars {
-  color: var(--red);
+  color: var(--red-text);
   font-size: 1.05rem;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -121,7 +121,7 @@
 .review-card__src svg { display: block; }
 
 .review-card__stars {
-  color: var(--red);
+  color: var(--red-text);
   font-size: 1rem;
   letter-spacing: 0.12em;
   line-height: 1;

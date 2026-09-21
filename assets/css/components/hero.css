@@ -141,6 +141,7 @@
   text-transform: uppercase;
   color: var(--gold);
   animation: wordmark-in 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+  will-change: opacity;
 }
 
 /* Separation without a panel: a soft dark halo that hugs the
@@ -167,24 +168,25 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  transform-origin: 50% 50%;
   animation: wordmark-tracking 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+  will-change: transform;
 }
 
+/* Both keyframes stay on the compositor: opacity and transform only.
+   `clip-path` and `letter-spacing` read the same on screen but force a
+   paint (and a full text re-layout) on every frame, which Lighthouse
+   flags as a non-composited animation. */
 @keyframes wordmark-in {
-  from {
-    opacity: 0;
-    clip-path: inset(-20% 50% -20% 50%);
-  }
-  30% { opacity: 1; }
-  to {
-    opacity: 1;
-    clip-path: inset(-20% -6% -20% -6%);
-  }
+  from { opacity: 0; }
+  30%  { opacity: 1; }
+  to   { opacity: 1; }
 }
-/* a very small tracking settle — materialises, not slides */
+/* a very small tracking settle — materialises, not slides. scaleX stands
+   in for the old 0.28em -> 0.18em letter-spacing ease. */
 @keyframes wordmark-tracking {
-  from { letter-spacing: 0.28em; }
-  to   { letter-spacing: 0.18em; }
+  from { transform: scaleX(1.055); }
+  to   { transform: scaleX(1); }
 }
 
 /* ---------------------------------------------------------
@@ -258,10 +260,9 @@
 @media (prefers-reduced-motion: reduce) {
   .hero__stage::before { animation: none; opacity: 0.85; transform: none; }
   .hero__wordmark {
-    clip-path: none;
     animation: wordmark-rm 0.9s ease 0.6s both;
   }
-  .hero__wordmark-text { animation: none; letter-spacing: 0.18em; }
+  .hero__wordmark-text { animation: none; transform: none; }
 }
 @keyframes wordmark-rm {
   from { opacity: 0; }

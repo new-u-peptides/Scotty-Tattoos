@@ -17,7 +17,7 @@
 @media (max-width: 560px) {
   .footer__grid { grid-template-columns: 1fr; }
 }
-.footer h4 {
+.footer h2 {
   font-family: var(--font-body);
   font-size: 0.75rem;
   letter-spacing: 0.32em;

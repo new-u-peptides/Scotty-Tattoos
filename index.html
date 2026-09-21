@@ -6,12 +6,12 @@
   <script>document.documentElement.classList.add('js');</script>
   <title>Scotty Massa — Geometric &amp; Ornamental Tattoo Artist, Malta</title>
   <meta name="description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa — sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
-  <link rel="canonical" href="https://scottymassa.com/index.html" />
+  <link rel="canonical" href="https://scottymassa.com/" />
   <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
   <meta property="og:title" content="Scotty Massa — Geometric &amp; Ornamental Tattoo Artist, Malta" />
   <meta property="og:description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa — sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
-  <meta property="og:url" content="https://scottymassa.com/index.html" />
+  <meta property="og:url" content="https://scottymassa.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/assets/seo/og-default.png" />
   <meta property="og:image:type" content="image/png" />
@@ -26,7 +26,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.min.css?v=75f8f49f" />
+  <!-- LCP element. The hero portrait is a CSS background three levels
+       deep (HTML -> stylesheet -> .hero__bg), so without this hint the
+       browser cannot even discover it until the CSS has parsed. -->
+  <link rel="preload" as="image" href="assets/images/artist/portrait-bw-chair.webp" fetchpriority="high" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -235,7 +239,9 @@
       <div class="reveal-sequence__slots">
         <article class="reveal-sequence__slot" data-slot="0">
           <div class="reveal-sequence__media">
-            <img src="assets/images/tattoos/chest-mandala.jpg" alt="Chest mandala — dotwork sternum tattoo" loading="lazy" />
+            <img decoding="async" src="assets/images/tattoos/chest-mandala.webp"
+                 srcset="assets/images/tattoos/chest-mandala-480.webp 480w, assets/images/tattoos/chest-mandala.webp 900w"
+                 sizes="(min-width: 921px) 600px, 100vw" alt="Chest mandala — dotwork sternum tattoo" loading="lazy" width="900" height="1600" />
           </div>
           <div class="reveal-sequence__caption">
             <p class="reveal-sequence__caption-eyebrow">Piece 01 — Sternum</p>
@@ -246,7 +252,9 @@
         </article>
         <article class="reveal-sequence__slot" data-slot="1">
           <div class="reveal-sequence__media">
-            <img src="assets/images/tattoos/back-mandala.jpg" alt="Back mandala — geometric dotwork across the shoulder" loading="lazy" />
+            <img decoding="async" src="assets/images/tattoos/back-mandala.webp"
+                 srcset="assets/images/tattoos/back-mandala-480.webp 480w, assets/images/tattoos/back-mandala.webp 900w"
+                 sizes="(min-width: 921px) 600px, 100vw" alt="Back mandala — geometric dotwork across the shoulder" loading="lazy" width="900" height="1600" />
           </div>
           <div class="reveal-sequence__caption">
             <p class="reveal-sequence__caption-eyebrow">Piece 02 — Shoulder</p>
@@ -257,7 +265,9 @@
         </article>
         <article class="reveal-sequence__slot" data-slot="2">
           <div class="reveal-sequence__media">
-            <img src="assets/images/tattoos/leg-sleeve-mandala.jpg" alt="Mandala leg sleeve — geometric tattoo hip to ankle" loading="lazy" />
+            <img decoding="async" src="assets/images/tattoos/leg-sleeve-mandala.webp"
+                 srcset="assets/images/tattoos/leg-sleeve-mandala-480.webp 480w, assets/images/tattoos/leg-sleeve-mandala.webp 900w"
+                 sizes="(min-width: 921px) 600px, 100vw" alt="Mandala leg sleeve — geometric tattoo hip to ankle" loading="lazy" width="900" height="1600" />
           </div>
           <div class="reveal-sequence__caption">
             <p class="reveal-sequence__caption-eyebrow">Piece 03 — Full leg</p>
@@ -268,7 +278,9 @@
         </article>
         <article class="reveal-sequence__slot" data-slot="3">
           <div class="reveal-sequence__media">
-            <img src="assets/images/tattoos/wrist-mandala.jpg" alt="Wrist mandala — dense dotwork on the wrist" loading="lazy" />
+            <img decoding="async" src="assets/images/tattoos/wrist-mandala.webp"
+                 srcset="assets/images/tattoos/wrist-mandala-480.webp 480w, assets/images/tattoos/wrist-mandala.webp 900w"
+                 sizes="(min-width: 921px) 600px, 100vw" alt="Wrist mandala — dense dotwork on the wrist" loading="lazy" width="900" height="1600" />
           </div>
           <div class="reveal-sequence__caption">
             <p class="reveal-sequence__caption-eyebrow">Piece 04 — Wrist</p>
@@ -347,42 +359,42 @@
           <div class="tile__img ph-1"></div>
           <div class="tile__overlay">
             <span>Geometric Sleeve · Full arm</span>
-            <h4>Architectural Sleeve</h4>
+            <h3>Architectural Sleeve</h3>
           </div>
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-2"></div>
           <div class="tile__overlay">
             <span>Dotwork · Calf</span>
-            <h4>Owl Mandala</h4>
+            <h3>Owl Mandala</h3>
           </div>
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-3"></div>
           <div class="tile__overlay">
             <span>Geometric · Leg sleeve</span>
-            <h4>Chrysanthemum Geometry</h4>
+            <h3>Chrysanthemum Geometry</h3>
           </div>
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-4"></div>
           <div class="tile__overlay">
             <span>Mandala · Nape</span>
-            <h4>Nape Mandala</h4>
+            <h3>Nape Mandala</h3>
           </div>
         </div>
         <div class="tile reveal">
           <div class="tile__img ph-5"></div>
           <div class="tile__overlay">
             <span>Ornamental Geometric · Ribs & thigh</span>
-            <h4>Ribs &amp; Thigh</h4>
+            <h3>Ribs &amp; Thigh</h3>
           </div>
         </div>
         <div class="tile tile--wide reveal">
           <div class="tile__img ph-6"></div>
           <div class="tile__overlay">
             <span>Blackwork Geometric · Back</span>
-            <h4>Skull &amp; Geometry</h4>
+            <h3>Skull &amp; Geometry</h3>
           </div>
         </div>
       </div>
@@ -514,7 +526,7 @@
               <span class="review-card__name">Ayman Maarouf</span>
               <span class="review-card__rec">2 months ago</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Google" title="From Google">
+            <span class="review-card__src" role="img" aria-label="From Google" title="From Google">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M23.52 12.27c0-.82-.07-1.6-.21-2.36H12v4.46h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.73z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.28a7.2 7.2 0 0 1 0-4.56v-3.1H1.27a12 12 0 0 0 0 10.76z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg>
             </span>
           </div>
@@ -529,7 +541,7 @@
               <span class="review-card__name">Karen Low</span>
               <span class="review-card__rec">2 years ago</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Google" title="From Google">
+            <span class="review-card__src" role="img" aria-label="From Google" title="From Google">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M23.52 12.27c0-.82-.07-1.6-.21-2.36H12v4.46h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.73z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.28a7.2 7.2 0 0 1 0-4.56v-3.1H1.27a12 12 0 0 0 0 10.76z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg>
             </span>
           </div>
@@ -544,7 +556,7 @@
               <span class="review-card__name">Alex Hoffman</span>
               <span class="review-card__rec">2 years ago</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Google" title="From Google">
+            <span class="review-card__src" role="img" aria-label="From Google" title="From Google">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M23.52 12.27c0-.82-.07-1.6-.21-2.36H12v4.46h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.73z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.28a7.2 7.2 0 0 1 0-4.56v-3.1H1.27a12 12 0 0 0 0 10.76z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg>
             </span>
           </div>
@@ -559,7 +571,7 @@
               <span class="review-card__name">Isaac Zammit</span>
               <span class="review-card__rec">2 years ago</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Google" title="From Google">
+            <span class="review-card__src" role="img" aria-label="From Google" title="From Google">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M23.52 12.27c0-.82-.07-1.6-.21-2.36H12v4.46h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.73z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.28a7.2 7.2 0 0 1 0-4.56v-3.1H1.27a12 12 0 0 0 0 10.76z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg>
             </span>
           </div>
@@ -590,7 +602,7 @@
               <span class="review-card__name">Christopher Borg</span>
               <span class="review-card__rec">Recommends Massa Tattoo</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Facebook" title="From Facebook">
+            <span class="review-card__src" role="img" aria-label="From Facebook" title="From Facebook">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
             </span>
           </div>
@@ -605,7 +617,7 @@
               <span class="review-card__name">Davie Gillan</span>
               <span class="review-card__rec">Recommends Massa Tattoo</span>
             </figcaption>
-            <span class="review-card__src" aria-label="From Facebook" title="From Facebook">
+            <span class="review-card__src" role="img" aria-label="From Facebook" title="From Facebook">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
             </span>
           </div>
@@ -639,11 +651,11 @@
 
     <div data-include="partials/footer.html"></div>
 
-  <script src="shared/js/includes.js"></script>
-  <script src="shared/js/hero-mandala.js"></script>
-  <script src="shared/js/mandala.js"></script>
-  <script src="shared/js/scroll-sequence.js"></script>
-  <script src="shared/js/main.js"></script>
-  <script src="shared/js/consult-popup.js"></script>
+  <script defer src="shared/js/includes.min.js?v=bfa09d6d"></script>
+  <script defer src="shared/js/hero-mandala.min.js?v=f28f5f84"></script>
+  <script defer src="shared/js/mandala.min.js?v=eb85ada6"></script>
+  <script defer src="shared/js/scroll-sequence.min.js?v=cb606a6c"></script>
+  <script defer src="shared/js/main.min.js?v=4100105e"></script>
+  <script defer src="shared/js/consult-popup.min.js?v=2c15d0a6"></script>
 </body>
 </html>
