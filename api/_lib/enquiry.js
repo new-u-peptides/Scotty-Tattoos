@@ -15,7 +15,7 @@
 const crypto = require('crypto');
 const { cleanText, timingSafeCompare } = require('./util');
 
-const SITE_URL = 'https://scottymassa.com';
+const SITE_URL = 'https://www.scottymassa.com';
 const BOOKING_URL = SITE_URL + '/booking.html';
 const PRIVACY_URL = SITE_URL + '/privacy.html';
 const AFTERCARE_URL = SITE_URL + '/aftercare.html';

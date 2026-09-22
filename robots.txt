@@ -44,7 +44,7 @@ Disallow: /.git/
 Disallow: /.well-known/
 
 # LLM-friendly site summaries
-# https://scottymassa.com/llms.txt
-# https://scottymassa.com/llms-full.txt
+# https://www.scottymassa.com/llms.txt
+# https://www.scottymassa.com/llms-full.txt
 
-Sitemap: https://scottymassa.com/sitemap.xml
+Sitemap: https://www.scottymassa.com/sitemap.xml

@@ -74,7 +74,7 @@ told to email directly.
 2. Create an API token with **Email: full access** and, if you want webhooks
    managed via API, **Webhooks: full access**. Put it in `MAILERSEND_API_TOKEN`.
 3. Create a webhook pointing at
-   `https://scottymassa.com/api/mailersend/webhook`, subscribed to
+   `https://www.scottymassa.com/api/mailersend/webhook`, subscribed to
    `activity.sent`, `activity.delivered`, `activity.opened`, `activity.clicked`,
    `activity.soft_bounced` and `activity.hard_bounced`. Use **webhook version 2**.
 4. Copy the webhook's signing secret into `MAILERSEND_WEBHOOK_SECRET`.
@@ -161,7 +161,7 @@ automation lets go. Adding a third reminder would be the wrong instinct.
 
 ## 7. The admin board
 
-`https://scottymassa.com/admin/enquiries.html`, `noindex` and disallowed in
+`https://www.scottymassa.com/admin/enquiries.html`, `noindex` and disallowed in
 `robots.txt`.
 
 Set `ADMIN_ACCESS_TOKEN` to any long random string. The board asks for it once
