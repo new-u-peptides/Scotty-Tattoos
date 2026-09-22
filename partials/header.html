@@ -1,20 +1,34 @@
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="nav">
   <div class="container nav__inner">
-    <a href="index.html" class="nav__brand">Scotty <span>Massa</span></a>
+    <a href="/" class="nav__brand">Scotty <span>Massa</span></a>
     <nav aria-label="Primary">
       <ul class="nav__menu" id="nav-menu">
-        <li><a href="index.html" data-nav="home">Home</a></li>
-        <li><a href="/course.html" data-nav="course">Course</a></li>
-        <li><a href="portfolio.html" data-nav="portfolio">Portfolio</a></li>
-        <li><a href="geometric-tattoos.html" data-nav="geometric">Geometric</a></li>
-        <li><a href="journal.html" data-nav="journal">Journal</a></li>
-        <li><a href="about.html" data-nav="about">About</a></li>
-        <li><a href="contact.html" data-nav="contact">Contact</a></li>
+        <li><a href="/portfolio.html" data-nav="portfolio">Work</a></li>
+        <li><a href="/geometric-tattoos.html" data-nav="geometric">Style</a></li>
+        <li><a href="/about.html" data-nav="about">About</a></li>
+        <li><a href="/course.html" data-nav="course">Mentorship</a></li>
+        <!-- Reachable on mobile, where the menu is a drawer with room for them,
+             and from the footer on every breakpoint. Keeping them out of the
+             desktop bar is what lets four items and the CTA fit between 900px
+             and 1180px, where seven items used to overflow the viewport. -->
+        <li class="nav__menu-extra"><a href="/" data-nav="home">Home</a></li>
+        <li class="nav__menu-extra"><a href="/travel.html" data-nav="travel">Travel</a></li>
+        <li class="nav__menu-extra"><a href="/reviews.html" data-nav="reviews">Reviews</a></li>
+        <li class="nav__menu-extra"><a href="/journal.html" data-nav="journal">Journal</a></li>
+        <li class="nav__menu-extra"><a href="/aftercare.html" data-nav="aftercare">Aftercare</a></li>
+        <li class="nav__menu-extra"><a href="/contact.html" data-nav="contact">Contact</a></li>
       </ul>
     </nav>
     <div class="nav__cta">
-      <a href="booking.html" class="btn btn--primary">Enquire</a>
+      <!-- One commercial action in the chrome, visible at every breakpoint.
+           The short label is a width concession on phones only: at 320px the
+           full wording cannot share a line with the brand and the toggle, so
+           the accessible name carries it instead. -->
+      <a href="/booking.html" class="btn btn--primary nav__enquire" aria-label="Start a tattoo enquiry">
+        <span class="nav__enquire-long">Start an Enquiry</span>
+        <span class="nav__enquire-short" aria-hidden="true">Enquire</span>
+      </a>
       <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">☰</button>
     </div>
   </div>

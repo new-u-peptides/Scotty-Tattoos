@@ -1,72 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thanks — Scotty Massa</title>
-  <meta name="description" content="Your booking enquiry is in. Check your inbox for the full process, or start your booking application right away." />
-  <meta name="robots" content="noindex, follow" />
-  <link rel="canonical" href="https://scottymassa.com/booking-thank-you.html" />
-  <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Tangerine:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enquiry received — Scotty Massa</title>
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://scottymassa.com/enquiry-received.html" />
+<link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
+<meta http-equiv="refresh" content="0; url=enquiry-received.html" />
+<style>
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:#0A0A0A;
+         color:#C8C5BF; font:400 1rem/1.7 -apple-system,"Segoe UI",Arial,sans-serif; padding:2rem; text-align:center; }
+  a { color:#E8B653; }
+</style>
 </head>
-<body data-nav-current="booking">
-
-    <div data-include="partials/header.html"></div>
-
-
-    <main id="main">
-  <section class="page-header">
-    <div class="container">
-      <p class="eyebrow" style="justify-content:center;">Thanks</p>
-      <h1 id="ty-heading">Got it.</h1>
-      <p class="lead mx-auto">An email is on its way with the full process, pricing and what to expect — take your time with it.</p>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="container">
-      <div class="split">
-        <div>
-          <p class="eyebrow">Ready now?</p>
-          <h2>Start your application.</h2>
-          <p>If you already know what you want, skip ahead — the full booking application takes your idea, references and a couple of photos of the area you want tattooed, and puts it straight in front of Scotty.</p>
-          <a href="booking-application.html" class="btn btn--primary">Start Your Booking Application</a>
-        </div>
-        <div>
-          <p class="eyebrow">Prefer to read first?</p>
-          <h2>Check your inbox.</h2>
-          <p>We've sent you an email covering exactly how booking works — pricing, deposits, what happens at consultation, and timelines. The application link is at the bottom whenever you're ready. Didn't see it? Check spam, or email <a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a> directly.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-    </main>
-
-
-    <div data-include="partials/footer.html"></div>
-
-  <script src="shared/js/includes.js"></script>
-  <script src="shared/js/mandala.js"></script>
-  <script src="shared/js/main.js"></script>
+<body>
+  <!-- The enquiry is one two-step form now. This page only survives so that
+       links in older emails still land somewhere useful; the query string is
+       preserved so a ?project= deep link keeps working. -->
+  <main>
+    <p>Taking you to your confirmation.</p>
+    <p><a href="enquiry-received.html" data-stub-link>Continue here</a> if nothing happens.</p>
+  </main>
   <script>
     (function () {
-      try {
-        var name = sessionStorage.getItem('sm-booking-name');
-        if (name) {
-          var h1 = document.getElementById('ty-heading');
-          if (h1) h1.textContent = 'Got it, ' + name.trim().split(/\s+/)[0] + '.';
-        }
-      } catch (e) { /* sessionStorage unavailable — the generic heading stands */ }
+      var target = 'enquiry-received.html';
+      var link = document.querySelector('[data-stub-link]');
+      if (link) link.href = target + location.search;
+      location.replace(target + location.search);
     })();
   </script>
 </body>
