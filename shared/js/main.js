@@ -108,8 +108,21 @@
     }, { threshold: 0.4 }).observe(hero);
   }
 
+  // Marks the current nav item and stamps the footer year.
+  //
+  // Both used to live in includes.js, which ran after it fetched the header
+  // and footer. Those are inlined into the pages now (see
+  // tools/sync-partials.js), so includes.js is gone and this owns the job —
+  // otherwise no page shows an active nav item and the copyright year is
+  // whatever was last committed.
   function bindActiveNav() {
-    if (document.body.getAttribute('data-nav-current')) return;
+    var hint = document.body.getAttribute('data-nav-current');
+    if (hint) {
+      document.querySelectorAll('[data-nav]').forEach(function (a) {
+        if (a.getAttribute('data-nav') === hint) a.classList.add('is-active');
+      });
+      return;
+    }
     var path = location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav__menu a').forEach(function (a) {
       var href = a.getAttribute('href');
@@ -117,6 +130,11 @@
         a.classList.add('is-active');
       }
     });
+  }
+
+  function bindFooterYear() {
+    var el = document.getElementById('year');
+    if (el) el.textContent = String(new Date().getFullYear());
   }
 
 
@@ -200,6 +218,7 @@
     bindChips();
     applyUrlFilter();
     bindActiveNav();
+    bindFooterYear();
     bindWhatsApp();
     try { captureAttribution(); } catch (e) { /* storage disabled */ }
   }
