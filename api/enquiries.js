@@ -86,6 +86,30 @@ async function handleList(req, res) {
   const statusParam = (url.searchParams.get('status') || '').trim();
   const limit = clampInt(url.searchParams.get('limit'), 1, MAX_LIMIT, DEFAULT_LIMIT);
 
+  // ?ref= returns one enquiry with its lifecycle timeline and email activity,
+  // which is what the board's side panel needs. Kept off the list response on
+  // purpose: the board renders dozens of cards and opens one.
+  const refParam = cleanText(url.searchParams.get('ref'), 40);
+  if (refParam) {
+    const enquiry = await store.getEnquiryByRef(refParam);
+    if (!enquiry) {
+      res.status(404).json({ ok: false, error: 'No enquiry with that reference.' });
+      return;
+    }
+    const [events, emailActivity] = await Promise.all([
+      store.listEvents(refParam),
+      store.listEmailActivity(refParam),
+    ]);
+    res.status(200).json({
+      ok: true,
+      storeConfigured: true,
+      enquiry: enquiry,
+      events: events || [],
+      emailActivity: emailActivity || [],
+    });
+    return;
+  }
+
   if (statusParam && !isKnownStatus(statusParam)) {
     res.status(400).json({ ok: false, error: 'Unknown status filter.' });
     return;

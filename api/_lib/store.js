@@ -252,6 +252,25 @@ const listEnquiries = guarded('listEnquiries', EMPTY_LIST, async (creds, options
   return Array.isArray(rows) ? rows : [];
 });
 
+
+// The board's detail panel: the lifecycle timeline and the email activity for
+// one enquiry. Deliberately not joined into listEnquiries — the board shows
+// dozens of cards and only ever opens one at a time, so fetching these per
+// card would be an N+1 against PostgREST for data nobody looks at.
+const listEvents = guarded('listEvents', EMPTY_LIST, async (creds, ref) => {
+  if (!cleanText(ref, 40)) return [];
+  const rows = await request(creds, 'GET',
+    TABLE_EVENTS + '?select=*&' + refFilter(ref) + '&order=occurred_at.asc&limit=200');
+  return Array.isArray(rows) ? rows : [];
+});
+
+const listEmailActivity = guarded('listEmailActivity', EMPTY_LIST, async (creds, ref) => {
+  if (!cleanText(ref, 40)) return [];
+  const rows = await request(creds, 'GET',
+    TABLE_EMAIL_ACTIVITY + '?select=*&' + refFilter(ref) + '&order=occurred_at.asc&limit=200');
+  return Array.isArray(rows) ? rows : [];
+});
+
 const recordEvent = guarded('recordEvent', NONE, async (creds, ref, event, meta) => {
   const enquiryRef = cleanText(ref, 40);
   const name = cleanText(event, 40);
@@ -337,6 +356,8 @@ module.exports = {
   getEnquiryByRef,
   findEnquiryByEmail,
   listEnquiries,
+  listEvents,
+  listEmailActivity,
   recordEvent,
   recordEmailActivity,
   findFollowupCandidates,

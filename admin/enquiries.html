@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Enquiries — Scotty Massa</title>
+<link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<header class="bar">
+  <span class="bar__brand">Scotty <span>Massa</span> · Enquiries</span>
+  <span class="bar__meta" id="count"></span>
+  <span class="bar__actions">
+    <button type="button" id="refresh">Refresh</button>
+    <button type="button" id="signout">Sign out</button>
+  </span>
+</header>
+
+<!-- Token gate. The token lives in sessionStorage only: never the URL, never
+     localStorage, never a log line. A 401 clears it and returns here. -->
+<section class="gate" id="gate" hidden>
+  <form class="gate__card" id="gate-form">
+    <h1>Enquiry board</h1>
+    <p>Enter the access token to continue.</p>
+    <label class="visually-hidden" for="admin-token">Access token</label>
+    <input type="password" id="admin-token" autocomplete="current-password" placeholder="Access token" />
+    <button type="submit" class="is-primary">Open the board</button>
+    <p class="status-msg status-msg--error" id="gate-msg" style="padding:1rem 0 0;"></p>
+  </form>
+</section>
+
+<main id="board-main" hidden>
+  <!-- Shown when the API reports no database. The board is empty but the
+       funnel is not broken, and saying so plainly beats an empty screen. -->
+  <div class="note" id="store-notice" hidden>
+    <h2>Persistence is not configured</h2>
+    <p>Enquiries are still arriving by email — nothing is being lost. They just are not being recorded here, so there is no board, no lifecycle history and no automated follow-ups.</p>
+    <p>To turn it on: run <code>supabase/migrations/0001_enquiries.sql</code> against your Supabase project, then set <code>SUPABASE_URL</code> and <code>SUPABASE_SERVICE_ROLE_KEY</code> in the Vercel project environment.</p>
+  </div>
+
+  <div class="board" id="board"></div>
+</main>
+
+<!-- Drawer, not a modal: no backdrop, so the board stays readable and
+     scrollable behind it. -->
+<aside class="panel" id="panel" role="dialog" aria-label="Enquiry detail"></aside>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /assets/seo/
 Disallow: /.git/
 Disallow: /.well-known/
