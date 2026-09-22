@@ -12,15 +12,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 0;
+  gap: 1rem;
+  /* The horizontal value must stay var(--gutter): this element also carries
+     .container, and a `padding: 1.2rem 0` shorthand here silently overrode the
+     container's own `0 var(--gutter)` — same specificity, nav.css imported
+     later — which pinned the brand to x=0 on every page of the site. */
+  padding: 1.2rem var(--gutter);
 }
 .nav__brand {
   font-family: var(--font-display);
   font-size: 1.15rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
-.nav__brand span { color: var(--rust-soft); }
+.nav__brand span { color: var(--gold); }
 .nav__menu {
   display: flex;
   gap: 2.2rem;
@@ -35,6 +41,14 @@
   color: var(--bone-2);
 }
 .nav__menu a:hover, .nav__menu a.is-active { color: var(--bone); }
+
+/* Secondary destinations: in the drawer on mobile, in the footer everywhere. */
+.nav__menu-extra { display: none; }
+
+/* One label, two widths. The long form is the real one; the short form only
+   appears where the long one cannot fit, and is hidden from assistive tech
+   because the link's aria-label already states the full action. */
+.nav__enquire-short { display: none; }
 .nav__cta { display: flex; align-items: center; gap: 1rem; }
 .nav__toggle {
   display: none;
@@ -47,6 +61,33 @@
 @media (max-width: 880px) {
   .nav__menu, .nav__cta .btn--text { display: none; }
   .nav__toggle { display: block; }
+
+  /* Brand + CTA + toggle have to share a 320px line without the brand
+     wrapping. Tracking is what costs the most room here, so it gives way
+     before the type size does. */
+  .nav__inner { padding: 0.85rem var(--gutter); }
+  .nav__brand { font-size: 0.95rem; letter-spacing: 0.16em; }
+  .nav__cta { gap: 0.5rem; }
+  .nav__cta .btn {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+  }
+  .nav__toggle { font-size: 1.35rem; line-height: 1; padding: 0 0.15rem; }
+
+  /* Below the desktop bar the full label stops fitting beside brand + toggle. */
+  .nav__enquire-long { display: none; }
+  .nav__enquire-short { display: inline; }
+
+  .nav__menu.is-open .nav__menu-extra { display: block; }
+}
+
+@media (max-width: 380px) {
+  .nav__brand { font-size: 0.86rem; letter-spacing: 0.1em; }
+  .nav__cta .btn { padding: 0.65rem 0.7rem; font-size: 0.6rem; letter-spacing: 0.08em; }
+}
+
+@media (max-width: 880px) {
   .nav__menu.is-open {
     display: flex;
     position: absolute;

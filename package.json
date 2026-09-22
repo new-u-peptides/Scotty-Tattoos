@@ -5,12 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "echo 'Static site \u2014 run npm run build after editing assets/css/components/ or shared/js/, then open index.html'",
-    "build": "npm run build:seo && npm run build:assets",
-    "build:images": "python3 tools/optimise-images.py",
-    "build:seo": "python3 tools/build-seo.py",
+    "build": "node tools/build-assets.mjs",
     "build:assets": "node tools/build-assets.mjs",
-    "check": "python3 tools/build-seo.py --check",
-    "build:fonts": "python3 tools/fetch-fonts.py"
+    "build:fonts": "python3 tools/fetch-fonts.py",
+    "build:partials": "node tools/sync-partials.js",
+    "check:partials": "node tools/sync-partials.js --check"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",

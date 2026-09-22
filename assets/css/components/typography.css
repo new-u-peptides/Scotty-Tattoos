@@ -15,13 +15,17 @@ h4,
 
 p { margin: 0 0 1.2em; max-width: 65ch; }
 
+/* Gold, not red. The gold is sampled from the actual logo mark and is the
+   brand's own colour; the red is reserved for the single primary action, so
+   that the one thing on a page tinted red is the thing to click. Running both
+   accents at equal weight is what made the palette read as borrowed. */
 .eyebrow {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--rust-soft);
+  color: var(--gold);
   margin: 0 0 1.2em;
   display: inline-flex;
   align-items: center;
@@ -31,20 +35,28 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
   content: "";
   width: 2.5rem;
   height: 1px;
-  background: var(--rust-soft);
+  background: var(--gold);
 }
+/* On the bone sections the gold loses contrast against warm white, so the
+   eyebrow falls back to ink there. */
+.section--bone .eyebrow { color: var(--ink); }
+.section--bone .eyebrow::before { background: var(--ink); }
 
+/* Signature lines. Previously set in Tangerine, which was a third webfont
+   family loaded on all fourteen pages for these four lines alone, and read
+   closer to a wedding invitation than to the architectural, geometry-led
+   positioning the rest of the site carries. Now the display face, quietly:
+   an accent rather than a flourish. */
 .script {
-  font-family: var(--font-script);
-  /* Tangerine is vendored at 700 — the weight this has always rendered at,
-     back when it was the only file the font request returned. */
-  font-weight: 700;
-  font-size: 2.6rem;
-  color: var(--red-text);
-  line-height: 1;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  line-height: 1.4;
 }
-/* Inverted ground: the full-strength red is the readable one on bone. */
-.section--bone .script { color: var(--red); }
+.section--bone .script { color: var(--red-deep); }
 
 .lead {
   font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.4rem);

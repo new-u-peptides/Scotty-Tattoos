@@ -34,7 +34,6 @@ GOOGLE_CSS = (
     "https://fonts.googleapis.com/css2"
     "?family=Cinzel:wght@400..700"
     "&family=Inter:wght@300..700"
-    "&family=Tangerine:wght@700"          # see TANGERINE note below
     "&display=swap"
 )
 # A modern desktop UA is what makes Google serve woff2 rather than ttf.
@@ -49,12 +48,6 @@ WANTED_SUBSETS = {"latin", "latin-ext"}
 # calls for a heavier or lighter weight — outside the range the browser
 # clamps rather than interpolating.
 WEIGHT_RANGE = (400, 700)
-
-# TANGERINE: the old markup requested wght@700 while .script computes to
-# weight 400. With only the bold file available the browser rendered the bold
-# outlines anyway, so 700 is what the site has always looked like. We vendor
-# 700 and typography.css now says font-weight: 700 explicitly, rather than
-# leaving the result to depend on which file happens to exist.
 
 
 def get(url: str) -> bytes:

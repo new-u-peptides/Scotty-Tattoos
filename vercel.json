@@ -1,16 +1,22 @@
 {
   "outputDirectory": ".",
+  "crons": [
+    {
+      "path": "/api/cron/enquiry-followups",
+      "schedule": "0 10 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw=' 'sha256-IYZZXTDvNg9U5JqLf2igbG9TRAlvuq+NoKuBsMWh7f8=' 'sha256-gs22ukcbtfEpKbNULs7+jbSKvnaibeHAR7G2Uwj0bdU=' 'sha256-tLU5RBMHCDhVW/t+CL2XiCiC1j2P1M2vs2Jbo304tH8='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-src https://www.google.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw=' 'sha256-OtefN30buNBq5FrDzWwf8kC5CWSc1xs4TbgWaVUjoN4=' 'sha256-nsVzJQnKUO5O4CQq8bqWbh1csdAzVS2NklnLUjzn+V8=' 'sha256-tLU5RBMHCDhVW/t+CL2XiCiC1j2P1M2vs2Jbo304tH8=' 'sha256-z085ClNsAjfRoafnuC5fedr1lL04BPA8E2Ng4iLHKD0='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-src https://www.google.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Content-Security-Policy-Report-Only",
-          "value": "default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw=' 'sha256-IYZZXTDvNg9U5JqLf2igbG9TRAlvuq+NoKuBsMWh7f8=' 'sha256-gs22ukcbtfEpKbNULs7+jbSKvnaibeHAR7G2Uwj0bdU=' 'sha256-tLU5RBMHCDhVW/t+CL2XiCiC1j2P1M2vs2Jbo304tH8='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-src https://www.google.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; require-trusted-types-for 'script'"
+          "value": "default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw=' 'sha256-OtefN30buNBq5FrDzWwf8kC5CWSc1xs4TbgWaVUjoN4=' 'sha256-nsVzJQnKUO5O4CQq8bqWbh1csdAzVS2NklnLUjzn+V8=' 'sha256-tLU5RBMHCDhVW/t+CL2XiCiC1j2P1M2vs2Jbo304tH8=' 'sha256-z085ClNsAjfRoafnuC5fedr1lL04BPA8E2Ng4iLHKD0='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-src https://www.google.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; require-trusted-types-for 'script'"
         },
         {
           "key": "Strict-Transport-Security",

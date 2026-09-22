@@ -62,11 +62,21 @@
   align-items: center;
   justify-content: center;
   gap: clamp(0.6rem, 1.6vh, 1.4rem);
-  padding: clamp(1.2rem, 2.6vh, 2.2rem) 0 clamp(2rem, 3.5vh, 3rem);
+  /* Horizontal padding must stay var(--gutter). This element also carries
+     .container, so a `0` in the shorthand here wipes out the container's own
+     gutter — which is what let the mandala's outer halo run into both viewport
+     edges on a phone. */
+  padding: clamp(1.2rem, 2.6vh, 2.2rem) var(--gutter) clamp(2rem, 3.5vh, 3rem);
   width: 100%;
 }
 
-.hero__eyebrow { margin: 0; }
+/* nowrap above 480px: wrapping stranded the ::before rule beside the first
+   line, which read as a layout mistake rather than a deliberate break. */
+.hero__eyebrow { margin: 0; white-space: nowrap; }
+@media (max-width: 480px) {
+  .hero__eyebrow { white-space: normal; text-align: center; }
+  .hero__eyebrow::before { display: none; }
+}
 
 /* ---------------------------------------------------------
    THE STAGE — a square arena for the mandala, ~3/4 of the hero's
@@ -124,6 +134,9 @@
    tracking settles and the gold materialises. Runs once, ~4.3s
    after load; the wordmark then stays for the life of the page.
    --------------------------------------------------------- */
+/* Was an <h1>; now a <p>. Everything the h1 element rules used to contribute
+   — the display face, the weight, the tight leading, the uppercasing — is
+   restated here so demoting the tag changes nothing about how it renders. */
 .hero__wordmark {
   position: absolute;
   left: 50%;
@@ -131,12 +144,16 @@
   transform: translate(-50%, -50%);
   z-index: 3;
   margin: 0;
+  max-width: none;
   padding: 0.18em 0.55em;
   white-space: nowrap;
   text-align: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.85rem, 6vw, 4.4rem);
+  /* The lower bound has to stay under the stage width at 320px: the wordmark
+     is nowrap, so a floor that is too high pushes it past both edges of the
+     smallest phones rather than scaling it down. */
+  font-size: clamp(1.35rem, 5.8vw, 4.4rem);
   line-height: 1;
   text-transform: uppercase;
   color: var(--gold);
@@ -203,11 +220,35 @@
   /* tuck the copy into the sparse halo edge — cinematic, not cramped */
   margin-top: calc(-1 * clamp(1.5rem, 5.5vh, 4.5rem));
 }
+/* The page's <h1>. Every property the global h1 rules would otherwise supply
+   is set explicitly, so the element change cannot leak the 5.4rem display
+   scale or the 0.04em heading tracking into the hero.
+
+   Set in the display face rather than the script face: the brand reads
+   architectural and geometry-led, and a looping script undercut that — it was
+   also the only thing on the site pulling in a third webfont family. */
 .hero__tagline {
-  font-family: var(--font-script);
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.7vw, 2.3rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: none;
   color: var(--gold-hi);
-  margin: 0 0 0.6rem;
+  max-width: 24ch;
+  margin: 0 0 0.9rem;
+}
+
+/* The audience filter, directly under the actions: it tells a visitor in one
+   glance whether their project is the kind of work taken on here. */
+.hero__qualifier {
+  margin: 1.2rem 0 0;
+  max-width: none;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--smoke);
 }
 .hero__lead {
   font-size: clamp(0.98rem, 1.4vw, 1.12rem);
@@ -245,9 +286,23 @@
   .hero__stage { width: min(88vw, 62vh, 560px); }
 }
 @media (max-width: 560px) {
-  .hero__stage { width: min(92vw, 58vh); }
+  /* 84vw rather than 92vw: the particle halo extends past the geometry it is
+     drawn from, so a stage sized to the full column clips the outer ring. */
+  .hero__stage { width: min(84vw, 56vh); }
   .hero__meta { gap: 1.4rem; }
 }
+/* Laptop-height viewports (roughly 700-1000px tall) are where most desktop
+   traffic actually lands, and at 70vh the stage pushed the primary CTA below
+   the fold — measured 943px against a 900px viewport. Trading ~12vh of
+   mandala brings the actions and the qualifier line back into view on load.
+   58vh is still ~520px at 900px tall, well clear of the point where the
+   sigil stops reading. */
+@media (min-width: 761px) and (max-height: 1000px) {
+  .hero__stage { width: min(58vh, 88vw, 760px); }
+  .hero__copy { margin-top: calc(-1 * clamp(1rem, 3vh, 2.5rem)); }
+  .hero__lead { margin-bottom: 1.2rem; }
+}
+
 /* Short landscape viewports: keep the full silhouette visible. */
 @media (max-height: 620px) and (min-width: 921px) {
   .hero__stage { width: min(64vh, 88vw); }
