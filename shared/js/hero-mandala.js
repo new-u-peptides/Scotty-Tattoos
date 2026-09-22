@@ -34,9 +34,13 @@
 
    PERFORMANCE: typed arrays, zero per-frame allocation, fillRect
    stipple batched by colour channel, DPR capped at 2. An adaptive
-   quality controller starts conservative, measures real frame
-   times, and eases the drawn-particle fraction up on capable
-   devices / down under sustained load (never a visible pop).
+   quality controller starts at an absolute floor of drawn particles,
+   measures real frame times, and eases the drawn fraction up on
+   capable devices / down under sustained load (never a visible pop).
+   That floor is an absolute COUNT, not a fraction of N, which is what
+   lets the budget be raised without risking frame rate: a strong
+   machine climbs higher, a weak one falls back to the same cheap
+   frame regardless of how large the budget above it is.
    Pauses offscreen (IntersectionObserver) and when the tab is
    hidden (visibilitychange); the clock freezes so the loop never
    jumps. Honours prefers-reduced-motion with one complete static
@@ -48,7 +52,8 @@
    Data attributes (all optional):
      data-hero-seed     : PRNG seed            (default "scotty-massa")
      data-hero-fit      : radius/half-min-side (default 0.94)
-     data-hero-density  : particle multiplier  (default 1)
+     data-hero-density  : particle multiplier  (default 1; the baseline
+                          budget itself doubled — see targetN)
      data-hero-speed    : rotation multiplier  (default 1; 1 rev ≈ 45s)
      data-hero-animate  : "false" -> static    (default true)
      data-hero-debug    : "true" -> HUD        (also ?heroDebug=1)
@@ -73,6 +78,8 @@
   var CH_SHADOW = 0, CH_MAIN = 1, CH_HI = 2, CH_LINE = 3;
 
   var BASE_DOT = 1.6;                 // base stipple dot size, CSS px
+  var GRAIN_REF = 18000;              // N at which BASE_DOT applies unscaled
+  var MIN_DRAWN = 13000;              // absolute floor the quality controller may trim to
 
   /* ---- timeline (ms) ---- */
   var CONSTRUCT = 3200;               // phase 1: the logo tattoos itself in
@@ -401,13 +408,25 @@
     T.ring(0.775, 0.62, 0.8, CH_LINE);
     T.ring(0.748, 0.5, 0.6, CH_LINE, 0.8);
 
-    // the interlocking chord star — a {24/7} weave (fine needle lines)
+    /* The interlocking chord star — a {24/7} weave.
+       Chords alternate between two weights 1.5x apart rather than all
+       sharing one. Drawing this lattice flat (see
+       docs/MANDALA-DESIGN-DIRECTION.md §3, Direction A) showed that a
+       uniform-weight star collapses into texture: with ~150 crossings
+       the eye has nothing to tell it which strand is in front. The
+       weight difference does that job, and does it without opening a gap
+       at every crossing — which was the other thing that failed, because
+       breaking 150 crossings reduces the thin strands to dashes. */
     T.spin(0.88);
     var R1 = 0.72, step = 7;
     for (i = 0; i < m; i++) {
       var a0 = -Math.PI / 2 + i * cell;
       var a1 = -Math.PI / 2 + ((i + step) % m) * cell;
-      T.line(P(R1, a0), P(R1, a1), 0.62, 0.68, CH_LINE);
+      var lead = (i % 2 === 0);
+      T.line(P(R1, a0), P(R1, a1),
+        lead ? 0.75 : 0.50,                 // 1.5x weight ratio
+        lead ? 0.82 : 0.56,
+        lead ? CH_MAIN : CH_LINE);
     }
     // gold nodes at the weave's rim vertices
     for (i = 0; i < m; i++) {
@@ -616,7 +635,10 @@
     var states = {};                  // name -> typed-array particle sets
     var delay = null, prio = null;    // construction stagger, cull priority
     var start = performance.now(), pausedAt = 0;
-    var quality = 0.85, qualityTarget = 0.85;
+    // set from N in buildAll(): start at the cheap floor and let the
+    // controller climb, so no device renders a 100k-particle field
+    // before it has measured a single frame time.
+    var quality = 0.5, qualityTarget = 0.5;
     var lastQChange = 0, slowWins = 0;
     var frameAcc = 0, frameCnt = 0, fps = 60;
     var destroyed = false, visible = true;
@@ -634,15 +656,21 @@
       return { w: w, h: h, dpr: dpr, R: Math.min(bw, bh) * 0.5 * fitK };
     }
 
-    /* ---- particle budget: viewport-, DPR- and density-aware ---- */
+    /* ---- particle budget: viewport-, DPR- and density-aware ----
+       Doubled from the original 0.66 / 5k-11k-54k budget. Doubling the
+       COUNT rather than the dot size is the whole point: per
+       docs/MANDALA-DESIGN-DIRECTION.md §2.3, what makes a stipple field
+       read as stipple is dot SPACING, not dot size, so twice the
+       particles at a finer grain buys detail where twice the ink would
+       only buy mud. The adaptive quality controller below starts low and
+       climbs, so a machine that cannot hold the bigger budget never
+       tries to — it simply draws the same picture with fewer dots. */
     function targetN() {
       var cssR = size.R / size.dpr;
       var vw = window.innerWidth || 1024;
-      // desktop carries a 3x-density budget; the adaptive quality
-      // controller trims it gracefully on machines that can't hold it
-      var deviceMax = vw <= 560 ? 5000 : (vw <= 1024 ? 11000 : 54000);
-      var n = Math.round(cssR * cssR * 0.66 * densK);
-      return clamp(n, 3000, deviceMax);
+      var deviceMax = vw <= 560 ? 10000 : (vw <= 1024 ? 22000 : 108000);
+      var n = Math.round(cssR * cssR * 1.32 * densK);
+      return clamp(n, 6000, deviceMax);
     }
 
     /* ---- compile a state into fixed-N arrays ----
@@ -683,6 +711,9 @@
 
     function buildAll() {
       N = targetN();
+      // enter at the absolute floor; tickQuality climbs from here once it
+      // has real frame times, and the climb is eased so it never pops
+      quality = qualityTarget = clamp(MIN_DRAWN / N, 0.06, 0.85);
       states = {};
       for (var i = 0; i < STATE_NAMES.length; i++) {
         states[STATE_NAMES[i]] = compileState(STATE_NAMES[i]);
@@ -885,8 +916,14 @@
       var Br, Bth, Bs, Ba, Bsp, Bch, Bimp;
       if (morphing) { Br = B.r; Bth = B.th; Bs = B.s; Ba = B.a; Bsp = B.sp; Bch = B.ch; Bimp = B.imp; }
       var useB = morphing && k >= 0.5;      // colour/importance hand over mid-blend
-      // at 3x density the grain goes finer, not blobbier
-      var dotK = BASE_DOT * (N > 30000 ? 0.8 : 1) * size.dpr;
+      /* Grain refines continuously with the budget rather than stepping
+         at one threshold: mean dot spacing falls as 1/sqrt(N), so the dot
+         has to shrink with N or a denser field just reads as a heavier
+         one. The exponent passes through both of the old step's points
+         (1.00 at 18k, 0.80 at 54k), so existing densities look exactly as
+         they did and the new doubled budget keeps refining past them
+         instead of blobbing. */
+      var dotK = BASE_DOT * clamp(Math.pow(GRAIN_REF / N, 0.203), 0.6, 1.25) * size.dpr;
       var lastAlpha = -1, curCh = -1;
 
       for (var i = 0; i < N; i++) {
@@ -944,9 +981,18 @@
         // demand two consecutive slow windows before cutting, so a single
         // heavy stretch (a morph, a background hiccup) never degrades quality
         if (avg > 22) slowWins++; else slowWins = 0;
+        /* The floor has to be an ABSOLUTE number of drawn particles, not
+           a fraction of N. When the budget doubled, a fixed 0.5 floor
+           doubled with it and the controller lost the ability to protect
+           frame rate at all — it sat pinned at its minimum still drawing
+           ~40k dots at 30fps. Expressed as a floor on drawn particles,
+           raising the ceiling stays free: a strong machine climbs higher
+           than before, a weak one falls back to the same cheap frame it
+           would always have drawn. */
+        var qFloor = clamp(MIN_DRAWN / N, 0.06, 0.5);
         if (now - lastQChange > 2600) {
-          if (slowWins >= 2 && qualityTarget > 0.5) {
-            qualityTarget = Math.max(0.5, qualityTarget - 0.12);
+          if (slowWins >= 2 && qualityTarget > qFloor) {
+            qualityTarget = Math.max(qFloor, qualityTarget - 0.12);
             lastQChange = now; slowWins = 0;
           } else if (avg < 17.2 && qualityTarget < 1) {
             // 17.2ms sits just above the 60Hz vsync floor (16.7ms), so a
