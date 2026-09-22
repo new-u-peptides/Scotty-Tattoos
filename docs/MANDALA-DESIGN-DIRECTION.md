@@ -50,9 +50,18 @@ Radii are given as a fraction of the mandala's outer radius, matched to the
         │                     Hard edges, solid fills, unambiguous shapes.
         │
   r 0.72 – 1.00   AURA        stipple dissolve, petals, particle spray
-                              ~20% coverage, falling to ~5% at the rim.
+                              ~10% coverage, falling to ~2% at the rim.
                               No solid shape may live out here.
 ```
+
+That 10% ceiling is not a preference, it is arithmetic. The stipple spacing
+rule in §2.3 (centres at least 3 dot-diameters apart) caps a dot field at
+about 10% coverage no matter how it is drawn. A dot of diameter *d* has area
+(π/4)d² ≈ 0.785d²; on a triangular lattice of pitch 3*d* each dot owns
+(√3/2)(3d)² ≈ 7.79d². That is 10.1% ink, and loosening the pitch only lowers it.
+So **a stipple field is physically incapable of carrying a design's weight**,
+which is the real reason rule 1 below holds. Any aura that looks as dense as
+the structure band is either breaking the spacing rule or is not stipple.
 
 Four rules follow from the ladder, and they are the whole synthesis:
 
@@ -142,14 +151,37 @@ Two rules:
   currently close to this — the outermost band is the one to watch, where the
   cells crowd.
 
+### 2.2b Two rules the drawings produced
+
+Both of these came out of building the directions in §3 rather than out of
+theory, and both contradict something a reasonable person would have assumed.
+
+**Cell proportion: band depth ≤ 1.7× the cell's base width.** A triangular
+cell is defined by its count and its band depth, and those two numbers fight.
+At 28-fold symmetry with a 3mm gap, a band running r 0.40→0.68 gives a cell
+6mm wide and 28mm deep — a 1:4.7 needle that reads as a spike, not a cell,
+and whose tip is below the line-weight floor for most of its length. Holding
+the ratio at or under 1:1.7 (at 28-fold, a band roughly 0.17R deep) is what
+makes the band read as masonry rather than as a comb. Raise the count or
+deepen the band, never both.
+
+**Ray width is set by ray count, not by taste.** 28 rays sitting at r ≈ 0.23R
+have only 5.2mm of arc each at the 200mm reference size. A 3.8mm ray leaves a
+1.4mm gap — under the 1.5mm minimum, so it closes. The ray width ceiling is
+therefore (arc per ray − 1.5mm), which at 28-fold is about 3.2mm. This is the
+general form of the constraint: **in any radial band, the element count fixes
+the maximum element width**, and the count is usually the thing to change.
+
 ### 2.3 Stippling rules
 
 - **Dot spacing ≥ 3× dot diameter** in any field intended to still read as
   separate dots in a decade. Below 2×, plan for it to become solid grey and
   design as though it already is.
-- **Gradients need a range, not a slope.** Run the density from about 40% at
-  the inner edge to under 10% at the rim. A gradient that only spans 40%→30%
-  is invisible even on fresh ink.
+- **Gradients need a range, not a slope.** Work in spacing, not coverage:
+  run the pitch from about 2mm at the inner edge to 11mm at the rim. That is
+  a 5× range and it reads as a glow. A gradient spanning 2mm→4mm is invisible
+  even on fresh ink, and drawing it at 2mm→7mm still produced a visible hard
+  ring at the inner edge rather than a fade.
 - **No stipple finer than a 3-round-liner dot.** Single-needle dots are the
   first thing to disappear.
 - **Stipple only against skin, never against black.** See rule 3 above.
@@ -178,16 +210,35 @@ Two rules:
 *`sigil` core + `weave` structure. The flagship.*
 
 The wavy solar burst and black void stay exactly as they are — untouched, full
-contrast, the unmistakable brand anchor. Outside r 0.34, the bold triangular
-bands are replaced by a **simplified** star-polygon lattice: a `{12/5}`
-star polygon over a `{12/4}`, two layers only, strands at 0.5 mm, every
-crossing opened to a clean 2 mm break so the over/under reads unambiguously.
-Where the lattice strands intersect, place a small solid gold node (1.5 mm) —
-these nodes become the secondary rhythm, and because they are solid they are
-the part that survives longest.
+contrast, the unmistakable brand anchor. Outside r 0.35, the bold triangular
+bands are replaced by a **simplified** star-polygon lattice: two `{12/4}`
+stars — four overlapping triangles each — the second rotated by half a vertex
+step. `{12/4}`'s chords pass at exactly 0.5× their circumradius, so a lattice
+drawn to r 0.70 reaches in to r 0.35 and stops there on its own: the band
+fills itself without a mask.
+
+The two layers carry **different weights**, 0.60mm and 0.38mm. That 1.6×
+ratio is the §2.1 rule applied inside a single band, and it is what separates
+a primary star from secondary webbing. At equal weight the whole thing
+flattens into texture, which is precisely the failure mode `weave` has.
+
+**How crossings are handled, and why the obvious answer is wrong.** The first
+instinct — open every crossing to a clean break — does not survive contact
+with the geometry. Twenty-four chords cross about 150 times; a 1.6mm break at
+each one reduces the thin layer to a dotted line, destroying the very
+continuity the breaks were meant to clarify. The rule that works:
+
+> **Cut a crossing only where both strands carry the same weight. Where they
+> differ by 1.5× or more, the weight difference already tells the eye which
+> one passes behind, and a gap there spends negative space for nothing.**
+
+So the heavy star breaks against itself, the light webbing runs continuous
+underneath, and the design spends its gaps where they actually buy legibility.
+Nodes (1.5mm solid gold) go at the twelve star points and twelve valleys, not
+at the crossings — a node at a crossing fills the gap you just cut.
 
 Between lattice and rim: a 4 mm clean black ring, then a restrained AURA of
-single-weight stipple at 15% density, no petals.
+single-weight stipple, pitch 2mm falling to 7mm.
 
 - **Reads as:** an astrolabe. Instrument, not ornament.
 - **Placement:** back, chest, outer thigh. 180 mm+.
@@ -205,12 +256,15 @@ Invert the emphasis. The centre becomes quiet: the black void, the gold ring,
 and a *single* band of clean geometric petals at 0.6 mm — no solar rays, no
 triangle bands, nothing past r 0.5. Everything from r 0.5 outward is stipple:
 a wide, slow, genuinely gradient field of overlapping star-petal outlines
-dissolving into loose particles, running 45% density down to 4% at the rim,
-with the outermost 15% of the radius carrying nothing but scattered dots.
+dissolving into loose particles. Stated in pitch rather than coverage, per
+§2.3: 2.3mm at the inner edge opening to 12mm at the rim, with the outermost
+15% of the radius carrying nothing but scattered dots. The faint petal
+outlines riding over that field are what give it body — the dots alone cannot
+exceed 10% ink, so the petals are doing more of the work here than they look
+like they are.
 
-The gradient is the whole design. It needs room — this direction fails at
-anything under 200 mm because the gradient needs enough radius to actually
-gradate.
+The gradient is the whole design. It needs room, and the scale test in §5 put
+its floor higher than first assumed: **220 mm**, not 200 mm.
 
 - **Reads as:** a nebula around a still point. Soft, feminine, atmospheric.
 - **Placement:** back piece, sternum, shoulder blade. 220 mm+.
@@ -310,12 +364,51 @@ client-facing photograph rather than an illustration pretending to be one.
 
 ---
 
-## 5. What to do next
+## 5. The drawings
 
-1. **Draw Direction C first.** It settles the brand mark, and it is the
-   cheapest to test — it either reads at 40 mm or it does not.
-2. **Draw Direction A at full size** as the hero illustration, and check the
-   lattice at two layers before committing to three.
-3. **Hold Direction B for portfolio work**, not for brand identity.
-4. **Audit the existing `weave` state** against §2.4 — it is the one element in
-   the current set that does not yet honour the tagline.
+`tools/build-mandala-designs.js` draws all three directions as real geometry
+and writes them to `docs/design/`:
+
+| File | What it is |
+|---|---|
+| `direction-a.svg` | Alchemical Solar Lattice |
+| `direction-b.svg` | Ethereal Stellar Crown |
+| `direction-c.svg` | Modern Minimalist Sacred |
+| `contact-sheet.html` | all three at 200mm / 80mm / 16mm |
+
+Run it with `node tools/build-mandala-designs.js`. Nothing in it is traced:
+every radius, weight, gap and dot pitch is computed from the rules above, at a
+declared scale of 200mm diameter. Change `DIAMETER_MM` and every millimetre
+figure rescales the way it would on skin — which is the point. The script is
+a test of the rules, and §2.2b exists because it failed twice.
+
+### What the contact sheet showed
+
+The three-size test is the tagline made falsifiable, and it was decisive:
+
+- **A** holds at 200mm, softens at 80mm as the two lattice layers begin to
+  merge, and is an indistinct blur at 16mm. Confirms the 180mm floor.
+- **B** is beautiful at 200mm and gone by 80mm — the gradient has no room to
+  gradate. Its floor is higher than first stated: call it 220mm.
+- **C** reads as a seal at all three sizes. At 16mm you can still count the
+  cell band and see the ring close the composition.
+
+That result is the argument for C as the mark, and it is worth more than the
+paragraph of reasoning it replaces.
+
+---
+
+## 6. What to do next
+
+1. **Take Direction C to a stencil.** It survived the scale test, so the
+   remaining questions are about the hand, not the design: ray taper and how
+   crisp the cell apexes come out on skin.
+2. **Decide whether C replaces the logo mark.** It is drawn from the same
+   28-fold canon as the current one and holds at favicon size, which the
+   current mark's outer crown does not.
+3. **Use A as the hero illustration**, at 180mm and up only. Do not add a
+   third lattice layer; the second is already carried by weight alone.
+4. **Hold B for portfolio work**, not brand identity, and not under 220mm.
+5. **Audit the existing `weave` state** against §2.4 and the crossing rule in
+   §3 Direction A — it is the one element in the current set that does not yet
+   honour the tagline.
