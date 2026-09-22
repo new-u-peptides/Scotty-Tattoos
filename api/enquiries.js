@@ -82,7 +82,7 @@ async function handleList(req, res) {
     return;
   }
 
-  const url = new URL(req.url || '/', 'https://scottymassa.com');
+  const url = new URL(req.url || '/', 'https://www.scottymassa.com');
   const statusParam = (url.searchParams.get('status') || '').trim();
   const limit = clampInt(url.searchParams.get('limit'), 1, MAX_LIMIT, DEFAULT_LIMIT);
 

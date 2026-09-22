@@ -135,7 +135,7 @@ between owned, topically-identical sites is the cheapest authority signal here.
 - `sitemap.xml` covering all 13 URLs with priorities, lastmod, and changefreq
 - `robots.txt` with sitemap reference and sensible disallows (`/assets/seo/`, `/.git/`, `/.well-known/`)
 - JSON-LD schema per page (see table above)
-- `<link rel="canonical">` on every page pointing to the `https://scottymassa.com/` canonical
+- `<link rel="canonical">` on every page pointing to the `https://www.scottymassa.com/` canonical
 - Open Graph + Twitter Card meta on every page; default OG image at `/assets/seo/og-default.svg` (1200×630)
 - Semantic HTML5 landmarks (`<header>`, `<nav>`, `<main>`, `<article>`, `<footer>`)
 - Mobile-first responsive layout

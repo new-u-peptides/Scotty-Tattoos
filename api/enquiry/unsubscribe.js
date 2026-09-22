@@ -39,7 +39,7 @@ function page(eyebrow, heading, body) {
 '<p class="eyebrow">' + eyebrow + '</p>\n' +
 '<h1>' + heading + '</h1>\n' +
 body + '\n' +
-'<p class="foot">Scotty Massa · Birkirkara, Malta<br><a href="https://scottymassa.com/">scottymassa.com</a></p>\n' +
+'<p class="foot">Scotty Massa · Birkirkara, Malta<br><a href="https://www.scottymassa.com/">scottymassa.com</a></p>\n' +
 '</main>\n' +
 '</body>\n' +
 '</html>\n';
@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const url = new URL(req.url || '/', 'https://scottymassa.com');
+    const url = new URL(req.url || '/', 'https://www.scottymassa.com');
     const ref = cleanText(url.searchParams.get('e'), 40);
     const sig = cleanText(url.searchParams.get('t'), 64);
 
