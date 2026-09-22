@@ -1,0 +1,43 @@
+/* Two-step progress indicator (booking.html).
+   A hairline rule between two numerals — no pills, no rounded progress bar. */
+.stepper {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  margin: 0 0 clamp(2rem, 5vw, 3rem);
+  padding: 0;
+  counter-reset: step;
+}
+.stepper__step {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding: 0 0 0.9rem;
+  border-bottom: 1px solid var(--bone-14);
+  transition: border-color 0.3s ease, color 0.3s ease;
+  color: var(--smoke);
+}
+.stepper__step.is-current,
+.stepper__step.is-done { color: var(--bone); border-bottom-color: var(--gold); }
+
+.stepper__num {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
+  color: var(--smoke);
+}
+.stepper__step.is-current .stepper__num,
+.stepper__step.is-done .stepper__num { color: var(--gold); }
+
+.stepper__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .stepper__step { gap: 0.5rem; }
+  .stepper__label { letter-spacing: 0.16em; font-size: 0.64rem; }
+}

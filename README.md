@@ -32,16 +32,29 @@ Scotty-Tattos/
 ├── index.html              Home
 ├── about.html              Bio, story, stats, press, testimonial
 ├── portfolio.html          Filterable gallery
-├── tour.html               2026 world-tour dates (open / limited / waitlist)
-├── booking.html            Booking enquiry form
+├── travel.html             Travel & guest spots — the offer, not a schedule
+├── mandala-tattoos.html    Mandala pillar page
+├── booking.html            Two-step tattoo enquiry
+├── enquiry-received.html   Enquiry confirmation
 ├── aftercare.html          Healing guide
 ├── contact.html            Studio info + contact form
 ├── geometric-tattoos.html  Geometric-tattoo SEO hub
 ├── journal.html            Journal index
 ├── journal/                Long-form articles
-├── partials/
+├── partials/               Inlined into pages by tools/sync-partials.js
 │   ├── header.html
 │   └── footer.html
+├── api/
+│   ├── _lib/               mailersend · templates · enquiry · store · util · leadScore
+│   ├── enquiry/            start · submit · unsubscribe
+│   ├── mailersend/         webhook
+│   ├── cron/               enquiry-followups
+│   └── enquiries.js        admin list / status
+├── emails/templates/       Ten transactional templates + README
+├── admin/                  Enquiry board (self-contained)
+├── supabase/migrations/    0001_enquiries.sql
+├── tools/sync-partials.js  Re-inline the partials
+├── docs/ENQUIRY-FUNNEL.md  Operator's guide
 ├── assets/
 │   ├── css/styles.css      Component index — see assets/css/components/
 │   ├── seo/                OG image + favicon
@@ -99,11 +112,11 @@ python3 -m http.server 8001           # scottymassa.com (root)
 Single-artist personal portfolio. Plain HTML + CSS + a small `main.js`.
 No build step.
 
-- **Pages** — Home, About, Portfolio, Tour, Booking, Aftercare, Contact.
-- **Palette** — ink black, bone white, rust red, antique gold.
-- **Type** — Cinzel (display) · Inter (body) · Tangerine (script accents).
+- **Pages** — Home, About, Portfolio, Geometric, Mandala, Travel, Journal, Reviews, Enquiry, Aftercare, Contact.
+- **Palette** — ink black, bone white, antique gold. Red is reserved for the primary CTA and nothing else.
+- **Type** — Cinzel (display) · Inter (body). Two families, both from Google Fonts.
 - **Components** — sticky nav, hero, marquee, 12-col portfolio grid,
-  style cards, tour list, stats, quote, CTA block, footer.
+  style cards, stepper, enquiry form, stats, quote, CTA block, footer.
 - **Animation** — reveal-on-scroll via `IntersectionObserver`.
 
 Drop real photography into `assets/images/` and lift the design into
@@ -111,60 +124,85 @@ Next.js / Astro / WordPress later if needed.
 
 ---
 
-## Booking flow (scottymassa.com)
+## Enquiry funnel (scottymassa.com)
 
-Two steps, per `docs` discussion with Scotty on how premium enquiries should
-be filtered before they reach his calendar:
+One two-step enquiry, one email provider, optional persistence.
+`docs/ENQUIRY-FUNNEL.md` is the operator's guide; this is the orientation.
 
-1. **`booking.html`** — name + email, plus a *separate, unticked* checkbox
-   for general marketing (guest spots/travel/flash/conventions). Posts to
-   `api/booking-lead.js`, which emails the client the process/pricing brief
-   and pings the studio inbox, then redirects to `booking-thank-you.html`.
-2. **`booking-thank-you.html`** — offers both paths: jump straight into
-   `booking-application.html` now, or wait for the process email and come
-   back later. Either way the lead is already captured.
-3. **`booking-application.html`** — the full structured application
-   (origin, placement, scale, concept, reference images, body-area photos,
-   18+ / photo-ID / pricing acknowledgements). Posts multipart form data to
-   `api/booking-application.js`, which emails the complete application
-   (with attachments) to the studio inbox and confirms receipt to the
-   client. Lands on `booking-application-received.html`.
+1. **`booking.html`** — the whole enquiry. Step 1 asks who you are and what
+   the project is (name, email, country, optional Instagram, project type,
+   scale, and where the work would happen — the studio in Malta, or Scotty
+   travelling). Step 2 asks about the idea: description, placement, existing
+   tattoos, optional reference images, timing, how they found him, consent.
+   Validating step 1 posts to `api/enquiry/start` fire-and-forget, so an
+   abandoned enquiry is still a lead the reminders can reach.
+2. **`enquiry-received.html`** — the reference, four next steps, and the
+   portfolio and Instagram as the onward actions. Deliberately not the
+   homepage.
+3. **`admin/enquiries.html`** — nine-column board, side panel per enquiry.
+   Token-gated, `noindex`, disallowed in `robots.txt`.
 
-`privacy.html` documents what's collected and why, and is linked from both
-forms and the footer.
+`booking-application.html`, `booking-thank-you.html` and
+`booking-application-received.html` are redirect stubs preserving their query
+string, because links to them exist in already-sent email.
 
-**Email** is sent via [Resend](https://resend.com) (`api/_lib/email.js`,
-a plain `fetch` wrapper — no SDK dependency). Configure `RESEND_API_KEY`,
-`RESEND_FROM_EMAIL` and `BOOKING_NOTIFY_EMAIL` as Vercel project env vars —
-see `.env.example`.
+Portfolio CTAs deep-link with `?project=<slug>` and preselect the project
+type — the visitor arrives with one decision already made.
 
-**File uploads** go straight through the serverless function as email
-attachments (no object storage yet) — capped client- and server-side at
-2MB/file, 3 files per field, ~4MB combined, to stay under Vercel's request
-body limit. If that turns out to be too tight in practice, the fix is
-switching to direct-to-[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)
+**Email** goes through [MailerSend](https://www.mailersend.com)
+(`api/_lib/mailersend.js`). Ten templates live in `emails/templates/` as the
+source of truth and are rendered by `api/_lib/templates.js`; setting
+`MAILERSEND_TEMPLATE_<NAME>` switches one to a MailerSend-hosted template with
+the same variables. Every send carries the enquiry reference as a tag, which is
+how the webhook attributes an open or a click back to an enquiry. See
+`emails/templates/README.md`.
+
+**Persistence is optional.** `api/_lib/store.js` talks to Supabase when
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set, and otherwise returns
+null from every function. Without it the funnel runs email-only: enquiries
+still reach the studio inbox, but there is no board, no lifecycle history and
+no follow-ups. Run `supabase/migrations/0001_enquiries.sql` to turn it on.
+
+**File uploads** still go through the function as email attachments — 2MB per
+file, 3 files, ~4MB combined, to stay under Vercel's request body limit. If
+that proves too tight, switch to direct-to-[Vercel Blob](https://vercel.com/docs/storage/vercel-blob)
 client uploads rather than raising the cap.
 
-**Lead scoring** (`api/_lib/leadScore.js`) computes a stateless 0–100 "how
-promising is this" score at submission time from the fields already on the
-application (style fit, scale, travel commitment, reference material,
-concept detail). It's shown only in the studio's internal notification
-email as a triage aid — never to the client, and never used to auto-decline
-anything. Adjust the weights there as Scotty's actual acceptance patterns
-become clear.
+**Lead scoring** (`api/_lib/leadScore.js`) computes a stateless 0–100 triage
+score from the enquiry fields. Shown only in the studio's internal email —
+never to the client, never used to auto-decline.
 
-### Deliberately not built yet
+**Follow-ups** are two reminders (24–48h and 4–6 days) from a daily Vercel
+cron, and they stop the moment someone submits, replies, books, unsubscribes
+or hard-bounces. This is a sales workflow, not a newsletter.
 
-This pass is front-end + email-relay only. Scotty separately sketched a
-much larger system (CRM-style lead states, a review dashboard, Calendly +
-Google Calendar, Stripe deposits, an automated training funnel) — all of
-it is sound direction, but each piece needs either a real third-party
-account (Calendly, Stripe, an ESP like AWeber) or an infrastructure
-decision (which database, which auth) that's out of scope for a
-static-site PR. Treat this as Phase 1: every enquiry still reaches the
-studio inbox and every Step-1 lead still gets captured (via the internal
-notification email), just without persistence or automation beyond the
-two transactional emails above.
+### Not built yet
+
+- The board reads and re-stages enquiries but cannot yet **send** the six
+  manual templates (consultation, booking confirmed, deposit reminder, session
+  reminder, application received). They are wired and ready; they need a send
+  action in the panel.
+- Calendly / Stripe / calendar integration — each needs a real third-party
+  account and is a separate decision.
+
+---
+
+## Chrome and the partials
+
+`partials/header.html` and `partials/footer.html` are **inlined into every root
+page**, not fetched at runtime. Run `node tools/sync-partials.js` after editing
+either one; `--check` exits non-zero if a page is stale.
+
+They used to be loaded with `fetch()`, which meant the HTML a crawler receives
+contained no nav and no footer — no internal links at all until JavaScript ran.
+Inlining took `index.html` from 19 anchors to 55.
+
+Their hrefs are root-relative (`/portfolio.html`, not `portfolio.html`) because
+the same markup is used from `/journal/`, where bare relative links resolved to
+`/journal/portfolio.html` and 404'd.
+
+`shared/js/includes.js` still exists for `massatattoo/` and the journal
+articles, which continue to use the runtime pattern.
 
 ---
 
@@ -259,7 +297,7 @@ massatattoo/assets/images/              ← massatattoo.com (same layout)
 - **More tattoo work** — particularly traditional / Japanese / colour
   pieces if Scotty has them, to broaden the portfolio beyond mandala /
   dotwork.
-- **Tour city photos** — one per upcoming city for `tour.html` (optional).
+- **Travel photos** — on-location or guest-spot shots for `travel.html` (optional).
 
 ---
 
@@ -295,6 +333,9 @@ Safari). Key gates: CSS custom properties, `clip-path: polygon()`,
 - [x] Wire scottymassa.com's booking flow to a real submission endpoint
       (see "Booking flow" below). `massatattoo/contact.html`'s booking form
       is still a client-side stub — not in scope for this pass.
+- [x] Wire the enquiry funnel to MailerSend with optional persistence.
+- [x] Server-render the nav/footer so the internal link graph is crawlable.
+- [ ] Send the six manual email templates from the admin board.
 - [ ] Per-site `sitemap.xml` for massatattoo (scottymassa already has one).
 - [ ] Lighthouse pass on both sites — target 100/100/100/100.
 - [ ] When ready, split into two GitHub repositories.

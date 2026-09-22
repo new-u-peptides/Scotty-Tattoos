@@ -20,3 +20,12 @@
 }
 .page-header h1 { margin: 0 0 0.6em; }
 .page-header p { color: var(--bone-2); margin: 0 auto; }
+
+/* Compact variant for pages whose job is the thing below the header — the
+   enquiry form and its confirmation. The full-height header pushed the first
+   field a screen and a half down on a phone. */
+.page-header--compact {
+  padding: clamp(3rem, 7vw, 4.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--ink);
+}
+.page-header--compact::after { background: var(--gold); }

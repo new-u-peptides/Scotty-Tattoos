@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /.git/
 Disallow: /.well-known/
 
@@ -38,6 +39,7 @@ User-agent: Applebot-Extended
 User-agent: Meta-ExternalAgent
 User-agent: CCBot
 Allow: /
+Disallow: /admin/
 Disallow: /.git/
 Disallow: /.well-known/
 
