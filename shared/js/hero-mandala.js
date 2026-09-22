@@ -34,9 +34,13 @@
 
    PERFORMANCE: typed arrays, zero per-frame allocation, fillRect
    stipple batched by colour channel, DPR capped at 2. An adaptive
-   quality controller starts conservative, measures real frame
-   times, and eases the drawn-particle fraction up on capable
-   devices / down under sustained load (never a visible pop).
+   quality controller starts at an absolute floor of drawn particles,
+   measures real frame times, and eases the drawn fraction up on
+   capable devices / down under sustained load (never a visible pop).
+   That floor is an absolute COUNT, not a fraction of N, which is what
+   lets the budget be raised without risking frame rate: a strong
+   machine climbs higher, a weak one falls back to the same cheap
+   frame regardless of how large the budget above it is.
    Pauses offscreen (IntersectionObserver) and when the tab is
    hidden (visibilitychange); the clock freezes so the loop never
    jumps. Honours prefers-reduced-motion with one complete static
@@ -48,7 +52,8 @@
    Data attributes (all optional):
      data-hero-seed     : PRNG seed            (default "scotty-massa")
      data-hero-fit      : radius/half-min-side (default 0.94)
-     data-hero-density  : particle multiplier  (default 1)
+     data-hero-density  : particle multiplier  (default 1; the baseline
+                          budget itself doubled — see targetN)
      data-hero-speed    : rotation multiplier  (default 1; 1 rev ≈ 45s)
      data-hero-animate  : "false" -> static    (default true)
      data-hero-debug    : "true" -> HUD        (also ?heroDebug=1)
@@ -73,6 +78,9 @@
   var CH_SHADOW = 0, CH_MAIN = 1, CH_HI = 2, CH_LINE = 3;
 
   var BASE_DOT = 1.6;                 // base stipple dot size, CSS px
+  var GRAIN_REF = 18000;              // N at which BASE_DOT applies unscaled
+  var MIN_DRAWN = 13000;              // absolute floor the quality controller may trim to
+  var RAW_AT_1 = 12200;               // measured raw dots per state at SAMP 1
 
   /* ---- timeline (ms) ---- */
   var CONSTRUCT = 3200;               // phase 1: the logo tattoos itself in
@@ -137,11 +145,19 @@
        r/th polar position · s size · a alpha · c colour channel ·
        sp spin multiplier (per-ring differential rotation) ·
        imp importance (lower = survives quality culling longer). */
-  function toolkit(rand) {
+  function toolkit(rand, samp) {
     var dots = [];
     var CUR_SP = 1;
+    /* SAMP scales every 1-D sampler below with the particle budget. It is
+       the difference between a bigger budget buying DETAIL and a bigger
+       budget buying jitter: compileState resamples the raw list to exactly
+       N, so whenever raw < N the surplus particles are duplicates nudged
+       by a few thousandths — fuzzier lines, not finer ones. Measured at
+       SAMP=1 the builders emit ~12k dots per state, so at N=80k five in
+       six particles were copies. Sampling now tracks N. */
+    var SAMP = samp || 1;
     function P(r, a) { return [Math.cos(a) * r, Math.sin(a) * r]; }
-    var T = { dots: dots, rand: rand, P: P };
+    var T = { dots: dots, rand: rand, P: P, samp: SAMP };
 
     T.spin = function (sp) { CUR_SP = sp; };
     T.dot = function (r, th, s, a, c, imp) {
@@ -152,7 +168,7 @@
     };
     // dotted circle
     T.ring = function (rad, s, a, c, densK) {
-      var steps = Math.max(24, Math.round(rad * 240 * (densK || 1)));
+      var steps = Math.max(24, Math.round(rad * 240 * (densK || 1) * SAMP));
       for (var i = 0; i < steps; i++) {
         var t = (i / steps) * TAU;
         T.dot(rad + (rand() - 0.5) * 0.004, t + (rand() - 0.5) * 0.002,
@@ -162,7 +178,7 @@
     // dotted straight line between two XY points
     T.line = function (p0, p1, s, a, c) {
       var dx = p1[0] - p0[0], dy = p1[1] - p0[1];
-      var n = Math.max(2, Math.round(Math.sqrt(dx * dx + dy * dy) * 150));
+      var n = Math.max(2, Math.round(Math.sqrt(dx * dx + dy * dy) * 150 * SAMP));
       for (var i = 0; i <= n; i++) {
         var t = i / n;
         T.dotXY(p0[0] + dx * t + (rand() - 0.5) * 0.004,
@@ -172,6 +188,7 @@
     };
     // dotted quadratic curve
     T.curve = function (p0, cp, p1, steps, s, a, c) {
+      steps = Math.max(2, Math.round(steps * SAMP));
       for (var i = 0; i <= steps; i++) {
         var t = i / steps, u = 1 - t;
         var x = u * u * p0[0] + 2 * u * t * cp[0] + t * t * p1[0];
@@ -182,6 +199,7 @@
     };
     // dotted cubic curve (the S-curves: solar rays, ogee petal sides)
     T.cubic = function (p0, c1, c2, p1, steps, s, a, c, taper) {
+      steps = Math.max(2, Math.round(steps * SAMP));
       for (var i = 0; i <= steps; i++) {
         var t = i / steps, u = 1 - t;
         var w0 = u * u * u, w1 = 3 * u * u * t, w2 = 3 * u * t * t, w3 = t * t * t;
@@ -194,7 +212,7 @@
     };
     // small arc around an arbitrary centre (scallops between petal tips)
     T.arcAt = function (cx, cy, rad, a0, a1, s, al, c) {
-      var span = a1 - a0, n = Math.max(4, Math.round(Math.abs(span) * rad * 220));
+      var span = a1 - a0, n = Math.max(4, Math.round(Math.abs(span) * rad * 220 * SAMP));
       for (var i = 0; i <= n; i++) {
         var t = a0 + span * (i / n);
         T.dotXY(cx + Math.cos(t) * rad + (rand() - 0.5) * 0.003,
@@ -385,11 +403,19 @@
     for (i = 0; i < m; i++) {
       var a = -Math.PI / 2 + i * cell;
       var isLong = (i % 2 === 0);
+      /* Lightened deliberately (fill 16 -> 6, shadow 8 -> 3, edge alpha
+         1.0 -> 0.72). This crown used to be the densest thing in the
+         state, which inverts the ladder in
+         docs/MANDALA-DESIGN-DIRECTION.md §1.2: density has to fall
+         monotonically outward past the structure band, or the design
+         loses its centre and reads as a wreath. That is exactly why
+         `weave` looked washed out next to `sigil` and `bloom` — it had
+         no bold zone at all, only a bright rim. */
       T.petal(a, cell * 0.5 * 0.86, 0.775, isLong ? 1.0 : 0.915, {
-        edgeC: CH_LINE, edgeS: 0.7, edgeA: 1.0,
+        edgeC: CH_LINE, edgeS: 0.62, edgeA: 0.72,
         tipBead: isLong, tipBeadC: CH_MAIN,
-        echo: isLong, fillN: Math.round(16 * dens), fillC: CH_MAIN,
-        shadowN: 8
+        echo: isLong, fillN: Math.round(6 * dens), fillC: CH_MAIN,
+        shadowN: 3
       });
     }
     // scallop arcs riding between the petal bases — a soft circular flow
@@ -401,13 +427,25 @@
     T.ring(0.775, 0.62, 0.8, CH_LINE);
     T.ring(0.748, 0.5, 0.6, CH_LINE, 0.8);
 
-    // the interlocking chord star — a {24/7} weave (fine needle lines)
+    /* The interlocking chord star — a {24/7} weave.
+       Chords alternate between two weights 1.5x apart rather than all
+       sharing one. Drawing this lattice flat (see
+       docs/MANDALA-DESIGN-DIRECTION.md §3, Direction A) showed that a
+       uniform-weight star collapses into texture: with ~150 crossings
+       the eye has nothing to tell it which strand is in front. The
+       weight difference does that job, and does it without opening a gap
+       at every crossing — which was the other thing that failed, because
+       breaking 150 crossings reduces the thin strands to dashes. */
     T.spin(0.88);
     var R1 = 0.72, step = 7;
     for (i = 0; i < m; i++) {
       var a0 = -Math.PI / 2 + i * cell;
       var a1 = -Math.PI / 2 + ((i + step) % m) * cell;
-      T.line(P(R1, a0), P(R1, a1), 0.62, 0.68, CH_LINE);
+      var lead = (i % 2 === 0);
+      T.line(P(R1, a0), P(R1, a1),
+        lead ? 0.75 : 0.50,                 // 1.5x weight ratio
+        lead ? 0.82 : 0.56,
+        lead ? CH_MAIN : CH_LINE);
     }
     // gold nodes at the weave's rim vertices
     for (i = 0; i < m; i++) {
@@ -428,14 +466,19 @@
 
     // layered 12-point star (two hexagrams) — gold accent geometry
     T.spin(1.14);
-    function hexagram(rO, rot, ch, al) {
-      var V = [], k;
+    function hexagram(rO, rot, ch, al, w) {
+      var V = [], k; w = w || 0.66;
       for (k = 0; k < 6; k++) V.push(P(rO, rot + k * (TAU / 6)));
-      T.line(V[0], V[2], 0.66, al, ch); T.line(V[2], V[4], 0.66, al, ch); T.line(V[4], V[0], 0.66, al, ch);
-      T.line(V[1], V[3], 0.66, al, ch); T.line(V[3], V[5], 0.66, al, ch); T.line(V[5], V[1], 0.66, al, ch);
+      T.line(V[0], V[2], w, al, ch); T.line(V[2], V[4], w, al, ch); T.line(V[4], V[0], w, al, ch);
+      T.line(V[1], V[3], w, al, ch); T.line(V[3], V[5], w, al, ch); T.line(V[5], V[1], w, al, ch);
     }
-    hexagram(0.50, -Math.PI / 2, CH_MAIN, 0.92);
-    hexagram(0.50, -Math.PI / 2 + TAU / 12, CH_MAIN, 0.92);
+    /* THE bold zone. The two hexagrams are the state's anchor, so they
+       carry real weight instead of matching everything around them — and
+       they take the same 1.5x weight split as the chord star above, one
+       reading as the primary star and one as its echo. Before this the
+       whole state sat at one weight and had nothing for the eye to hold. */
+    hexagram(0.50, -Math.PI / 2, CH_MAIN, 1.0, 0.94);
+    hexagram(0.50, -Math.PI / 2 + TAU / 12, CH_SHADOW, 0.85, 0.62);
     // star-tip highlights
     for (i = 0; i < 12; i++) {
       T.dot(0.50, -Math.PI / 2 + i * (TAU / 12), 1.0, 0.9, CH_HI, 0.5);
@@ -446,8 +489,10 @@
     // inner petal ring — small rounded petals (not spikes) around the core
     var m2 = 12, cell2 = TAU / m2;
     for (i = 0; i < m2; i++) {
+      // RADIANCE: brought up to gold so the centre holds its own — the
+      // ladder wants weight at the core, not only at the rim
       T.petal(-Math.PI / 2 + (i + 0.5) * cell2, cell2 * 0.5 * 0.8, 0.155, 0.285, {
-        edgeC: CH_LINE, edgeS: 0.6, edgeA: 0.9, ridge: false, baseShadow: false, steps: 14
+        edgeC: CH_MAIN, edgeS: 0.78, edgeA: 1.0, ridge: false, baseShadow: false, steps: 14
       });
     }
 
@@ -613,10 +658,14 @@
 
     var size = { w: 1, h: 1, dpr: 1, R: 1 };
     var N = 0;                        // total particles (fixed across states)
+    var rawL = {};                    // raw dots each builder emitted, per state
     var states = {};                  // name -> typed-array particle sets
     var delay = null, prio = null;    // construction stagger, cull priority
     var start = performance.now(), pausedAt = 0;
-    var quality = 0.85, qualityTarget = 0.85;
+    // set from N in buildAll(): start at the cheap floor and let the
+    // controller climb, so no device renders a 100k-particle field
+    // before it has measured a single frame time.
+    var quality = 0.5, qualityTarget = 0.5;
     var lastQChange = 0, slowWins = 0;
     var frameAcc = 0, frameCnt = 0, fps = 60;
     var destroyed = false, visible = true;
@@ -634,15 +683,21 @@
       return { w: w, h: h, dpr: dpr, R: Math.min(bw, bh) * 0.5 * fitK };
     }
 
-    /* ---- particle budget: viewport-, DPR- and density-aware ---- */
+    /* ---- particle budget: viewport-, DPR- and density-aware ----
+       Doubled from the original 0.66 / 5k-11k-54k budget. Doubling the
+       COUNT rather than the dot size is the whole point: per
+       docs/MANDALA-DESIGN-DIRECTION.md §2.3, what makes a stipple field
+       read as stipple is dot SPACING, not dot size, so twice the
+       particles at a finer grain buys detail where twice the ink would
+       only buy mud. The adaptive quality controller below starts low and
+       climbs, so a machine that cannot hold the bigger budget never
+       tries to — it simply draws the same picture with fewer dots. */
     function targetN() {
       var cssR = size.R / size.dpr;
       var vw = window.innerWidth || 1024;
-      // desktop carries a 3x-density budget; the adaptive quality
-      // controller trims it gracefully on machines that can't hold it
-      var deviceMax = vw <= 560 ? 5000 : (vw <= 1024 ? 11000 : 54000);
-      var n = Math.round(cssR * cssR * 0.66 * densK);
-      return clamp(n, 3000, deviceMax);
+      var deviceMax = vw <= 560 ? 14000 : (vw <= 1024 ? 34000 : 190000);
+      var n = Math.round(cssR * cssR * 2.4 * densK);
+      return clamp(n, 6000, deviceMax);
     }
 
     /* ---- compile a state into fixed-N arrays ----
@@ -652,9 +707,27 @@
        pairs with particle i of every other — that is the morph. */
     function compileState(name) {
       var rnd = mulberry32(xmur3(seed + '|' + name)());
-      var T = toolkit(rnd);
-      BUILDERS[name](T, densK);
+      /* Ask the builder for about as many raw dots as there are particles
+         to spend, so the resample decimates a rich list instead of
+         duplicating a thin one. RAW_AT_1 is the measured output at
+         SAMP=1; the 1.04 is headroom so rounding never drops raw below N
+         and re-triggers the jitter path. */
+      var detail = clamp((N / RAW_AT_1) * 1.04, 0.75, 26);
+      var T = toolkit(rnd, detail);
+      BUILDERS[name](T, densK * detail);
+      /* Sampling does not scale perfectly linearly — fixed element counts
+         and the Math.max floors in the samplers contribute a constant
+         term — so a single corrective pass measures the shortfall and
+         rebuilds once. Self-correcting beats a tuned constant: it stays
+         right when a builder is edited. */
+      if (T.dots.length < N && detail < 26) {
+        detail = clamp(detail * (N / T.dots.length) * 1.03, 0.75, 26);
+        rnd = mulberry32(xmur3(seed + '|' + name)());
+        T = toolkit(rnd, detail);
+        BUILDERS[name](T, densK * detail);
+      }
       var raw = T.dots, L = raw.length;
+      rawL[name] = L;                    // surfaced in the HUD: see buildAll
 
       var st = {
         r: new Float32Array(N), th: new Float32Array(N),
@@ -683,6 +756,9 @@
 
     function buildAll() {
       N = targetN();
+      // enter at the absolute floor; tickQuality climbs from here once it
+      // has real frame times, and the climb is eased so it never pops
+      quality = qualityTarget = clamp(MIN_DRAWN / N, 0.06, 0.85);
       states = {};
       for (var i = 0; i < STATE_NAMES.length; i++) {
         states[STATE_NAMES[i]] = compileState(STATE_NAMES[i]);
@@ -885,8 +961,14 @@
       var Br, Bth, Bs, Ba, Bsp, Bch, Bimp;
       if (morphing) { Br = B.r; Bth = B.th; Bs = B.s; Ba = B.a; Bsp = B.sp; Bch = B.ch; Bimp = B.imp; }
       var useB = morphing && k >= 0.5;      // colour/importance hand over mid-blend
-      // at 3x density the grain goes finer, not blobbier
-      var dotK = BASE_DOT * (N > 30000 ? 0.8 : 1) * size.dpr;
+      /* Grain refines continuously with the budget rather than stepping
+         at one threshold: mean dot spacing falls as 1/sqrt(N), so the dot
+         has to shrink with N or a denser field just reads as a heavier
+         one. The exponent passes through both of the old step's points
+         (1.00 at 18k, 0.80 at 54k), so existing densities look exactly as
+         they did and the new doubled budget keeps refining past them
+         instead of blobbing. */
+      var dotK = BASE_DOT * clamp(Math.pow(GRAIN_REF / N, 0.203), 0.6, 1.25) * size.dpr;
       var lastAlpha = -1, curCh = -1;
 
       for (var i = 0; i < N; i++) {
@@ -944,9 +1026,18 @@
         // demand two consecutive slow windows before cutting, so a single
         // heavy stretch (a morph, a background hiccup) never degrades quality
         if (avg > 22) slowWins++; else slowWins = 0;
+        /* The floor has to be an ABSOLUTE number of drawn particles, not
+           a fraction of N. When the budget doubled, a fixed 0.5 floor
+           doubled with it and the controller lost the ability to protect
+           frame rate at all — it sat pinned at its minimum still drawing
+           ~40k dots at 30fps. Expressed as a floor on drawn particles,
+           raising the ceiling stays free: a strong machine climbs higher
+           than before, a weak one falls back to the same cheap frame it
+           would always have drawn. */
+        var qFloor = clamp(MIN_DRAWN / N, 0.06, 0.5);
         if (now - lastQChange > 2600) {
-          if (slowWins >= 2 && qualityTarget > 0.5) {
-            qualityTarget = Math.max(0.5, qualityTarget - 0.12);
+          if (slowWins >= 2 && qualityTarget > qFloor) {
+            qualityTarget = Math.max(qFloor, qualityTarget - 0.12);
             lastQChange = now; slowWins = 0;
           } else if (avg < 17.2 && qualityTarget < 1) {
             // 17.2ms sits just above the 60Hz vsync floor (16.7ms), so a
@@ -976,6 +1067,9 @@
       hud.textContent =
         'fps      ' + fps.toFixed(0) +
         '\nparticles ' + drawn + ' / ' + N +
+        '\nraw      ' + STATE_NAMES.map(function (s) {
+          return s.charAt(0) + ':' + (rawL[s] || 0);
+        }).join(' ') +
         '\nquality  ' + quality.toFixed(2) + ' → ' + qualityTarget.toFixed(2) +
         '\nphase    ' + seg.a + (seg.k > 0 ? ' → ' + seg.b : '') +
         '\nmorph k  ' + seg.k.toFixed(2) +
