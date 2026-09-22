@@ -36,6 +36,9 @@ p { margin: 0 0 1.2em; max-width: 65ch; }
 
 .script {
   font-family: var(--font-script);
+  /* Tangerine is vendored at 700 — the weight this has always rendered at,
+     back when it was the only file the font request returned. */
+  font-weight: 700;
   font-size: 2.6rem;
   color: var(--red-text);
   line-height: 1;
