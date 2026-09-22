@@ -382,6 +382,26 @@ declared scale of 200mm diameter. Change `DIAMETER_MM` and every millimetre
 figure rescales the way it would on skin — which is the point. The script is
 a test of the rules, and §2.2b exists because it failed twice.
 
+### The same ceiling, in the hero engine
+
+`shared/js/hero-mandala.js` had the animated version of the §2.3 stipple
+ceiling, and it was invisible until measured. The engine compiles each state
+to exactly N particles by resampling the builder's raw dot list, so whenever
+raw < N the surplus particles are duplicates nudged by a few thousandths.
+Measured: the builders emitted ~12,000 raw dots per state against N = 79,453.
+**Five particles in six were copies.** Raising the budget bought fuzzier
+lines, not finer ones — the exact mistake §2.3 warns about, where adding ink
+is mistaken for adding detail.
+
+The fix is the same in both media: **detail is bounded by the geometry you
+draw, not by the ink you spend.** The engine's samplers now scale with N, so
+a larger budget subdivides real geometry instead of duplicating it.
+
+The same audit found `weave` inverting the §1.2 ladder — its densest zone was
+the outer crown, so it had a bright rim and no centre, which is why it read
+as washed out beside `sigil` and `bloom`. Its crown is now lightened and its
+hexagram pair carries the weight, at the same 1.5× split as its chord star.
+
 ### What the contact sheet showed
 
 The three-size test is the tagline made falsifiable, and it was decisive:

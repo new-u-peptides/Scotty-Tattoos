@@ -80,6 +80,7 @@
   var BASE_DOT = 1.6;                 // base stipple dot size, CSS px
   var GRAIN_REF = 18000;              // N at which BASE_DOT applies unscaled
   var MIN_DRAWN = 13000;              // absolute floor the quality controller may trim to
+  var RAW_AT_1 = 12200;               // measured raw dots per state at SAMP 1
 
   /* ---- timeline (ms) ---- */
   var CONSTRUCT = 3200;               // phase 1: the logo tattoos itself in
@@ -144,11 +145,19 @@
        r/th polar position · s size · a alpha · c colour channel ·
        sp spin multiplier (per-ring differential rotation) ·
        imp importance (lower = survives quality culling longer). */
-  function toolkit(rand) {
+  function toolkit(rand, samp) {
     var dots = [];
     var CUR_SP = 1;
+    /* SAMP scales every 1-D sampler below with the particle budget. It is
+       the difference between a bigger budget buying DETAIL and a bigger
+       budget buying jitter: compileState resamples the raw list to exactly
+       N, so whenever raw < N the surplus particles are duplicates nudged
+       by a few thousandths — fuzzier lines, not finer ones. Measured at
+       SAMP=1 the builders emit ~12k dots per state, so at N=80k five in
+       six particles were copies. Sampling now tracks N. */
+    var SAMP = samp || 1;
     function P(r, a) { return [Math.cos(a) * r, Math.sin(a) * r]; }
-    var T = { dots: dots, rand: rand, P: P };
+    var T = { dots: dots, rand: rand, P: P, samp: SAMP };
 
     T.spin = function (sp) { CUR_SP = sp; };
     T.dot = function (r, th, s, a, c, imp) {
@@ -159,7 +168,7 @@
     };
     // dotted circle
     T.ring = function (rad, s, a, c, densK) {
-      var steps = Math.max(24, Math.round(rad * 240 * (densK || 1)));
+      var steps = Math.max(24, Math.round(rad * 240 * (densK || 1) * SAMP));
       for (var i = 0; i < steps; i++) {
         var t = (i / steps) * TAU;
         T.dot(rad + (rand() - 0.5) * 0.004, t + (rand() - 0.5) * 0.002,
@@ -169,7 +178,7 @@
     // dotted straight line between two XY points
     T.line = function (p0, p1, s, a, c) {
       var dx = p1[0] - p0[0], dy = p1[1] - p0[1];
-      var n = Math.max(2, Math.round(Math.sqrt(dx * dx + dy * dy) * 150));
+      var n = Math.max(2, Math.round(Math.sqrt(dx * dx + dy * dy) * 150 * SAMP));
       for (var i = 0; i <= n; i++) {
         var t = i / n;
         T.dotXY(p0[0] + dx * t + (rand() - 0.5) * 0.004,
@@ -179,6 +188,7 @@
     };
     // dotted quadratic curve
     T.curve = function (p0, cp, p1, steps, s, a, c) {
+      steps = Math.max(2, Math.round(steps * SAMP));
       for (var i = 0; i <= steps; i++) {
         var t = i / steps, u = 1 - t;
         var x = u * u * p0[0] + 2 * u * t * cp[0] + t * t * p1[0];
@@ -189,6 +199,7 @@
     };
     // dotted cubic curve (the S-curves: solar rays, ogee petal sides)
     T.cubic = function (p0, c1, c2, p1, steps, s, a, c, taper) {
+      steps = Math.max(2, Math.round(steps * SAMP));
       for (var i = 0; i <= steps; i++) {
         var t = i / steps, u = 1 - t;
         var w0 = u * u * u, w1 = 3 * u * u * t, w2 = 3 * u * t * t, w3 = t * t * t;
@@ -201,7 +212,7 @@
     };
     // small arc around an arbitrary centre (scallops between petal tips)
     T.arcAt = function (cx, cy, rad, a0, a1, s, al, c) {
-      var span = a1 - a0, n = Math.max(4, Math.round(Math.abs(span) * rad * 220));
+      var span = a1 - a0, n = Math.max(4, Math.round(Math.abs(span) * rad * 220 * SAMP));
       for (var i = 0; i <= n; i++) {
         var t = a0 + span * (i / n);
         T.dotXY(cx + Math.cos(t) * rad + (rand() - 0.5) * 0.003,
@@ -392,11 +403,19 @@
     for (i = 0; i < m; i++) {
       var a = -Math.PI / 2 + i * cell;
       var isLong = (i % 2 === 0);
+      /* Lightened deliberately (fill 16 -> 6, shadow 8 -> 3, edge alpha
+         1.0 -> 0.72). This crown used to be the densest thing in the
+         state, which inverts the ladder in
+         docs/MANDALA-DESIGN-DIRECTION.md §1.2: density has to fall
+         monotonically outward past the structure band, or the design
+         loses its centre and reads as a wreath. That is exactly why
+         `weave` looked washed out next to `sigil` and `bloom` — it had
+         no bold zone at all, only a bright rim. */
       T.petal(a, cell * 0.5 * 0.86, 0.775, isLong ? 1.0 : 0.915, {
-        edgeC: CH_LINE, edgeS: 0.7, edgeA: 1.0,
+        edgeC: CH_LINE, edgeS: 0.62, edgeA: 0.72,
         tipBead: isLong, tipBeadC: CH_MAIN,
-        echo: isLong, fillN: Math.round(16 * dens), fillC: CH_MAIN,
-        shadowN: 8
+        echo: isLong, fillN: Math.round(6 * dens), fillC: CH_MAIN,
+        shadowN: 3
       });
     }
     // scallop arcs riding between the petal bases — a soft circular flow
@@ -447,14 +466,19 @@
 
     // layered 12-point star (two hexagrams) — gold accent geometry
     T.spin(1.14);
-    function hexagram(rO, rot, ch, al) {
-      var V = [], k;
+    function hexagram(rO, rot, ch, al, w) {
+      var V = [], k; w = w || 0.66;
       for (k = 0; k < 6; k++) V.push(P(rO, rot + k * (TAU / 6)));
-      T.line(V[0], V[2], 0.66, al, ch); T.line(V[2], V[4], 0.66, al, ch); T.line(V[4], V[0], 0.66, al, ch);
-      T.line(V[1], V[3], 0.66, al, ch); T.line(V[3], V[5], 0.66, al, ch); T.line(V[5], V[1], 0.66, al, ch);
+      T.line(V[0], V[2], w, al, ch); T.line(V[2], V[4], w, al, ch); T.line(V[4], V[0], w, al, ch);
+      T.line(V[1], V[3], w, al, ch); T.line(V[3], V[5], w, al, ch); T.line(V[5], V[1], w, al, ch);
     }
-    hexagram(0.50, -Math.PI / 2, CH_MAIN, 0.92);
-    hexagram(0.50, -Math.PI / 2 + TAU / 12, CH_MAIN, 0.92);
+    /* THE bold zone. The two hexagrams are the state's anchor, so they
+       carry real weight instead of matching everything around them — and
+       they take the same 1.5x weight split as the chord star above, one
+       reading as the primary star and one as its echo. Before this the
+       whole state sat at one weight and had nothing for the eye to hold. */
+    hexagram(0.50, -Math.PI / 2, CH_MAIN, 1.0, 0.94);
+    hexagram(0.50, -Math.PI / 2 + TAU / 12, CH_SHADOW, 0.85, 0.62);
     // star-tip highlights
     for (i = 0; i < 12; i++) {
       T.dot(0.50, -Math.PI / 2 + i * (TAU / 12), 1.0, 0.9, CH_HI, 0.5);
@@ -465,8 +489,10 @@
     // inner petal ring — small rounded petals (not spikes) around the core
     var m2 = 12, cell2 = TAU / m2;
     for (i = 0; i < m2; i++) {
+      // RADIANCE: brought up to gold so the centre holds its own — the
+      // ladder wants weight at the core, not only at the rim
       T.petal(-Math.PI / 2 + (i + 0.5) * cell2, cell2 * 0.5 * 0.8, 0.155, 0.285, {
-        edgeC: CH_LINE, edgeS: 0.6, edgeA: 0.9, ridge: false, baseShadow: false, steps: 14
+        edgeC: CH_MAIN, edgeS: 0.78, edgeA: 1.0, ridge: false, baseShadow: false, steps: 14
       });
     }
 
@@ -632,6 +658,7 @@
 
     var size = { w: 1, h: 1, dpr: 1, R: 1 };
     var N = 0;                        // total particles (fixed across states)
+    var rawL = {};                    // raw dots each builder emitted, per state
     var states = {};                  // name -> typed-array particle sets
     var delay = null, prio = null;    // construction stagger, cull priority
     var start = performance.now(), pausedAt = 0;
@@ -668,8 +695,8 @@
     function targetN() {
       var cssR = size.R / size.dpr;
       var vw = window.innerWidth || 1024;
-      var deviceMax = vw <= 560 ? 10000 : (vw <= 1024 ? 22000 : 108000);
-      var n = Math.round(cssR * cssR * 1.32 * densK);
+      var deviceMax = vw <= 560 ? 14000 : (vw <= 1024 ? 34000 : 190000);
+      var n = Math.round(cssR * cssR * 2.4 * densK);
       return clamp(n, 6000, deviceMax);
     }
 
@@ -680,9 +707,27 @@
        pairs with particle i of every other — that is the morph. */
     function compileState(name) {
       var rnd = mulberry32(xmur3(seed + '|' + name)());
-      var T = toolkit(rnd);
-      BUILDERS[name](T, densK);
+      /* Ask the builder for about as many raw dots as there are particles
+         to spend, so the resample decimates a rich list instead of
+         duplicating a thin one. RAW_AT_1 is the measured output at
+         SAMP=1; the 1.04 is headroom so rounding never drops raw below N
+         and re-triggers the jitter path. */
+      var detail = clamp((N / RAW_AT_1) * 1.04, 0.75, 26);
+      var T = toolkit(rnd, detail);
+      BUILDERS[name](T, densK * detail);
+      /* Sampling does not scale perfectly linearly — fixed element counts
+         and the Math.max floors in the samplers contribute a constant
+         term — so a single corrective pass measures the shortfall and
+         rebuilds once. Self-correcting beats a tuned constant: it stays
+         right when a builder is edited. */
+      if (T.dots.length < N && detail < 26) {
+        detail = clamp(detail * (N / T.dots.length) * 1.03, 0.75, 26);
+        rnd = mulberry32(xmur3(seed + '|' + name)());
+        T = toolkit(rnd, detail);
+        BUILDERS[name](T, densK * detail);
+      }
       var raw = T.dots, L = raw.length;
+      rawL[name] = L;                    // surfaced in the HUD: see buildAll
 
       var st = {
         r: new Float32Array(N), th: new Float32Array(N),
@@ -1022,6 +1067,9 @@
       hud.textContent =
         'fps      ' + fps.toFixed(0) +
         '\nparticles ' + drawn + ' / ' + N +
+        '\nraw      ' + STATE_NAMES.map(function (s) {
+          return s.charAt(0) + ':' + (rawL[s] || 0);
+        }).join(' ') +
         '\nquality  ' + quality.toFixed(2) + ' → ' + qualityTarget.toFixed(2) +
         '\nphase    ' + seg.a + (seg.k > 0 ? ' → ' + seg.b : '') +
         '\nmorph k  ' + seg.k.toFixed(2) +
