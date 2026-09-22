@@ -57,6 +57,8 @@
      data-hero-speed    : rotation multiplier  (default 1; 1 rev ≈ 45s)
      data-hero-animate  : "false" -> static    (default true)
      data-hero-debug    : "true" -> HUD        (also ?heroDebug=1)
+     data-hero-quality  : pin drawn fraction, disables the adaptive
+                          controller (dev/design-review only)
 
    The SCOTTY MASSA wordmark is NOT drawn here — it is a real HTML
    <h1> layered above the canvas (see index.html / hero.css) and
@@ -86,10 +88,25 @@
   var CONSTRUCT = 3200;               // phase 1: the logo tattoos itself in
   var ROT_ON = 2400, ROT_FULL = 5400; // rotation eases in across this window
   var REV_S = 46;                     // seconds per revolution (35–55 brief)
-  var SEG = [                         // steady-state loop, seamless
-    { state: 'sigil', hold: 9800, blend: 3200 },   // canonical presentation
-    { state: 'weave', hold: 4800, blend: 3200 },   // interlocking star linework
-    { state: 'bloom', hold: 5400, blend: 3600 }    // dense petal rosette
+  /* Steady-state loop, seamless. Ordered so DENSITY ALTERNATES: every
+     heavy state is followed by an open one, so the cycle breathes
+     instead of reading as five dense mandalas at a slower frequency.
+
+       sigil   dense, bold, canonical — the brand
+       weave   mid, geometric
+       bloom   dense, organic          <- the benchmark state
+       lattice open, technical         <- new: Direction A
+       seal    bold but OPEN, minimal  <- new: Direction C, the rest beat
+
+     The seal holds shortest: it says its piece immediately and outstays
+     its welcome if given bloom's dwell. The sigil holds longest because
+     it is the one the visitor should remember. */
+  var SEG = [
+    { state: 'sigil',   hold: 9000, blend: 3200 },
+    { state: 'weave',   hold: 4600, blend: 3000 },
+    { state: 'bloom',   hold: 5200, blend: 3400 },
+    { state: 'lattice', hold: 5000, blend: 3000 },
+    { state: 'seal',    hold: 3800, blend: 3200 }
   ];
   var CYCLE = 0;
   for (var si = 0; si < SEG.length; si++) CYCLE += SEG[si].hold + SEG[si].blend;
@@ -289,6 +306,69 @@
               o.fillC != null ? o.fillC : CH_MAIN, 1);
       }
     };
+
+    /* One curved triangular cell — the GEOMETRIC counterpart of T.petal,
+       and the sigil's own edge language. Sides bow outward past the
+       straight-line midpoint so the cell carries mass through its middle
+       (the part that has to survive spread), the base follows the circle
+       rather than cutting a chord across it, and the fill holds a bright
+       plateau near the base then dissolves into stipple at the tip —
+       the opposite weighting to a petal, and the reason the brand mark
+       reads as masonry rather than as a comb.
+
+       Proportion guard: docs/MANDALA-DESIGN-DIRECTION.md §2.2b — band
+       depth over ~1.7x the base width turns cells into needles. Callers
+       pick rIn/rOut/hw; this just draws what it is given. */
+    T.facet = function (a, hw, rIn, rOut, o) {
+      o = o || {};
+      var edgeC = o.edgeC != null ? o.edgeC : CH_MAIN;
+      var span = rOut - rIn;
+      var bL = P(rIn, a - hw), bR = P(rIn, a + hw);
+      var apex = P(rOut, a);
+      var cMid = rIn + span * 0.42;
+      var steps = o.steps || 20;
+      T.curve(bR, P(cMid, a + hw * 0.90), apex, steps, o.edgeS || 0.62, o.edgeA || 0.95, edgeC);
+      T.curve(bL, P(cMid, a - hw * 0.90), apex, steps, o.edgeS || 0.62, o.edgeA || 0.95, edgeC);
+      T.arcAt(0, 0, rIn, a - hw, a + hw, (o.edgeS || 0.62) * 0.9, (o.edgeA || 0.95) * 0.85, edgeC);
+
+      if (o.tipBead) T.dot(rOut + span * 0.05, a, 1.2, 0.95,
+                           o.tipBeadC != null ? o.tipBeadC : CH_HI, 0.5);
+      if (o.echo) {
+        var e = 0.20, hwE = hw * 0.62;
+        T.curve(P(rIn + span * e, a + hwE), P(rIn + span * 0.50, a + hwE * 0.85),
+                P(rOut - span * 0.22, a), 14, 0.54, 0.7, edgeC);
+        T.curve(P(rIn + span * e, a - hwE), P(rIn + span * 0.50, a - hwE * 0.85),
+                P(rOut - span * 0.22, a), 14, 0.54, 0.7, edgeC);
+      }
+      if (o.baseShadow !== false) {
+        var nS = o.shadowN || 10;
+        for (var j = 0; j < nS; j++) {
+          T.dot(rIn + span * Math.pow(rand(), 2.4) * 0.2,
+                a + (rand() * 2 - 1) * hw * 0.92,
+                0.55, 0.3 + rand() * 0.22, CH_SHADOW, 1);
+        }
+      }
+      /* Base-weighted fill: bright plateau, dissolving toward the tip.
+
+         fillImp matters more than it looks. The quality controller culls
+         by prio * importance, and at importance 1 a fill is the FIRST
+         thing to go — so any state whose identity is mass (the seal, a
+         solid band) degrades into bare outlines on a machine that trims,
+         which is most of them. Handing the caller control lets a state
+         say "these dots ARE the design, cull my decoration first". */
+      var fillN = o.fillN || 0;
+      var fImp = o.fillImp != null ? o.fillImp : 1;
+      for (var f = 0; f < fillN; f++) {
+        var u = rand();
+        if (rand() < u * 0.92) continue;               // density falls to the tip
+        var hwAt = hw * (1 - u) * 0.94;
+        var v = (rand() * 2 - 1); v = v * (1 - 0.18 * v * v);
+        T.dot(rIn + span * u + (rand() - 0.5) * 0.005,
+              a + v * hwAt, (o.fillS || 0.66) * (0.72 + rand() * 0.55),
+              (0.82 - 0.4 * u) * (0.85 + rand() * 0.3),
+              o.fillC != null ? o.fillC : CH_MAIN, fImp);
+      }
+    };
     return T;
   }
 
@@ -389,119 +469,159 @@
     }
   }
 
-  /* Interlocking star + triangular-line mandala (reference 3), with
-     the perimeter upgraded from straight spikes to an ornamental
-     crown: alternating long/short ogee petal points, scallop arcs
-     bridging the bases, highlight ridges and tip beads. */
+  /* WEAVE — the geometric sibling of `bloom`.
+
+     Rebuilt to bloom's construction grammar, because bloom is the state
+     that reads best and the reason is structural, not decorative. Four
+     things do the work there, and all four are borrowed here:
+
+       1. a SHADOW back-layer offset half a pitch behind the bright front
+          band, so depth comes from tonal separation rather than overlap;
+       2. NESTED bands at decreasing scale with alternating offsets, each
+          a different element count, giving a rhythm of sizes;
+       3. a dotted SEPARATOR ring under each band, so bands read as bands;
+       4. per-band DIFFERENTIAL SPIN, so the mandala breathes instead of
+          turning as one rigid plate.
+
+     The vocabulary stays weave's own: facets, chords and star polygons
+     where bloom uses petals. Same grammar, different words — which is
+     what makes them look like one family rather than one design twice.
+
+     Ladder (docs/MANDALA-DESIGN-DIRECTION.md §1.2): the bold zone is
+     STRUCTURE at r 0.33-0.72, density falls monotonically outward from
+     there, and the outer crown is deliberately the lightest band. */
   function buildWeave(T, dens) {
     var rand = T.rand, i;
     var P = T.P;
 
-    // ornamental crown — 24 points, alternating long/short rhythm
-    T.spin(1);
+    /* ---- AURA: outer crown, two layers, the lightest band ---- */
     var m = 24, cell = TAU / m;
+
+    // back layer — half a pitch off, deep gold, sitting behind
+    T.spin(0.95);
     for (i = 0; i < m; i++) {
-      var a = -Math.PI / 2 + i * cell;
-      var isLong = (i % 2 === 0);
-      /* Lightened deliberately (fill 16 -> 6, shadow 8 -> 3, edge alpha
-         1.0 -> 0.72). This crown used to be the densest thing in the
-         state, which inverts the ladder in
-         docs/MANDALA-DESIGN-DIRECTION.md §1.2: density has to fall
-         monotonically outward past the structure band, or the design
-         loses its centre and reads as a wreath. That is exactly why
-         `weave` looked washed out next to `sigil` and `bloom` — it had
-         no bold zone at all, only a bright rim. */
-      T.petal(a, cell * 0.5 * 0.86, 0.775, isLong ? 1.0 : 0.915, {
-        edgeC: CH_LINE, edgeS: 0.62, edgeA: 0.72,
-        tipBead: isLong, tipBeadC: CH_MAIN,
-        echo: isLong, fillN: Math.round(6 * dens), fillC: CH_MAIN,
-        shadowN: 3
+      T.facet(-Math.PI / 2 + (i + 0.5) * cell, cell * 0.5 * 0.88, 0.80, 0.975, {
+        edgeC: CH_SHADOW, edgeS: 0.5, edgeA: 0.5, steps: 16,
+        fillN: Math.round(4 * dens), fillC: CH_SHADOW, shadowN: 2
       });
     }
-    // scallop arcs riding between the petal bases — a soft circular flow
+    // front layer — alternating reach, bone edges, beaded long tips
+    T.spin(1);
+    for (i = 0; i < m; i++) {
+      var isLong = (i % 2 === 0);
+      T.facet(-Math.PI / 2 + i * cell, cell * 0.5 * 0.82, 0.775, isLong ? 0.945 : 0.885, {
+        edgeC: CH_LINE, edgeS: 0.6, edgeA: 0.7, steps: 18,
+        tipBead: isLong, tipBeadC: CH_MAIN,
+        fillN: Math.round(5 * dens), fillC: CH_SHADOW, shadowN: 3
+      });
+    }
+    // scallops bridging the bases, then the band's separator ring
     for (i = 0; i < m; i++) {
       var sa = -Math.PI / 2 + (i + 0.5) * cell;
       var c = P(0.788, sa);
-      T.arcAt(c[0], c[1], 0.030, sa - Math.PI * 0.92, sa + Math.PI * 0.92, 0.58, 0.7, CH_LINE);
+      T.arcAt(c[0], c[1], 0.028, sa - Math.PI * 0.9, sa + Math.PI * 0.9, 0.52, 0.6, CH_LINE);
     }
-    T.ring(0.775, 0.62, 0.8, CH_LINE);
-    T.ring(0.748, 0.5, 0.6, CH_LINE, 0.8);
+    T.ring(0.772, 0.56, 0.62, CH_LINE);
 
-    /* The interlocking chord star — a {24/7} weave.
-       Chords alternate between two weights 1.5x apart rather than all
-       sharing one. Drawing this lattice flat (see
-       docs/MANDALA-DESIGN-DIRECTION.md §3, Direction A) showed that a
-       uniform-weight star collapses into texture: with ~150 crossings
-       the eye has nothing to tell it which strand is in front. The
-       weight difference does that job, and does it without opening a gap
-       at every crossing — which was the other thing that failed, because
-       breaking 150 crossings reduces the thin strands to dashes. */
+    // fine tick band under the crown — the transitional texture bloom
+    // uses to stop a hard jump between a solid band and open ground
+    T.spin(1.06);
+    for (i = 0; i < 72; i++) {
+      var ta = -Math.PI / 2 + i * (TAU / 72);
+      T.line(P(0.726, ta), P(0.756, ta), 0.5, 0.5, CH_LINE);
+    }
+    T.ring(0.718, 0.5, 0.55, CH_LINE, 0.85);
+
+    /* ---- STRUCTURE: the bold zone ---- */
+
+    /* The {24/7} chord star. Chords alternate between two weights 1.5x
+       apart: drawing this lattice flat showed a uniform-weight star
+       collapses into texture, because with ~150 crossings the eye has
+       nothing to tell it which strand is in front. The weight difference
+       does that job without opening a gap at every crossing — which was
+       the other thing that failed, reducing thin strands to dashes. */
     T.spin(0.88);
-    var R1 = 0.72, step = 7;
+    var R1 = 0.70, step = 7;
     for (i = 0; i < m; i++) {
       var a0 = -Math.PI / 2 + i * cell;
       var a1 = -Math.PI / 2 + ((i + step) % m) * cell;
       var lead = (i % 2 === 0);
       T.line(P(R1, a0), P(R1, a1),
-        lead ? 0.75 : 0.50,                 // 1.5x weight ratio
-        lead ? 0.82 : 0.56,
-        lead ? CH_MAIN : CH_LINE);
+        lead ? 0.78 : 0.50, lead ? 0.9 : 0.54, lead ? CH_MAIN : CH_LINE);
     }
-    // gold nodes at the weave's rim vertices
     for (i = 0; i < m; i++) {
-      var na = -Math.PI / 2 + i * cell;
-      T.dot(R1, na, 1.1, 0.9, CH_MAIN, 0.5);
+      T.dot(R1, -Math.PI / 2 + i * cell, 1.15, 0.95, CH_HI, 0.5);
     }
 
-    // needle ray band — fine alternating-length rays (rays -> needles morph)
-    T.spin(1.06);
-    var rays = 56;
-    for (i = 0; i < rays; i++) {
-      var ra = -Math.PI / 2 + i * (TAU / rays);
-      var ext = (i % 2 === 0) ? 0.70 : 0.655;
-      T.line(P(0.545, ra), P(ext, ra), 0.58, 0.68, CH_LINE);
-      if (i % 4 === 0) T.dot(ext + 0.012, ra, 0.9, 0.8, CH_HI, 0.6);
-    }
-    T.ring(0.535, 0.58, 0.7, CH_LINE);
-
-    // layered 12-point star (two hexagrams) — gold accent geometry
-    T.spin(1.14);
-    function hexagram(rO, rot, ch, al, w) {
-      var V = [], k; w = w || 0.66;
-      for (k = 0; k < 6; k++) V.push(P(rO, rot + k * (TAU / 6)));
-      T.line(V[0], V[2], w, al, ch); T.line(V[2], V[4], w, al, ch); T.line(V[4], V[0], w, al, ch);
-      T.line(V[1], V[3], w, al, ch); T.line(V[3], V[5], w, al, ch); T.line(V[5], V[1], w, al, ch);
-    }
-    /* THE bold zone. The two hexagrams are the state's anchor, so they
-       carry real weight instead of matching everything around them — and
-       they take the same 1.5x weight split as the chord star above, one
-       reading as the primary star and one as its echo. Before this the
-       whole state sat at one weight and had nothing for the eye to hold. */
-    hexagram(0.50, -Math.PI / 2, CH_MAIN, 1.0, 0.94);
-    hexagram(0.50, -Math.PI / 2 + TAU / 12, CH_SHADOW, 0.85, 0.62);
-    // star-tip highlights
-    for (i = 0; i < 12; i++) {
-      T.dot(0.50, -Math.PI / 2 + i * (TAU / 12), 1.0, 0.9, CH_HI, 0.5);
-    }
-
+    // nested facet band — the geometric answer to bloom's petal crowns,
+    // offset half a pitch against the chord star's vertices
     T.spin(0.94);
-    T.ring(0.30, 0.55, 0.7, CH_LINE);
-    // inner petal ring — small rounded petals (not spikes) around the core
-    var m2 = 12, cell2 = TAU / m2;
+    var m2 = 16, cell2 = TAU / m2;
     for (i = 0; i < m2; i++) {
-      // RADIANCE: brought up to gold so the centre holds its own — the
-      // ladder wants weight at the core, not only at the rim
-      T.petal(-Math.PI / 2 + (i + 0.5) * cell2, cell2 * 0.5 * 0.8, 0.155, 0.285, {
-        edgeC: CH_MAIN, edgeS: 0.78, edgeA: 1.0, ridge: false, baseShadow: false, steps: 14
+      T.facet(-Math.PI / 2 + (i + 0.5) * cell2, cell2 * 0.5 * 0.80, 0.505, 0.645, {
+        edgeC: CH_MAIN, edgeS: 0.7, edgeA: 0.98, echo: true, steps: 20,
+        fillN: Math.round(70 * dens), fillC: CH_MAIN, fillS: 1.3,
+        fillImp: 0.5, shadowN: 10
+      });
+    }
+    T.ring(0.493, 0.54, 0.62, CH_LINE, 0.85);
+
+    /* The hexagram pair — the state's anchor. Same 1.5x weight split as
+       the chord star: one reads as the primary star, one as its echo.
+       Before this the whole state sat at one weight and had nothing for
+       the eye to hold, which is why it looked washed out beside its
+       siblings. */
+    T.spin(1.12);
+    /* Drawn as a RIBBON, not a line. A dotted line is one dot wide
+       however large the dot, so the state's anchor was a hairline and
+       weave kept reading as pale scaffolding beside its siblings. */
+    function ribbon(p0, p1, strands, spread, w, al, ch) {
+      var dx = p1[0] - p0[0], dy = p1[1] - p0[1];
+      var len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var nx = -dy / len * spread, ny = dx / len * spread;
+      for (var t = 0; t < strands; t++) {
+        var o = (strands === 1) ? 0 : (t / (strands - 1) - 0.5);
+        T.line([p0[0] + nx * o, p0[1] + ny * o], [p1[0] + nx * o, p1[1] + ny * o],
+               w, al * (Math.abs(o) > 0.35 ? 0.78 : 1), ch);
+      }
+    }
+    /* A {12/5} star polygon, NOT a hexagram pair. Two overlaid triangles
+       at this weight read unmistakably as a Star of David — a specific
+       religious emblem, which is not what a geometric tattoo studio's
+       hero should be asserting. {12/5} is a single closed path through
+       all twelve vertices: denser, unambiguously ornamental, and a
+       better fit for a state whose identity is interlocking linework. */
+    function star12(rO, rot, step, ch, al, w, strands, spread) {
+      var V = [], k;
+      for (k = 0; k < 12; k++) V.push(P(rO, rot + k * (TAU / 12)));
+      for (k = 0; k < 12; k++) {
+        ribbon(V[k], V[(k + step) % 12], strands, spread, w, al, ch);
+      }
+    }
+    star12(0.45, -Math.PI / 2, 5, CH_MAIN, 1.0, 0.9, 4, 0.015);
+    star12(0.45, -Math.PI / 2 + TAU / 24, 4, CH_SHADOW, 0.8, 0.58, 2, 0.009);
+    for (i = 0; i < 12; i++) {
+      T.dot(0.44, -Math.PI / 2 + i * (TAU / 12), 1.0, 0.92, CH_HI, 0.55);
+    }
+
+    /* ---- RADIANCE: the core holds its own ---- */
+    T.spin(0.98);
+    T.ring(0.30, 0.55, 0.65, CH_LINE);
+    var m3 = 10, cell3 = TAU / m3;
+    for (i = 0; i < m3; i++) {
+      T.facet(-Math.PI / 2 + (i + 0.5) * cell3, cell3 * 0.5 * 0.78, 0.168, 0.288, {
+        edgeC: CH_MAIN, edgeS: 0.76, edgeA: 1.0, steps: 16,
+        fillN: Math.round(44 * dens), fillC: CH_MAIN, fillS: 1.25,
+        fillImp: 0.5, shadowN: 5
       });
     }
 
-    // shading dust — value pooling toward the weave band, plus halo
+    /* ---- dust + halo ---- */
     T.spin(1);
-    var dust = Math.round(320 * dens);
+    var dust = Math.round(300 * dens);
     for (i = 0; i < dust; i++) {
-      var da = rand() * TAU, dr = 0.30 + Math.pow(rand(), 0.7) * 0.44;
-      T.dot(dr, da, 0.42 + rand() * 0.25, 0.06 + rand() * 0.16, CH_SHADOW, 1);
+      var da = rand() * TAU, dr = 0.30 + Math.pow(rand(), 0.7) * 0.42;
+      T.dot(dr, da, 0.42 + rand() * 0.25, 0.06 + rand() * 0.15, CH_SHADOW, 1);
     }
     var haloN = Math.round(170 * dens);
     for (i = 0; i < haloN; i++) {
@@ -509,6 +629,7 @@
       T.dot(hr, ha, 0.4 + rand() * 0.28, 0.05 + rand() * 0.14, CH_LINE, 1);
     }
   }
+
 
   /* Dense radial tattoo rosette (reference 4 evolved) — nested petal
      crowns with layered depth, separated by dotted rings, finished
@@ -588,7 +709,160 @@
     }
   }
 
-  var BUILDERS = { sigil: buildSigil, weave: buildWeave, bloom: buildBloom };
+  /* LATTICE — "Alchemical Solar Lattice", Direction A of
+     docs/MANDALA-DESIGN-DIRECTION.md, brought off the page.
+
+     The document's directions were drawn flat and scale-tested; this is
+     the same geometry as docs/design/direction-a.svg, in particles. It
+     earns its place in the loop by being the one state that reads as an
+     INSTRUMENT rather than an ornament — an astrolabe between bloom's
+     organic mass and the sigil's authority.
+
+     {12/4} decomposes into four triangles; two sets offset half a vertex
+     step give eight. Chord distance from centre is Rout*cos(60deg) =
+     0.5*Rout, so a lattice drawn to 0.70 reaches in to 0.35 and stops
+     there on its own — the band fills itself without a mask. */
+  function buildLattice(T, dens) {
+    var rand = T.rand, i, k;
+    var P = T.P;
+
+    /* RADIANCE — 28 wavy solar rays, the canonical count. Width is
+       capped by that count, not by taste: §2.2b, 28 rays at r~0.23 have
+       ~5.2mm of arc each, so anything past ~3.2mm closes the gap. */
+    T.spin(1.04);
+    for (i = 0; i < SYM; i++) {
+      var ra = -Math.PI / 2 + i * CELL;
+      var bend = 0.055;
+      for (var st = 0; st < 5; st++) {
+        var off = (st / 4 - 0.5);
+        var w = CELL * 0.26 * (1 - Math.abs(off) * 0.2);
+        T.cubic(P(0.152, ra + off * w * 0.7), P(0.21, ra + bend + off * w),
+                P(0.27, ra + bend * 0.35 + off * w * 0.8), P(0.308, ra - bend * 0.2 + off * w * 0.3),
+                22, 0.8, Math.abs(off) > 0.35 ? 0.7 : 0.95,
+                Math.abs(off) > 0.35 ? CH_SHADOW : CH_MAIN, true);
+      }
+    }
+    T.ring(0.345, 0.5, 0.6, CH_SHADOW, 0.9);
+
+    /* STRUCTURE — two {12/4} sets at weights 1.5x apart. Crossings are
+       NOT cut: 24 chords cross ~150 times and a break at each reduces
+       the lighter layer to dashes. Where two strands differ by 1.5x the
+       weight difference already says which passes behind, so the gaps
+       are spent nowhere and the lattice stays continuous. */
+    var Rout = 0.70;
+    var layers = [
+      { off: 0, w: 0.86, a: 1.0, c: CH_MAIN, sp: 0.9 },
+      { off: Math.PI / 12, w: 0.54, a: 0.7, c: CH_SHADOW, sp: 1.08 }
+    ];
+    for (var L = 0; L < layers.length; L++) {
+      var ly = layers[L];
+      T.spin(ly.sp);
+      for (var s = 0; s < 4; s++) {
+        var V = [];
+        for (i = 0; i < 3; i++) {
+          V.push(P(Rout, ((s + i * 4) / 12) * TAU - Math.PI / 2 + ly.off));
+        }
+        for (var e = 0; e < 3; e++) {
+          T.line(V[e], V[(e + 1) % 3], ly.w, ly.a, ly.c);
+        }
+      }
+    }
+    // nodes at the twelve star points and twelve valleys — solid, so they
+    // are the part that survives longest, carrying the secondary rhythm
+    T.spin(0.9);
+    for (k = 0; k < 12; k++) {
+      var na = (k / 12) * TAU - Math.PI / 2;
+      T.dot(Rout, na, 1.3, 0.95, CH_HI, 0.45);
+      T.dot(0.35, na + Math.PI / 12, 1.0, 0.85, CH_MAIN, 0.6);
+    }
+    T.ring(0.715, 0.6, 0.72, CH_SHADOW);
+
+    /* AURA — restrained stipple only. A dot field caps near 10% ink
+       (§2.3), so it can never carry weight; it is here to dissolve the
+       edge, nothing more. Pitch opens outward so it reads as a fade. */
+    T.spin(1);
+    var aura = Math.round(760 * dens);
+    for (i = 0; i < aura; i++) {
+      var u = rand();
+      var ar = 0.775 + Math.pow(u, 0.75) * 0.225;
+      var fade = 1 - (ar - 0.775) / 0.225;
+      if (rand() > 0.15 + fade * 0.85) continue;
+      T.dot(ar, rand() * TAU, 0.4 + rand() * 0.26,
+            (0.06 + rand() * 0.16) * (0.35 + fade * 0.65),
+            fade > 0.55 ? CH_MAIN : CH_LINE, 1);
+    }
+  }
+
+  /* SEAL — "Modern Minimalist Sacred", Direction C of the design
+     document, and the only one of the three that survived the 16mm
+     scale test still reading as a seal.
+
+     It is the loop's moment of rest: after bloom's mass and lattice's
+     intricacy, a state with maybe a third of the elements and nothing
+     fine enough to fail. Deliberately the most OPEN state in the cycle —
+     the rhythm needs somewhere to breathe, and a loop of five dense
+     mandalas is just noise at a slower frequency. */
+  function buildSeal(T, dens) {
+    var rand = T.rand, i;
+    var P = T.P;
+
+    /* RADIANCE — the canonical 28 rays, drawn as a multi-strand RIBBON
+       rather than a single curve, the way the sigil builds its own. A
+       lone dotted curve is one dot wide however large the dot: at this
+       grain that is a hairline, and the seal cannot afford hairlines.
+       Five strands across a tapering width give it a stroke with body. */
+    T.spin(1.02);
+    for (i = 0; i < SYM; i++) {
+      var ra = -Math.PI / 2 + i * CELL;
+      var bend = 0.05;
+      for (var st = 0; st < 9; st++) {
+        var off = (st / 8 - 0.5);                 // -0.5 .. +0.5 across the ribbon
+        var w = CELL * 0.40 * (1 - Math.abs(off) * 0.22);
+        var ch = Math.abs(off) > 0.35 ? CH_SHADOW : (Math.abs(off) < 0.15 ? CH_HI : CH_MAIN);
+        T.cubic(P(0.205, ra + off * w * 0.7),
+                P(0.29, ra + bend + off * w),
+                P(0.39, ra + bend * 0.3 + off * w * 0.8),
+                P(0.452, ra - bend * 0.25 + off * w * 0.25),
+                26, 0.95, Math.abs(off) > 0.35 ? 0.72 : 1.0, ch, true);
+      }
+      T.dot(0.470, ra - bend * 0.3, 1.1, 0.9, CH_HI, 0.5);
+    }
+
+    /* STRUCTURE — ONE band of 28 cells. Depth 0.175 against a base of
+       roughly 0.105 of arc: a 1:1.67 ratio, inside the §2.2b limit that
+       keeps cells reading as masonry instead of as a comb. */
+    T.spin(0.96);
+    T.ring(0.585, 0.6, 0.7, CH_SHADOW, 0.9);
+    for (i = 0; i < SYM; i++) {
+      T.facet(-Math.PI / 2 + i * CELL, CELL * 0.5 * 0.80, 0.600, 0.775, {
+        edgeC: CH_MAIN, edgeS: 0.85, edgeA: 1.0, echo: true, steps: 22,
+        /* Solid, not stipple. At this grain a 0.66-size dot lands
+           sub-pixel, so a cell full of them reads as a dusting rather
+           than as mass; the seal's whole claim is that it is readable
+           across a room. Bigger dots and more of them, and a low
+           importance so the mass is the LAST thing culled. */
+        fillN: Math.round(96 * dens), fillC: CH_MAIN, fillS: 1.5,
+        fillImp: 0.35, shadowN: 12
+      });
+    }
+
+    // the seal's edge — one bold ring closing the composition
+    T.spin(1);
+    T.ring(0.830, 1.05, 1.0, CH_MAIN);
+    T.ring(0.845, 0.5, 0.45, CH_SHADOW, 0.7);
+
+    // almost no aura: this state's silhouette IS the design
+    var haloN = Math.round(90 * dens);
+    for (i = 0; i < haloN; i++) {
+      var hr = 0.88 + Math.pow(rand(), 2.0) * 0.12;
+      T.dot(hr, rand() * TAU, 0.38 + rand() * 0.22, 0.04 + rand() * 0.1, CH_LINE, 1);
+    }
+  }
+
+  var BUILDERS = {
+    sigil: buildSigil, weave: buildWeave, bloom: buildBloom,
+    lattice: buildLattice, seal: buildSeal
+  };
 
   /* The sigil's solid geometry (shared with buildSigil's stipple):
      four bands of 28 curved-triangle cells + 28 wavy rays. The solid
@@ -630,9 +904,14 @@
   /* Per-state live-core parameters (black disc + crisp gold ring),
      interpolated continuously between states. */
   var CORE = {
-    sigil: { disc: 0.118, ring: 0.140, ringW: 0.0075, a: 0.72 },
-    weave: { disc: 0.078, ring: 0.100, ringW: 0.005,  a: 0.6 },
-    bloom: { disc: 0.070, ring: 0.110, ringW: 0.006,  a: 0.62 }
+    sigil:   { disc: 0.118, ring: 0.140, ringW: 0.0075, a: 0.72 },
+    weave:   { disc: 0.078, ring: 0.100, ringW: 0.005,  a: 0.6 },
+    bloom:   { disc: 0.070, ring: 0.110, ringW: 0.006,  a: 0.62 },
+    // sized to each state's own inner band, so the void never crowds the
+    // geometry starting just outside it: lattice's rays begin at 0.152,
+    // the seal's at 0.205 — hence its notably larger, bolder core
+    lattice: { disc: 0.088, ring: 0.118, ringW: 0.0062, a: 0.68 },
+    seal:    { disc: 0.130, ring: 0.164, ringW: 0.0095, a: 0.8 }
   };
 
   /* =============================================================
@@ -647,6 +926,13 @@
     var seed = attr(canvas, 'seed', 'scotty-massa');
     var fitK = clamp(num(canvas, 'fit', 0.94), 0.4, 1);
     var densK = clamp(num(canvas, 'density', 1), 0.2, 3);
+    /* Dev aid: pin the drawn fraction and switch the adaptive controller
+       off. Design review needs to see the mandala at PRODUCTION density
+       with every particle drawn, and lowering data-hero-density to get
+       there is a trap — the same multiplier scales fill counts, so it
+       thins the very fills being judged. Frame rate is irrelevant for a
+       still. Unset in production; -1 means "adaptive, as normal". */
+    var qualityPin = num(canvas, 'quality', -1);
     var speedK = clamp(num(canvas, 'speed', 1), 0, 4);
     var animate = attr(canvas, 'animate', 'true') !== 'false';
     var debugOn = attr(canvas, 'debug', 'false') === 'true' ||
@@ -659,6 +945,8 @@
     var size = { w: 1, h: 1, dpr: 1, R: 1 };
     var N = 0;                        // total particles (fixed across states)
     var rawL = {};                    // raw dots each builder emitted, per state
+    // compacted cull list — see the draw loop
+    var drawList = null, drawCount = 0, listState = '', listQuality = -1;
     var states = {};                  // name -> typed-array particle sets
     var delay = null, prio = null;    // construction stagger, cull priority
     var start = performance.now(), pausedAt = 0;
@@ -670,7 +958,7 @@
     var frameAcc = 0, frameCnt = 0, fps = 60;
     var destroyed = false, visible = true;
 
-    var STATE_NAMES = ['sigil', 'weave', 'bloom'];
+    var STATE_NAMES = ['sigil', 'weave', 'bloom', 'lattice', 'seal'];
 
     /* ---- sizing ---- */
     function fit_() {
@@ -712,7 +1000,7 @@
          duplicating a thin one. RAW_AT_1 is the measured output at
          SAMP=1; the 1.04 is headroom so rounding never drops raw below N
          and re-triggers the jitter path. */
-      var detail = clamp((N / RAW_AT_1) * 1.04, 0.75, 26);
+      var detail = clamp((N / RAW_AT_1) * 1.04, 0.75, 48);
       var T = toolkit(rnd, detail);
       BUILDERS[name](T, densK * detail);
       /* Sampling does not scale perfectly linearly — fixed element counts
@@ -720,8 +1008,12 @@
          term — so a single corrective pass measures the shortfall and
          rebuilds once. Self-correcting beats a tuned constant: it stays
          right when a builder is edited. */
-      if (T.dots.length < N && detail < 26) {
-        detail = clamp(detail * (N / T.dots.length) * 1.03, 0.75, 26);
+      /* Up to two passes: one is enough for a dense state, but a sparse
+         one like `seal` has proportionally more of its dots in fixed
+         elements, so its first correction still undershoots. Two gets
+         every state to raw >= N; the loop exits early when it does. */
+      for (var pass = 0; pass < 2 && T.dots.length < N && detail < 48; pass++) {
+        detail = clamp(detail * (N / T.dots.length) * 1.03, 0.75, 48);
         rnd = mulberry32(xmur3(seed + '|' + name)());
         T = toolkit(rnd, detail);
         BUILDERS[name](T, densK * detail);
@@ -758,7 +1050,11 @@
       N = targetN();
       // enter at the absolute floor; tickQuality climbs from here once it
       // has real frame times, and the climb is eased so it never pops
-      quality = qualityTarget = clamp(MIN_DRAWN / N, 0.06, 0.85);
+      quality = qualityTarget = qualityPin >= 0
+        ? clamp(qualityPin, 0.02, 1)
+        : clamp(MIN_DRAWN / N, 0.06, 0.85);
+      drawList = new Int32Array(N);
+      listState = ''; listQuality = -1;     // force a rebuild on the next frame
       states = {};
       for (var i = 0; i < STATE_NAMES.length; i++) {
         states[STATE_NAMES[i]] = compileState(STATE_NAMES[i]);
@@ -971,8 +1267,31 @@
       var dotK = BASE_DOT * clamp(Math.pow(GRAIN_REF / N, 0.203), 0.6, 1.25) * size.dpr;
       var lastAlpha = -1, curCh = -1;
 
-      for (var i = 0; i < N; i++) {
-        if (prio[i] * (useB ? Bimp[i] : Aimp[i]) > q) continue;
+      /* Per-frame cost is proportional to what is DRAWN, not to the
+         budget. The cull test (prio * importance <= quality) depends
+         only on the active state and the quality level, both of which
+         change every few seconds at most — so the surviving indices are
+         compacted once into drawList and reused until one of them moves.
+         Ascending order is preserved, which keeps particles grouped by
+         structure and therefore by colour channel, so the fillStyle
+         run-length batching below still holds.
+
+         Without this the loop ran N iterations to draw a fraction of
+         them: at a 144k budget trimmed to 13k that is ten times the work
+         for the same picture, and it is why raising the ceiling cost
+         frame rate even though the drawn count had gone down. */
+      var impKey = useB ? seg.b : seg.a;
+      if (impKey !== listState || Math.abs(q - listQuality) > 0.004) {
+        var impArr = useB ? Bimp : Aimp;
+        var c = 0;
+        for (var li = 0; li < N; li++) {
+          if (prio[li] * impArr[li] <= q) drawList[c++] = li;
+        }
+        drawCount = c; listState = impKey; listQuality = q;
+      }
+
+      for (var di = 0; di < drawCount; di++) {
+        var i = drawList[di];
 
         var rr, th, sz, al;
         if (morphing) {
@@ -1014,7 +1333,7 @@
 
     /* ---- adaptive quality controller ---- */
     function tickQuality(dt, now) {
-      if (staticMode) return;
+      if (staticMode || qualityPin >= 0) return;   // pinned: see qualityPin
       var elapsed = now - start;
       if (elapsed < 2200) return;              // ignore construction/bake-in
       if (dt > 180) return;                    // stall/GC/tab-jank, not render cost
@@ -1063,7 +1382,13 @@
         document.body.appendChild(hud);
       }
       var seg = segmentAt(now - start);
-      var drawn = Math.round(N * Math.min(1, quality));
+      /* The real compacted count, not N*quality. That estimate was
+         wrong in a way that mattered: the cull test is
+         prio * importance <= quality, and importance runs as low as
+         0.45, so a particle marked important survives a quality level
+         well below its prio. Far more particles pass than N*quality
+         suggests, and the HUD was under-reporting the actual load. */
+      var drawn = drawCount;
       hud.textContent =
         'fps      ' + fps.toFixed(0) +
         '\nparticles ' + drawn + ' / ' + N +
