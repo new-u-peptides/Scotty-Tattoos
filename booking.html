@@ -25,10 +25,12 @@
   <meta name="twitter:description" content="Tell me about the project and I'll review it and send you the next steps. Large-scale geometric and ornamental work from Birkirkara, Malta." />
   <meta name="twitter:image" content="https://scottymassa.com/assets/seo/og-default.png" />
   <meta name="theme-color" content="#0a0706" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <!-- Vendored; see assets/fonts/README.md. font-display: swap paints
+       text immediately either way, but preloading these still measured
+       ~600ms better on FCP than letting the stylesheet discover them. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cinzel-latin.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.min.css?v=8c6ee73a" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -104,7 +106,6 @@
   </div>
 </header>
 <!-- /include:header -->
-
 
     <main id="main">
   <section class="page-header page-header--compact">
@@ -356,15 +357,15 @@
         </div>
         <div class="policy-grid policy-grid--stack">
           <div>
-            <h4>Deposits</h4>
+            <h3 class="h4">Deposits</h3>
             <p style="margin:0; font-size:0.95rem;">30% confirms your slot. Non-refundable, but transferable once with 14+ days' notice.</p>
           </div>
           <div>
-            <h4>Sessions</h4>
+            <h3 class="h4">Sessions</h3>
             <p style="margin:0; font-size:0.95rem;">Large pieces are built over planned sittings, agreed with you before the first one.</p>
           </div>
           <div>
-            <h4>Cancellations</h4>
+            <h3 class="h4">Cancellations</h3>
             <p style="margin:0; font-size:0.95rem;">Two reschedules max. No-shows forfeit the deposit — late notice means a lost slot for someone else.</p>
           </div>
         </div>
@@ -372,7 +373,6 @@
     </div>
   </section>
     </main>
-
 
     <!-- include:footer -->
 <footer class="footer">
@@ -389,7 +389,7 @@
         </p>
       </div>
       <div>
-        <h4>Explore</h4>
+        <h2 class="h4">Explore</h2>
         <!-- The desktop nav carries four items, so every other destination has
              to be reachable from here or it is orphaned for both visitors and
              crawlers. SEO.md's internal link graph depends on this list. -->
@@ -409,7 +409,7 @@
         </ul>
       </div>
       <div>
-        <h4>Studio</h4>
+        <h2 class="h4">Studio</h2>
         <ul>
           <li>11 Triq Il-Knisja Il-Qadima</li>
           <li>Birkirkara, Malta</li>
@@ -418,7 +418,7 @@
         </ul>
       </div>
       <div>
-        <h4>Contact</h4>
+        <h2 class="h4">Contact</h2>
         <ul>
           <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
           <li><a href="tel:+35699685949">+356 9968 5949</a></li>
@@ -460,8 +460,8 @@
   </div>
 </div>
 <!-- /include:footer -->
-  <script src="shared/js/mandala.js"></script>
-  <script src="shared/js/main.js"></script>
-  <script src="shared/js/enquiry-form.js"></script>
+  <script defer src="shared/js/mandala.min.js?v=eb85ada6"></script>
+  <script defer src="shared/js/main.min.js?v=2f397e8d"></script>
+  <script defer src="shared/js/enquiry-form.min.js?v=93769f2f"></script>
 </body>
 </html>

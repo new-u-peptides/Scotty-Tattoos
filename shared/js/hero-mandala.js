@@ -1005,7 +1005,7 @@
       requestAnimationFrame(function () {
         resizePending = false;
         if (destroyed) return;
-        size = fit_();
+      size = fit_();
         var wantN = targetN();
         if (Math.abs(wantN - N) / Math.max(1, N) > 0.25) buildAll();
         if (staticMode) draw(start + CONSTRUCT + 500);
@@ -1041,44 +1041,54 @@
     }
     INSTANCES.push({ canvas: canvas, destroy: destroy });
 
-    /* ---- boot ---- */
-    size = fit_();
-    buildAll();
+    /* ---- boot ----
+       Deferred by one frame on purpose. fit_() reads
+       canvas.getBoundingClientRect(), and calling it straight out of
+       DOMContentLoaded forces a synchronous layout of the whole page —
+       ~75 ms of the main thread, right when the hero is trying to paint.
+       A frame later the geometry is already clean and the read is free.
+       Nothing visible moves: the intro is on a 4.3s delay either way. */
+    requestAnimationFrame(function () {
+      if (destroyed) return;
+      size = fit_();
+      buildAll();
 
-    if ('ResizeObserver' in window) { ro = new ResizeObserver(refit); ro.observe(canvas); }
-    else { window.addEventListener('resize', refit); }
+      if ('ResizeObserver' in window) { ro = new ResizeObserver(refit); ro.observe(canvas); }
+      else { window.addEventListener('resize', refit); }
 
-    if (staticMode) {
-      // one complete, premium still: the fully-formed canonical logo
-      draw(start + CONSTRUCT + 500);
-      return;
-    }
+      if (staticMode) {
+        // one complete, premium still: the fully-formed canonical logo
+        draw(start + CONSTRUCT + 500);
+        return;
+      }
 
-    document.addEventListener('visibilitychange', onVisibility);
-    if (document.hidden) { visible = false; pausedAt = start; }
+      document.addEventListener('visibilitychange', onVisibility);
+      if (document.hidden) { visible = false; pausedAt = start; }
 
-    if ('IntersectionObserver' in window) {
-      io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (destroyed) return;
-          ioVisible = e.isIntersecting;
-          if (e.isIntersecting && !document.hidden) {
-            visible = true;
-            if (pausedAt) { start += performance.now() - pausedAt; pausedAt = 0; }
-            startLoop();
-          } else {
-            visible = false;
-            if (!pausedAt) pausedAt = performance.now();
-            stopLoop();
-            if (!canvas.isConnected) destroy();
-          }
-        });
-      }, { threshold: 0.01 });
-      io.observe(canvas);
-    } else {
-      startLoop();
-    }
-    startLoop();
+      if ('IntersectionObserver' in window) {
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (destroyed) return;
+            ioVisible = e.isIntersecting;
+            if (e.isIntersecting && !document.hidden) {
+              visible = true;
+              if (pausedAt) { start += performance.now() - pausedAt; pausedAt = 0; }
+              startLoop();
+            } else {
+              visible = false;
+              if (!pausedAt) pausedAt = performance.now();
+              stopLoop();
+              if (!canvas.isConnected) destroy();
+            }
+          });
+        }, { threshold: 0.01 });
+        io.observe(canvas);
+      } else {
+        // Without IntersectionObserver there is nothing to tell us when the
+        // canvas scrolls into view, so run from the start.
+        startLoop();
+      }
+    });
   }
 
   function autoInit() {

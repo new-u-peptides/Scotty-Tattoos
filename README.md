@@ -56,9 +56,15 @@ Scotty-Tattos/
 ├── tools/sync-partials.js  Re-inline the partials
 ├── docs/ENQUIRY-FUNNEL.md  Operator's guide
 ├── assets/
-│   ├── css/styles.css      Component index — see assets/css/components/
+│   ├── css/styles.css      Authoring index of @imports — see components/
+│   ├── css/styles.min.css  GENERATED: the flattened, minified bundle
 │   ├── seo/                OG image + favicon
-│   └── images/             Photography
+│   └── images/             Photography (WebP, plus -480 srcset rungs)
+├── tools/
+│   ├── build-assets.mjs    CSS bundle, JS minify, asset hashes, CSP
+│   ├── fetch-fonts.py      Vendors the web fonts into assets/fonts/
+│   └── sync-partials.js    Inlines partials/ into every page
+├── vercel.json             Cache + security headers (CSP is generated)
 │
 │  ─── massatattoo.com (subdirectory)
 └── massatattoo/
@@ -83,11 +89,46 @@ deployment must include `shared/` above its own site root — see
 
 ---
 
+## Build step (scottymassa.com)
+
+The pages are still hand-authored HTML, but the CSS, JS and SEO files they
+reference are generated. **Edit the sources, then run the build:**
+
+```bash
+npm install          # once — pulls esbuild
+npm run build        # CSS bundle + critical CSS, JS minify, fonts, CSP
+```
+
+| You edit                      | The build produces                      |
+| ----------------------------- | --------------------------------------- |
+| `assets/css/components/*.css` | `assets/css/styles.min.css` (one file)  |
+| `shared/js/*.js`              | `shared/js/*.min.js`                    |
+| any inline `<script>`         | the CSP `script-src` hashes in `vercel.json` |
+
+Never edit a `.min.*` file, the inlined `<style>` block, or anything between
+the partial markers — the next build overwrites them. `npm run check:partials`
+exits non-zero if a page's inlined partial is stale, so it works as a
+pre-deploy or CI guard.
+
+Two things the build deliberately does:
+
+- **`assets/css/styles.css` stays an `@import` index for authoring only.**
+  Shipped as-is it cost 30 chained round trips, because the browser cannot
+  discover `hero.css` until `styles.css` has arrived and parsed. The build
+  flattens it into one file and rewrites the `url()` paths.
+- **Asset URLs carry a `?v=<content hash>`,** which is what lets
+  `vercel.json` serve them `immutable` for a year. The hash changes when the
+  file does, so there is nothing to purge.
+
+Photography is encoded to AVIF/WebP separately; the `<picture>` elements in
+the markup reference those encodes with the JPEG left as the fallback.
+
+---
+
 ## Quick start
 
-Both sites are pure HTML/CSS/JS — no build step. The studio site
-(`massatattoo/`) uses `fetch()` to load header/footer partials, so it must
-be served over HTTP, not opened as `file://`.
+The studio site (`massatattoo/`) uses `fetch()` to load header/footer
+partials, so it must be served over HTTP, not opened as `file://`.
 
 ```bash
 # Serve the whole monorepo
@@ -109,8 +150,8 @@ python3 -m http.server 8001           # scottymassa.com (root)
 
 ## scottymassa.com (root)
 
-Single-artist personal portfolio. Plain HTML + CSS + a small `main.js`.
-No build step.
+Single-artist personal portfolio. Hand-authored HTML + CSS + a small
+`main.js`; see **Build step** above for the generated files.
 
 - **Pages** — Home, About, Portfolio, Geometric, Mandala, Travel, Journal, Reviews, Enquiry, Aftercare, Contact.
 - **Palette** — ink black, bone white, antique gold. Red is reserved for the primary CTA and nothing else.

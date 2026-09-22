@@ -16,6 +16,16 @@
 .section--bone {
   background: var(--bone);
   color: var(--ink);
+
+  /* Inverted ground: the dim-text tokens are authored against --ink, where
+     dimmer means lighter. Here that runs straight into the background
+     (--smoke was 3.1:1 on bone), so they are re-pointed to darker greys of
+     the same relative weight. --text-strong flips the other way: the colour
+     that makes text stand out is --ink here, not --bone. */
+  --bone-3:     #57554F;   /* 6.7:1 on --bone */
+  --smoke:      #63615C;   /* 5.5:1 on --bone */
+  --red-text:   var(--red);
+  --text-strong: var(--ink);
 }
 .section--bone a { color: var(--ink); }
 .section--bone a:hover { color: var(--rust); }

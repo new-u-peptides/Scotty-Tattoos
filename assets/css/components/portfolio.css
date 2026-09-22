@@ -38,7 +38,15 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.tile__overlay h4 { color: var(--bone); margin: 0 0 0.3em; }
+/* h3, not h4: the tile sits under a section h2, so h4 skipped a level.
+   The h4 type scale is restated here so the swap is invisible. */
+.tile__overlay h3 {
+  color: var(--bone);
+  margin: 0 0 0.3em;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 .tile__overlay span {
   font-size: 0.7rem;
   letter-spacing: 0.22em;
@@ -88,9 +96,9 @@
 .ph-14 { background-image: url('../../images/tattoos/geo-hexagon-thigh.webp'); }
 
 /* Portraits */
-.ph-portrait-tattooing  { background-image: url('../../images/artist/scotty-tattooing.jpg'); }
+.ph-portrait-tattooing  { background-image: url('../../images/artist/scotty-tattooing.webp'); }
 .ph-tattooing-back      { background-image: url('../../images/artist/scotty-tattooing-back.webp'); background-position: center 30%; }
-.ph-portrait-vondutch   { background-image: url('../../images/artist/scotty-vondutch.jpg'); background-position: top center; }
+.ph-portrait-vondutch   { background-image: url('../../images/artist/scotty-vondutch.webp'); background-position: top center; }
 .ph-portrait-bw-stool   { background-image: url('../../images/artist/portrait-bw-stool.webp'); }
 .ph-portrait-bw-chair   { background-image: url('../../images/artist/portrait-bw-chair.webp'); }
 
@@ -98,10 +106,10 @@
 .ph-studio-entrance     { background-image: url('../../images/studio/entrance-lounge.webp'); }
 .ph-studio-reception    { background-image: url('../../images/studio/reception.webp'); }
 .ph-studio-flash        { background-image: url('../../images/studio/flash-wall.webp'); }
-.ph-studio-flash-color  { background-image: url('../../images/studio/flash-wall-color.jpg'); }
+.ph-studio-flash-color  { background-image: url('../../images/studio/flash-wall-color.webp'); }
 .ph-studio-consultation { background-image: url('../../images/studio/consultation-room.webp'); }
-.ph-studio-treatment    { background-image: url('../../images/studio/treatment-room.jpg'); }
-.ph-studio-piano        { background-image: url('../../images/studio/piano-flash.jpg'); }
+.ph-studio-treatment    { background-image: url('../../images/studio/treatment-room.webp'); }
+.ph-studio-piano        { background-image: url('../../images/studio/piano-flash.webp'); }
 
 /* Tall portrait sources in wide (landscape) tiles: nudge the focal point up so
    the main motif stays in frame instead of cropping to a mid-limb band. */
@@ -182,7 +190,9 @@
   margin-bottom: 0.6rem;
   letter-spacing: 0.04em;
 }
-.folio__body h3 { margin: 0.1em 0 0.5em; }
+/* h2, not h3: the folio rows are the portfolio page's top-level sections,
+   directly under its h1. The h3 type scale is restated to keep the look. */
+.folio__body h2 { margin: 0.1em 0 0.5em; font-size: clamp(1.4rem, 2vw, 1.8rem); }
 .folio__note {
   color: var(--bone-2);
   font-size: 1.02rem;

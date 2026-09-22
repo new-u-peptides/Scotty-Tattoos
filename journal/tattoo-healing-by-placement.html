@@ -28,12 +28,12 @@
   <meta name="twitter:title" content="How Placement Changes Tattoo Healing — Ribs, Hands, Feet & More" />
   <meta name="twitter:description" content="Why the same tattoo heals differently on ribs, hands, feet and forearms — and what it means for sleeves and back pieces." />
   <meta name="twitter:image" content="https://scottymassa.com/assets/seo/og-default.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/styles.css" />
-
+  <!-- Vendored; see assets/fonts/README.md. font-display: swap paints
+       text immediately either way, but preloading these still measured
+       ~600ms better on FCP than letting the stylesheet discover them. -->
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/inter-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/cinzel-latin.woff2" crossorigin />
+  <link rel="stylesheet" href="../assets/css/styles.min.css?v=8c6ee73a" />
   <!-- JSON-LD: Article -->
   <script type="application/ld+json">
   {
@@ -263,9 +263,9 @@
   </main>
 
   <div data-include="../partials/footer.html"></div>
-  <script src="../shared/js/includes.js"></script>
-  <script src="../shared/js/mandala.js"></script>
-  <script src="../shared/js/main.js"></script>
-  <script src="../shared/js/consult-popup.js"></script>
+  <script defer src="../shared/js/includes.min.js?v=bfa09d6d"></script>
+  <script defer src="../shared/js/mandala.min.js?v=eb85ada6"></script>
+  <script defer src="../shared/js/main.min.js?v=2f397e8d"></script>
+  <script defer src="../shared/js/consult-popup.min.js?v=2c15d0a6"></script>
 </body>
 </html>
