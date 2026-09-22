@@ -134,6 +134,14 @@
     });
   }
 
+  // The footer ships with a hard-coded year so the markup is never wrong at
+  // build time; this keeps it current afterwards. (It used to live in
+  // includes.js, which only the studio site still loads.)
+  function setYear() {
+    var el = document.getElementById('year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+
   function bootstrap() {
     bindNavToggle();
     bindReveal();
@@ -143,6 +151,7 @@
     bindActiveNav();
     bindWhatsApp();
     bindStubForms();
+    setYear();
   }
 
   if (document.readyState === 'loading') {
