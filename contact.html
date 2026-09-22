@@ -35,7 +35,10 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["LocalBusiness", "TattooParlor"],
+        "@type": [
+          "LocalBusiness",
+          "TattooParlor"
+        ],
         "@id": "https://www.scottymassa.com/#studio",
         "name": "Massa Tattoo Social Club",
         "url": "https://www.scottymassa.com/",
@@ -57,7 +60,12 @@
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+            "dayOfWeek": [
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
             "opens": "11:00",
             "closes": "19:00"
           },
@@ -67,27 +75,49 @@
             "opens": "11:00",
             "closes": "16:00"
           }
+        ],
+        "sameAs": [
+          "https://massatattoo.com/",
+          "https://www.instagram.com/mtscmalta/",
+          "https://www.facebook.com/mtscmalta/",
+          "https://www.maltayp.com/company/5291/MASSA_TATTOO_SOCIAL_CLUB",
+          "https://tattoocloud.com/mtscmalta"
         ]
       },
       {
         "@type": "ContactPage",
         "name": "Contact Massa Tattoo Social Club",
         "url": "https://www.scottymassa.com/contact.html",
-        "about": { "@id": "https://www.scottymassa.com/#studio" },
+        "about": {
+          "@id": "https://www.scottymassa.com/#studio"
+        },
         "mainEntity": {
           "@type": "ContactPoint",
           "contactType": "Studio",
           "email": "studio@scottymassa.com",
           "telephone": "+35699685949",
           "areaServed": "Malta",
-          "availableLanguage": ["English", "Maltese"]
+          "availableLanguage": [
+            "English",
+            "Maltese"
+          ]
         }
       },
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.scottymassa.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://www.scottymassa.com/contact.html" }
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.scottymassa.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Contact",
+            "item": "https://www.scottymassa.com/contact.html"
+          }
         ]
       }
     ]
