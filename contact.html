@@ -29,7 +29,7 @@
        ~600ms better on FCP than letting the stylesheet discover them. -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/cinzel-latin.woff2" crossorigin />
-  <link rel="stylesheet" href="assets/css/styles.min.css?v=8c6ee73a" />
+  <link rel="stylesheet" href="assets/css/styles.min.css?v=222d0a7a" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -220,11 +220,13 @@
           <div class="form__row">
             <div class="field">
               <label for="cname">Name</label>
-              <input id="cname" name="name" type="text" required />
+              <input id="cname" name="name" type="text" required autocomplete="name"
+                     placeholder="First and last name" />
             </div>
             <div class="field">
               <label for="cemail">Email</label>
-              <input id="cemail" name="email" type="email" required />
+              <input id="cemail" name="email" type="email" required autocomplete="email"
+                     placeholder="you@example.com" />
             </div>
           </div>
 
@@ -241,7 +243,8 @@
 
           <div class="field">
             <label for="msg">Message</label>
-            <textarea id="msg" name="message" rows="6" required></textarea>
+            <textarea id="msg" name="message" rows="6" required
+                      placeholder="What can I help with?"></textarea>
           </div>
 
           <button type="submit" class="btn btn--primary">Send Message</button>
