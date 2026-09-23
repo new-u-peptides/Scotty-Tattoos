@@ -88,25 +88,10 @@
   var CONSTRUCT = 3200;               // phase 1: the logo tattoos itself in
   var ROT_ON = 2400, ROT_FULL = 5400; // rotation eases in across this window
   var REV_S = 46;                     // seconds per revolution (35–55 brief)
-  /* Steady-state loop, seamless. Ordered so DENSITY ALTERNATES: every
-     heavy state is followed by an open one, so the cycle breathes
-     instead of reading as five dense mandalas at a slower frequency.
-
-       sigil   dense, bold, canonical — the brand
-       weave   mid, geometric
-       bloom   dense, organic          <- the benchmark state
-       lattice open, technical         <- new: Direction A
-       seal    bold but OPEN, minimal  <- new: Direction C, the rest beat
-
-     The seal holds shortest: it says its piece immediately and outstays
-     its welcome if given bloom's dwell. The sigil holds longest because
-     it is the one the visitor should remember. */
+  /* Focused on the canonical Scotty Massa sigil — the brand logo loads
+     and rotates continuously as the primary visual identity. */
   var SEG = [
-    { state: 'sigil',   hold: 9000, blend: 3200 },
-    { state: 'weave',   hold: 4600, blend: 3000 },
-    { state: 'bloom',   hold: 5200, blend: 3400 },
-    { state: 'lattice', hold: 5000, blend: 3000 },
-    { state: 'seal',    hold: 3800, blend: 3200 }
+    { state: 'sigil',   hold: 9000, blend: 0 }
   ];
   var CYCLE = 0;
   for (var si = 0; si < SEG.length; si++) CYCLE += SEG[si].hold + SEG[si].blend;
