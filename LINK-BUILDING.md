@@ -1,7 +1,7 @@
-# Link-Building & Authority Plan — Massa Tattoo
+# Link-Building & Authority Plan - Massa Tattoo
 
-Goal: drive link equity ("juice") to the money pages — the **tattoo course**,
-the **Social Club**, the **mandala** specialty, and the **home/local** entity —
+Goal: drive link equity ("juice") to the money pages - the **tattoo course**,
+the **Social Club**, the **mandala** specialty, and the **home/local** entity -
 and make sure earned authority actually flows to them.
 
 > **Live data pending.** The SemRush connector is out of API units, so the
@@ -21,7 +21,7 @@ and make sure earned authority actually flows to them.
 
 ---
 
-## 2. On-site foundation — SHIPPED in this PR (so links don't leak)
+## 2. On-site foundation - SHIPPED in this PR (so links don't leak)
 
 - **Structured data** on every page: `Organization`, `WebSite`, `WebPage`,
   `BreadcrumbList`; plus `TattooParlor/LocalBusiness` (home), `Service`
@@ -45,21 +45,21 @@ course, club, and mandala pages ≤2 clicks from the home page (they already are
 
 ---
 
-## 3. Off-site link acquisition — prioritised by effort × payoff
+## 3. Off-site link acquisition - prioritised by effort × payoff
 
-### Tier 1 — Foundation (week 1–2, do once, high trust)
-- **Google Business Profile** — claim/verify, categories *Tattoo Shop* +
+### Tier 1 - Foundation (week 1–2, do once, high trust)
+- **Google Business Profile** - claim/verify, categories *Tattoo Shop* +
   *Tattoo Artist*, full NAP, hours, weekly healed-work photos, link to home.
   (Plus Bing Places, Apple Business Connect.)
-- **NAP-consistent citations** — byte-identical name/address/phone on the big
+- **NAP-consistent citations** - byte-identical name/address/phone on the big
   aggregators and local directories for the studio's city.
-- **Social profiles** linking to the site — Instagram, TikTok, YouTube,
+- **Social profiles** linking to the site - Instagram, TikTok, YouTube,
   Pinterest, Facebook; bio link to home, not a linktree.
 - **Optimise the Skool "About"** to link back to `/social-club/` and the site.
 
-### Tier 2 — Niche relevance (week 2–6, the links Google trusts most for tattoos)
+### Tier 2 - Niche relevance (week 2–6, the links Google trusts most for tattoos)
 - **Tattoo directories / artist profiles:** Tattoodo, Tattoo Filter, TattooCloud,
-  Inkppl, Sorry Mom artist directory, Scratchback-style listings — each linking
+  Inkppl, Sorry Mom artist directory, Scratchback-style listings - each linking
   to the site (not just IG).
 - **"Learn to tattoo" / course listicles:** pitch inclusion in "best tattoo
   courses / online tattoo courses / how to become a tattoo artist" roundups.
@@ -67,22 +67,22 @@ course, club, and mandala pages ≤2 clicks from the home page (they already are
 - **Community/Skool discovery** surfaces and "best Skool communities for X"
   roundups for the club.
 
-### Tier 3 — Content-driven / digital PR (week 4–12, the compounding links)
+### Tier 3 - Content-driven / digital PR (week 4–12, the compounding links)
 - **Linkable assets** (see §5) → outreach to people who already link to weaker
   versions of that content.
 - **Guest articles** on tattoo blogs/magazines (Things&Ink, Inked, Inkppl,
-  Tattoo Life) — one well-written piece per quarter with a contextual link.
-- **Journalist requests** — Connectively (ex-HARO), Qwoted, Featured: answer
+  Tattoo Life) - one well-written piece per quarter with a contextual link.
+- **Journalist requests** - Connectively (ex-HARO), Qwoted, Featured: answer
   "tattoo/skin/small-business" queries for editorial links.
 - **Podcasts / YouTube collabs** with other artists and tattoo-business shows;
   show notes link back.
 
-### Tier 4 — Relationships (ongoing, the cheapest links)
-- **Guest-spot reciprocity** — every host studio links your artist page; you
+### Tier 4 - Relationships (ongoing, the cheapest links)
+- **Guest-spot reciprocity** - every host studio links your artist page; you
   link theirs.
-- **Convention pages** (e.g. Malta Tattoo Expo) — participant listings link out.
-- **Suppliers/brands** — ink/machine brands' "artists who use us" features.
-- **Student & member success** — graduates and club members linking to the
+- **Convention pages** (e.g. Malta Tattoo Expo) - participant listings link out.
+- **Suppliers/brands** - ink/machine brands' "artists who use us" features.
+- **Student & member success** - graduates and club members linking to the
   course/club from their own sites/profiles (seed with an ambassador ask).
 
 ---
@@ -97,19 +97,19 @@ course, club, and mandala pages ≤2 clicks from the home page (they already are
 | Exact-match | <8% | "tattoo course Malta", "mandala tattoos" |
 
 Exact-match anchors should come mostly from editorial/contextual links you don't
-fully control — never blast them from directories.
+fully control - never blast them from directories.
 
 ---
 
 ## 5. Linkable assets to build (this is what earns Tier-3 links)
-1. **Mandala meaning guide** — already live at `/mandala-tattoos/`; make it the
+1. **Mandala meaning guide** - already live at `/mandala-tattoos/`; make it the
    most thorough "mandala tattoo meaning + styles + placement" page on the web,
    then pitch it to listicles that currently link thinner posts.
-2. **"How to become a tattoo artist" guide** — ties directly to the course + club
+2. **"How to become a tattoo artist" guide** - ties directly to the course + club
    and is one of the most-linked beginner queries in the niche. High priority.
-3. **Free aftercare PDF / mandala flash freebie** — gated-free assets attract
+3. **Free aftercare PDF / mandala flash freebie** - gated-free assets attract
    resource-page links.
-4. **Original data** — a small survey ("first-tattoo regrets", "what people
+4. **Original data** - a small survey ("first-tattoo regrets", "what people
    actually pay") → digital-PR pitch; data gets cited and linked.
 
 ---
