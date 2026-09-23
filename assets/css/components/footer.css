@@ -17,7 +17,7 @@
 @media (max-width: 560px) {
   .footer__grid { grid-template-columns: 1fr; }
 }
-.footer h4 {
+.footer h2 {
   font-family: var(--font-body);
   font-size: 0.75rem;
   letter-spacing: 0.32em;
@@ -36,6 +36,9 @@
   margin-bottom: 1rem;
 }
 .footer__brand span { color: var(--rust-soft); }
+/* Underlined on purpose: this link sits inside a run of body text, so
+   colour alone is not enough to mark it as a link. */
+.footer__bottom a { text-decoration: underline; text-underline-offset: 0.2em; }
 .footer__bottom {
   border-top: var(--line);
   padding-top: 2rem;

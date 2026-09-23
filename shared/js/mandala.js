@@ -688,38 +688,45 @@
     // leaking observers/listeners.
     INSTANCES.push({ canvas: canvas, destroy: destroy });
 
-    size = fit_();
+    /* Boot a frame late: fit_() reads getBoundingClientRect(), and doing
+       that straight out of DOMContentLoaded forces a synchronous layout of
+       the page while it is still trying to paint. One frame later the
+       geometry is already clean and the read costs nothing. */
+    requestAnimationFrame(function () {
+      if (destroyed) return;
+      size = fit_();
 
-    if ('ResizeObserver' in window) { ro = new ResizeObserver(refit); ro.observe(canvas); }
-    else { window.addEventListener('resize', refit); }
+      if ('ResizeObserver' in window) { ro = new ResizeObserver(refit); ro.observe(canvas); }
+      else { window.addEventListener('resize', refit); }
 
-    if (drift === 'scroll') { scrollY = window.pageYOffset || 0; window.addEventListener('scroll', onScroll, { passive: true }); }
-    if (interactive && !staticMode) { window.addEventListener('pointermove', onMove, { passive: true }); }
+      if (drift === 'scroll') { scrollY = window.pageYOffset || 0; window.addEventListener('scroll', onScroll, { passive: true }); }
+      if (interactive && !staticMode) { window.addEventListener('pointermove', onMove, { passive: true }); }
 
-    if (staticMode) {
-      // one baked still, mid-lotus (Scotty's signature) — no loop
-      draw(start + STILL_ELAPSED);
-      return;
-    }
+      if (staticMode) {
+        // one baked still, mid-lotus (Scotty's signature) — no loop
+        draw(start + STILL_ELAPSED);
+        return;
+      }
 
-    if ('IntersectionObserver' in window) {
-      io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (destroyed) return;
-          if (e.isIntersecting) {
-            visible = true;
-            if (pausedAt) { start += performance.now() - pausedAt; pausedAt = 0; } // freeze clock while hidden
-            startLoop();
-          } else {
-            visible = false; pausedAt = performance.now(); stopLoop();
-            if (!canvas.isConnected) destroy();
-          }
-        });
-      }, { threshold: 0.01 });
-      io.observe(canvas);
-    } else {
-      startLoop();
-    }
+      if ('IntersectionObserver' in window) {
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (destroyed) return;
+            if (e.isIntersecting) {
+              visible = true;
+              if (pausedAt) { start += performance.now() - pausedAt; pausedAt = 0; } // freeze clock while hidden
+              startLoop();
+            } else {
+              visible = false; pausedAt = performance.now(); stopLoop();
+              if (!canvas.isConnected) destroy();
+            }
+          });
+        }, { threshold: 0.01 });
+        io.observe(canvas);
+      } else {
+        startLoop();
+      }
+    });
   }
 
   function autoInit() {

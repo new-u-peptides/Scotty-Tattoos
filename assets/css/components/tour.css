@@ -40,7 +40,7 @@
   border: 1px solid;
 }
 .status--open    { color: var(--bone);  border-color: var(--bone); }
-.status--limited { color: var(--red);   border-color: var(--red); }
+.status--limited { color: var(--red-text); border-color: var(--red); }
 .status--full    { color: var(--smoke); border-color: var(--smoke); }
 
 @media (max-width: 880px) {

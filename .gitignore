@@ -1,1 +1,5 @@
 node_modules/
+
+# Scratch harnesses used while measuring/verifying (Lighthouse runs, smoke
+# tests, screenshot scripts). Never part of the site.
+/.*.mjs

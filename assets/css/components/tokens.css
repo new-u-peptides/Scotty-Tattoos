@@ -10,11 +10,17 @@
   --ink-3:      #1F1F1F;
   --bone:       #F5F2EC;   /* warm-leaning near-white */
   --bone-2:     #C8C5BF;
-  --bone-3:     #8C8A85;
-  --smoke:      #6E6C68;
-  --red:        #C8102E;   /* bold blood red */
+  --bone-3:     #A3A09A;   /* 7.6:1 on --ink — was #8C8A85 */
+  --smoke:      #8C8A85;   /* 5.7:1 on --ink — was #6E6C68 (3.8:1, failed AA) */
+  --red:        #C8102E;   /* bold blood red — fills, borders, never body text */
   --red-deep:   #8C0A1F;
   --red-soft:   #E04D5A;
+  /* --red only reaches 3.4:1 on --ink, so text that must read as red uses
+     this lighter tone (5.1:1). Reserve --red itself for non-text ink. */
+  --red-text:   var(--red-soft);
+  /* The colour that makes a run of text stand out against the current
+     ground. Flipped to --ink by .section--bone. */
+  --text-strong: var(--bone);
 
   /* Back-compat aliases (older selectors still reference these) */
   --rust:       var(--red);
@@ -31,7 +37,6 @@
 
   /* Type */
   --font-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
-  --font-script:  "Tangerine", "Brush Script MT", cursive;
   --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* Spacing */

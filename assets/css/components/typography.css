@@ -1,5 +1,5 @@
 /* Typography */
-h1, h2, h3, h4 {
+h1, h2, h3, h4, .h4 {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -10,7 +10,8 @@ h1, h2, h3, h4 {
 h1 { font-size: clamp(2.6rem, 6vw, 5.4rem); letter-spacing: 0.04em; }
 h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
 h3 { font-size: clamp(1.4rem, 2vw, 1.8rem); }
-h4 { font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase; }
+h4,
+.h4 { font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase; }
 
 p { margin: 0 0 1.2em; max-width: 65ch; }
 

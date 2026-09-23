@@ -10,11 +10,13 @@
         return res.text();
       })
       .then(function (html) {
-        var wrapper = document.createElement('div');
-        wrapper.innerHTML = html.trim();
-        var nodes = Array.prototype.slice.call(wrapper.childNodes);
+        // DOMParser rather than innerHTML: it parses the same markup but is
+        // not a Trusted Types sink, which is what lets the CSP carry
+        // `require-trusted-types-for 'script'`.
+        var doc = new DOMParser().parseFromString(html.trim(), 'text/html');
+        var nodes = Array.prototype.slice.call(doc.body.childNodes);
         var parent = target.parentNode;
-        nodes.forEach(function (n) { parent.insertBefore(n, target); });
+        nodes.forEach(function (n) { parent.insertBefore(document.adoptNode(n), target); });
         parent.removeChild(target);
       })
       .catch(function (err) { console.error('[includes]', err); });
