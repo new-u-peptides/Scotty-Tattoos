@@ -6,14 +6,16 @@
   <script>document.documentElement.classList.add('js');</script>
   <title>Scotty Massa - Geometric &amp; Ornamental Tattoo Artist, Malta</title>
   <meta name="description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
-  <link rel="canonical" href="https://scottymassa.com/" />
+  <link rel="canonical" href="https://www.scottymassa.com/" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <meta property="og:title" content="Scotty Massa - Geometric &amp; Ornamental Tattoo Artist, Malta" />
   <meta property="og:description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
-  <meta property="og:url" content="https://scottymassa.com/" />
+  <meta property="og:url" content="https://www.scottymassa.com/" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/assets/seo/og-default.png" />
+  <meta property="og:image" content="https://www.scottymassa.com/assets/seo/og-default.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -21,12 +23,22 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Scotty Massa - Geometric &amp; Ornamental Tattoo Artist, Malta" />
   <meta name="twitter:description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
-  <meta name="twitter:image" content="/assets/seo/og-default.png" />
+  <meta name="twitter:image" content="https://www.scottymassa.com/assets/seo/og-default.png" />
   <meta name="theme-color" content="#0a0706" />
+  <!-- The LCP element. It is a CSS background three levels deep
+       (HTML -> stylesheet -> .hero__bg), so without this the browser
+       cannot discover it until the CSS has parsed. It is listed first:
+       same-priority preloads fetch in document order, and behind the
+       fonts it measured ~800ms worse on LCP. -->
+  <link rel="preload" as="image" href="assets/images/artist/portrait-bw-chair.webp" fetchpriority="high" />
+  <!-- Vendored; see assets/fonts/README.md. font-display: swap paints
+       text immediately, with fallback metrics matching the serif until
+       the loaded font applies. Cinzel is a serif (Scotty's script accents,
+       the about page quote); Inter is sans-serif (everything else). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.min.css?v=8c6ee73a" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -763,10 +775,10 @@
   </div>
 </div>
 <!-- /include:footer -->
-  <script src="shared/js/hero-mandala.js"></script>
-  <script src="shared/js/mandala.js"></script>
-  <script src="shared/js/scroll-sequence.js"></script>
-  <script src="shared/js/main.js"></script>
-  <script src="shared/js/consult-popup.js"></script>
+  <script defer src="shared/js/hero-mandala.min.js?v=53d22ed2"></script>
+  <script defer src="shared/js/mandala.min.js?v=eb85ada6"></script>
+  <script defer src="shared/js/scroll-sequence.min.js?v=cb606a6c"></script>
+  <script defer src="shared/js/main.min.js?v=2f397e8d"></script>
+  <script defer src="shared/js/consult-popup.min.js?v=2c15d0a6"></script>
 </body>
 </html>
