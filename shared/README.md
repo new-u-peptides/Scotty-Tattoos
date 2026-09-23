@@ -1,7 +1,7 @@
 # shared/
 
 JS modules used by **both** sites in the monorepo. Edit here, and the
-change lands on `scottymassa.com` and `massatattoo.com` at once — no
+change lands on `scottymassa.com` and `massatattoo.com` at once - no
 copy/paste, no drift.
 
 ## What lives here
@@ -9,7 +9,7 @@ copy/paste, no drift.
 | File          | Purpose                                                                                  |
 | ------------- | ---------------------------------------------------------------------------------------- |
 | `js/main.js`     | Nav toggle, reveal-on-scroll, chip filter, active-nav marker. Safe no-op when the matching markup isn't present. |
-| `js/mandala.js`  | Animated canvas mandala ornaments — dotwork → **lotus** → linework → shading phases. The lotus phase echoes Scotty's signature petal-arch ornament. |
+| `js/mandala.js`  | Animated canvas mandala ornaments - dotwork → **lotus** → linework → shading phases. The lotus phase echoes Scotty's signature petal-arch ornament. |
 | `js/hero-mandala.js` | The homepage hero sigil: the canonical Scotty Massa logo rebuilt as particles, which assembles itself, rotates slowly, and morphs through more intricate tattoo mandalas (`<canvas data-hero-mandala>`). |
 | `js/includes.js` | HTML partial loader (`<div data-include="...">`) plus active-nav marking after partials hydrate. |
 
@@ -31,7 +31,7 @@ Both sites reference these via a relative path:
 
 For local serving with `python3 -m http.server` from the repo root, the
 paths just work. For production, each site's deploy must include the
-`shared/` directory above its own root — see the project `README.md`.
+`shared/` directory above its own root - see the project `README.md`.
 
 ## Splitting the sites later
 

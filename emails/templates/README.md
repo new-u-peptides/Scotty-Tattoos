@@ -9,10 +9,10 @@ Rendered by `api/_lib/templates.js`, sent by `api/_lib/mailersend.js`.
 
 For each template the sender checks `MAILERSEND_TEMPLATE_<NAME>`:
 
-- **set** — sends via MailerSend's hosted template with that ID, passing the
+- **set** - sends via MailerSend's hosted template with that ID, passing the
   variables below as `personalization`. Use this if Scotty wants to edit copy
   in the MailerSend UI.
-- **unset** (the default) — renders the `.html` file in this directory and
+- **unset** (the default) - renders the `.html` file in this directory and
   sends it inline, with a generated plain-text alternative.
 
 Either way the variable names are the same, so switching is a config change
@@ -23,10 +23,10 @@ with no code change.
 | Syntax | Meaning |
 |---|---|
 | `{{var}}` | HTML-escaped value. Use this for everything from a form. |
-| `{{{var}}}` | Raw — only for values the caller has already escaped (`escapeMultiline` output). |
+| `{{{var}}}` | Raw - only for values the caller has already escaped (`escapeMultiline` output). |
 | `{{#var}}…{{/var}}` | Render the block only when `var` is truthy. Used so empty fields vanish rather than leaving a blank row. |
 
-An absent variable renders as an empty string — never `undefined`, never the
+An absent variable renders as an empty string - never `undefined`, never the
 literal `{{var}}`.
 
 ## Design
@@ -54,7 +54,7 @@ so light-mode clients don't invert the design. One media query at 600px.
 | `SM_INTERNAL_NEW_ENQUIRY` | Step 2 submitted → studio inbox | New tattoo enquiry · {{project_type}} · {{first_name}} |
 
 Templates marked **manual** are wired and ready but nothing calls them
-automatically yet — they need a trigger from the admin board, which is the
+automatically yet - they need a trigger from the admin board, which is the
 obvious next step.
 
 ## Variables
@@ -79,14 +79,14 @@ footer.
 
 Every send carries `tattoo`, `enquiry`, `transactional` and
 `ref:SM-YYYY-NNNNN`. Booking-stage templates add `booking`. MailerSend allows
-five tags maximum — the ref tag is what lets the webhook attribute an open or
+five tags maximum - the ref tag is what lets the webhook attribute an open or
 a click back to a specific enquiry, so it is never the one dropped.
 
 ## Editing
 
 Copy lives in the HTML. If you change a variable name here, change it in
 `api/_lib/templates.js` (`SUBJECTS`) and wherever the sender builds the
-variables object — a renamed variable renders as an empty gap, silently.
+variables object - a renamed variable renders as an empty gap, silently.
 
 To preview one:
 

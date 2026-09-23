@@ -1,7 +1,7 @@
-# ScottyMassa.com — SEO Strategy
+# ScottyMassa.com - SEO Strategy
 
 ## Summary
-ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist Scotty Massa (Massa Tattoo, Birkirkara). The site is optimised for two audiences: high-intent local clients searching for tattoo work in Malta, and international collectors searching for geometric, dotwork, and sacred-geometry specialists — including via guest-spot tours. We prioritise topical authority around the geometric/sacred-geometry cluster, strong local signals for Malta, and clean technical SEO so individual journal articles and guest-spot pages can rank without paid spend.
+ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist Scotty Massa (Massa Tattoo, Birkirkara). The site is optimised for two audiences: high-intent local clients searching for tattoo work in Malta, and international collectors searching for geometric, dotwork, and sacred-geometry specialists - including via guest-spot tours. We prioritise topical authority around the geometric/sacred-geometry cluster, strong local signals for Malta, and clean technical SEO so individual journal articles and guest-spot pages can rank without paid spend.
 
 ## Keyword clusters (with priority)
 
@@ -9,7 +9,7 @@ ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist S
 |---|---|---|---|---|---|
 | 1 | Branded (P1) | Informational / Navigational | "Scotty Massa", "Massa tattoo Malta", "Scotty Massa tattoo" | "Scotty Massa Birkirkara", "Scotty Massa booking", "Massa Tattoo studio Malta" | `/`, `/about.html` |
 | 2 | Local (P1) | Commercial | "tattoo artist Malta", "tattoo studio Birkirkara", "best tattoo Malta" | "geometric tattoo artist Malta", "fine line tattoo Malta", "tattoo near me Birkirkara", "private tattoo studio Malta" | `/`, `/contact.html`, `/booking.html` |
-| 3 | Style: Geometric (P1 — deepest cluster) | Commercial / Informational | "geometric tattoo", "sacred geometry tattoo", "dotwork tattoo", "mandala tattoo", "geometric sleeve" | "sacred geometry tattoo meaning", "dotwork vs linework tattoo", "how to design a geometric tattoo", "geometric mandala sleeve", "flower of life tattoo", "metatron cube tattoo" | `/geometric-tattoos.html`, `/journal/geometric-tattoo-meaning.html`, `/journal/sacred-geometry-tattoo-guide.html`, `/journal/dotwork-vs-linework.html`, `/journal/designing-a-geometric-piece.html` |
+| 3 | Style: Geometric (P1 - deepest cluster) | Commercial / Informational | "geometric tattoo", "sacred geometry tattoo", "dotwork tattoo", "mandala tattoo", "geometric sleeve" | "sacred geometry tattoo meaning", "dotwork vs linework tattoo", "how to design a geometric tattoo", "geometric mandala sleeve", "flower of life tattoo", "metatron cube tattoo" | `/geometric-tattoos.html`, `/journal/geometric-tattoo-meaning.html`, `/journal/sacred-geometry-tattoo-guide.html`, `/journal/dotwork-vs-linework.html`, `/journal/designing-a-geometric-piece.html` |
 | 4 | Style: Other (P2) | Commercial | "traditional tattoo Malta", "Japanese tattoo Malta", "blackwork tattoo Malta", "cover-up tattoo Malta" | "neo-traditional tattoo artist Malta", "irezumi inspired tattoo Malta", "large-scale blackwork Malta", "tattoo cover-up specialist Malta" | `/portfolio.html` (with style anchors) |
 | 5 | Travel / Guest spots (P2) | Commercial | "travelling tattoo artist", "guest spot tattoo artist", "fly-in tattoo artist", "tattoo artist who travels" | "travelling geometric tattoo artist", "private tattoo residency", "guest spot geometric tattoo", "tattoo artist travels to you" | `/travel.html` |
 
@@ -20,9 +20,9 @@ ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist S
 | `/` (index) | Scotty Massa tattoo | tattoo artist Malta, geometric tattoo Malta, Massa Tattoo Birkirkara | Hero H1 carries brand + location; meta description leads with brand + craft |
 | `/portfolio.html` | tattoo portfolio Malta | geometric, dotwork, blackwork, traditional, Japanese, cover-up | Image-led; alt text doubles as keyword surface area |
 | `/geometric-tattoos.html` | geometric tattoo artist | sacred geometry tattoo, dotwork mandala, geometric sleeve | Pillar page that links down to all four journal articles and across to `/mandala-tattoos.html` |
-| `/mandala-tattoos.html` | mandala tattoo | mandala meaning, dotwork mandala, mandala sleeve, mandala placement | Mandala pillar per MANDALA-SEO.md — meaning, sub-styles, placement, process, FAQ. Service + FAQPage schema. |
+| `/mandala-tattoos.html` | mandala tattoo | mandala meaning, dotwork mandala, mandala sleeve, mandala placement | Mandala pillar per MANDALA-SEO.md - meaning, sub-styles, placement, process, FAQ. Service + FAQPage schema. |
 | `/about.html` | Scotty Massa biography | tattoo artist Malta, Massa Tattoo, training, philosophy | Carries Person schema |
-| `/travel.html` | travelling tattoo artist | guest spots, private bookings, fly-in, studio hosting | Sells the offer, not a schedule — Scotty works from Birkirkara and travels for the right project. No city targets and no `Event` schema until there are confirmed dates; the page has a marked slot and a comment explaining how to add both. |
+| `/travel.html` | travelling tattoo artist | guest spots, private bookings, fly-in, studio hosting | Sells the offer, not a schedule - Scotty works from Birkirkara and travels for the right project. No city targets and no `Event` schema until there are confirmed dates; the page has a marked slot and a comment explaining how to add both. |
 | `/booking.html` | book a tattoo Malta | tattoo enquiry, consultation, deposit, custom geometric tattoo design | Conversion page; two-step enquiry, minimise external links |
 | `/aftercare.html` | tattoo aftercare guide | new tattoo aftercare, healing tattoo, tattoo washing | HowTo schema; long-tail support for the cluster |
 | `/contact.html` | Massa Tattoo contact Birkirkara | tattoo studio address Malta, phone, email | LocalBusiness + ContactPage schema |
@@ -52,21 +52,21 @@ ScottyMassa.com is the portfolio and booking hub for Malta-based tattoo artist S
 
 ## Cross-site linking (scottymassa.com → massatattoo.com)
 
-scottymassa.com (this site) and **massatattoo.com** — the Massa Tattoo Social
-Club studio site — are the same brand on two domains. We deep-link from here
+scottymassa.com (this site) and **massatattoo.com** - the Massa Tattoo Social
+Club studio site - are the same brand on two domains. We deep-link from here
 into the studio site's money pages so earned authority on the portfolio flows
 to the studio, and so both entities reinforce each other for branded and local
 queries ("Massa Tattoo", "Massa Tattoo Social Club", "tattoo studio Birkirkara").
 
 Rules we follow:
-- **Followed links** (no `rel="nofollow"`) — both properties are ours, so juice
+- **Followed links** (no `rel="nofollow"`) - both properties are ours, so juice
   should pass. External, so `target="_blank" rel="noopener"`.
-- **Deep links, not just the homepage** — point at the relevant inner page.
-- **Varied, descriptive anchors** — branded + topical, never repeated exact-match
+- **Deep links, not just the homepage** - point at the relevant inner page.
+- **Varied, descriptive anchors** - branded + topical, never repeated exact-match
   (mirrors the anchor-text split in `LINK-BUILDING.md` §4).
 - **Only link live URLs.** Confirmed live in `massatattoo.com/page-sitemap.xml`
   + `post-sitemap.xml`. `/mandala-tattoos/`, `/social-club/`, `/portfolio/`
-  exist only in `massatattoo/wordpress/` (not published yet) — do **not** link
+  exist only in `massatattoo/wordpress/` (not published yet) - do **not** link
   them until they resolve.
 
 | From (scottymassa.com) | Anchor | To (massatattoo.com) |
@@ -78,7 +78,7 @@ Rules we follow:
 | Footer (all pages) | "Tattoo courses in Malta" | `/tattoo-course/` |
 | Footer (all pages) | "Studio journal" | `/articles/` |
 | `/about.html` (bio) | "Massa Tattoo Social Club" | `/artists/scotty-massa/` |
-| `/contact.html` (studio block) | "Massa Tattoo Social Club — studio site & directions" | `/contact/` |
+| `/contact.html` (studio block) | "Massa Tattoo Social Club - studio site & directions" | `/contact/` |
 | `/geometric-tattoos.html` (FAQ) | "Massa Tattoo Social Club" | `/` |
 
 > The course nav/CTA still points at the dedicated funnel
@@ -93,14 +93,14 @@ between owned, topically-identical sites is the cheapest authority signal here.
 
 ## Off-page recommendations
 
-- **Google Business Profile** — claim and fully optimise the Massa Tattoo listing (categories: Tattoo Shop + Tattoo Artist; full NAP; hours; service area; weekly photo uploads of healed work; respond to every review).
-- **Local citations (Malta)** — Yelp Malta, MaltaInsider, TripAdvisor (tattoo / things-to-do category), Yellow Pages Malta, VisitMalta lifestyle listings. Keep NAP byte-identical across all.
-- **Vertical directories** — TattooCloud, Inkppl artist directory, Tattoodo, Tattoo Filter, Sorry Mom artist directory. Link each profile back to scottymassa.com (not a social channel).
-- **Guest-studio mutual linking** — when a guest spot is booked, the host studio gets a reciprocal artist-page link (their site → `/travel.html`, ours → theirs). Single best off-page signal for non-branded queries. `/travel.html` already invites studios to get in touch.
-- **Tattoo magazine outreach** — pitch Tattoo Life, Inked, Skin Deep, and Tätowier Magazin features (interview + flash drop). Aim for one DR40+ editorial link per quarter.
-- **Social cross-linking with consistent NAP** — Instagram, Facebook, YouTube, TikTok, and Pinterest all link to scottymassa.com; bio NAP matches GBP exactly.
-- **Location-tagged Reels per tour city** — short build-up + behind-the-scenes Reels geo-tagged to each host city to seed brand searches in those geos before arrival.
-- **Convention coverage** — apply to Malta Tattoo Expo + 1-2 international conventions per year; convention pages typically link out to participating artists.
+- **Google Business Profile** - claim and fully optimise the Massa Tattoo listing (categories: Tattoo Shop + Tattoo Artist; full NAP; hours; service area; weekly photo uploads of healed work; respond to every review).
+- **Local citations (Malta)** - Yelp Malta, MaltaInsider, TripAdvisor (tattoo / things-to-do category), Yellow Pages Malta, VisitMalta lifestyle listings. Keep NAP byte-identical across all.
+- **Vertical directories** - TattooCloud, Inkppl artist directory, Tattoodo, Tattoo Filter, Sorry Mom artist directory. Link each profile back to scottymassa.com (not a social channel).
+- **Guest-studio mutual linking** - when a guest spot is booked, the host studio gets a reciprocal artist-page link (their site → `/travel.html`, ours → theirs). Single best off-page signal for non-branded queries. `/travel.html` already invites studios to get in touch.
+- **Tattoo magazine outreach** - pitch Tattoo Life, Inked, Skin Deep, and Tätowier Magazin features (interview + flash drop). Aim for one DR40+ editorial link per quarter.
+- **Social cross-linking with consistent NAP** - Instagram, Facebook, YouTube, TikTok, and Pinterest all link to scottymassa.com; bio NAP matches GBP exactly.
+- **Location-tagged Reels per tour city** - short build-up + behind-the-scenes Reels geo-tagged to each host city to seed brand searches in those geos before arrival.
+- **Convention coverage** - apply to Malta Tattoo Expo + 1-2 international conventions per year; convention pages typically link out to participating artists.
 
 ## Measurement plan
 
@@ -111,11 +111,11 @@ between owned, topically-identical sites is the cheapest authority signal here.
 - Index coverage and Core Web Vitals
 
 **GA4 events (custom)**
-- `booking_form_start` — first focus on booking form
-- `booking_form_submit` — successful submission
-- `travel_enquiry_start` — an enquiry started from `/travel.html`
-- `journal_article_read_75` — 75% scroll on a journal article
-- `outbound_click_instagram` — clicks to Instagram from any page
+- `booking_form_start` - first focus on booking form
+- `booking_form_submit` - successful submission
+- `travel_enquiry_start` - an enquiry started from `/travel.html`
+- `journal_article_read_75` - 75% scroll on a journal article
+- `outbound_click_instagram` - clicks to Instagram from any page
 
 **Key queries to monitor monthly (top 10)**
 1. scotty massa

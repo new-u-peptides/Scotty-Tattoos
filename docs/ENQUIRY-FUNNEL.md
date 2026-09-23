@@ -1,4 +1,4 @@
-# The enquiry funnel — operator's guide
+# The enquiry funnel - operator's guide
 
 Everything scottymassa.com does between "someone sees a tattoo they like" and
 "Scotty has an enquiry he can act on". Written from the code, not from a plan.
@@ -12,7 +12,7 @@ Instagram / Google / a portfolio link
         │
         ▼
   a portfolio or style page          main.js records first-touch attribution
-        │                            (utm_*, landing page, referrer — 90 days)
+        │                            (utm_*, landing page, referrer - 90 days)
         ▼
   booking.html?project=sleeve        project type preselected from the link
         │
@@ -62,7 +62,7 @@ told to email directly.
 | `/api/enquiry/unsubscribe` | GET | `?e=<ref>&t=<sig>`. Marks the enquiry unsubscribed and suppresses every future follow-up. Returns a small dark confirmation page. |
 | `/api/mailersend/webhook` | POST | Activity events. HMAC-verified over the raw body. |
 | `/api/enquiries` | GET | Admin list. `?ref=` returns one enquiry with its timeline and email activity. |
-| `/api/enquiries` | PATCH | `{ref, status}` — moves an enquiry between board columns. |
+| `/api/enquiries` | PATCH | `{ref, status}` - moves an enquiry between board columns. |
 | `/api/cron/enquiry-followups` | GET | Daily at 10:00 UTC. Sends the two reminders. |
 
 ---
@@ -78,7 +78,7 @@ told to email directly.
    `activity.sent`, `activity.delivered`, `activity.opened`, `activity.clicked`,
    `activity.soft_bounced` and `activity.hard_bounced`. Use **webhook version 2**.
 4. Copy the webhook's signing secret into `MAILERSEND_WEBHOOK_SECRET`.
-   Without it the endpoint rejects everything with 503 — it fails closed rather
+   Without it the endpoint rejects everything with 503 - it fails closed rather
    than trusting unsigned events.
 
 Templates live in `emails/templates/` and are sent inline by default. Setting
@@ -102,7 +102,7 @@ studio inbox with its reference and lead score. What you lose:
 - the admin board (it says so plainly rather than showing an empty screen)
 - lifecycle history and email-activity tracking
 - the 24-hour and 4-day reminders
-- sequential references — they fall back to a random 5-digit number in the
+- sequential references - they fall back to a random 5-digit number in the
   same `SM-YYYY-NNNNN` format, and the internal email flags that the
   numbering is not contiguous
 
@@ -115,18 +115,18 @@ wrapped so it can only resolve, never reject.
 
 Three separate things, often confused:
 
-**Lifecycle events** — append-only, in `enquiry_events`. An enquiry accumulates
+**Lifecycle events** - append-only, in `enquiry_events`. An enquiry accumulates
 these; it is never "in" one:
 `started, step_1_completed, step_2_started, submitted, email_sent,
 email_delivered, email_opened, email_clicked, reviewed, qualified, contacted,
 consultation, deposit_requested, deposit_paid, booked, completed, lost`
 
-**Board statuses** — exactly one at a time, in `enquiries.status`, in board
+**Board statuses** - exactly one at a time, in `enquiries.status`, in board
 order: `new, reviewing, qualified, contacted, consultation, deposit, booked,
 completed, lost`. The order matters: follow-up suppression asks whether a
 status is "beyond reviewing" by comparing positions.
 
-**Segments** — in `enquiries.segments`: `TATTOO_ENQUIRY`, `TATTOO_APPLICATION`,
+**Segments** - in `enquiries.segments`: `TATTOO_ENQUIRY`, `TATTOO_APPLICATION`,
 `TATTOO_BOOKED`, `TATTOO_COMPLETED`, and the mentorship/newsletter segments
 that belong to a different funnel.
 
@@ -141,8 +141,8 @@ that belong to a different funnel.
 
 Two, both from the daily cron:
 
-- **Reminder 01** — step 1 done, step 2 not, 24–48 hours later.
-- **Reminder 02** — still incomplete, 4–6 days later, and only if 01 went.
+- **Reminder 01** - step 1 done, step 2 not, 24–48 hours later.
+- **Reminder 02** - still incomplete, 4–6 days later, and only if 01 went.
 
 A reminder is **never** sent when any of these is true, all checked by a single
 `isSuppressed()` helper:
@@ -165,13 +165,13 @@ automation lets go. Adding a third reminder would be the wrong instinct.
 `robots.txt`.
 
 Set `ADMIN_ACCESS_TOKEN` to any long random string. The board asks for it once
-and keeps it in `sessionStorage` — never the URL, never `localStorage`, never a
+and keeps it in `sessionStorage` - never the URL, never `localStorage`, never a
 log line. A 401 clears it.
 
 **To rotate:** change the variable in Vercel and redeploy. Every open session
 gets a 401 on its next request and is returned to the token prompt.
 
-Nine columns, a card per enquiry, and a side panel (not a modal — the board
+Nine columns, a card per enquiry, and a side panel (not a modal - the board
 stays readable behind it) with the full record, the email-activity checklist,
 the lifecycle timeline and a status dropdown.
 
@@ -185,7 +185,7 @@ send action here. That is the obvious next increment.
 ## 8. Troubleshooting
 
 **No emails at all.** `MAILERSEND_API_TOKEN` unset or the from-address is not
-on a verified domain. Check the function logs — the error is redacted but names
+on a verified domain. Check the function logs - the error is redacted but names
 the status code.
 
 **Enquiries arrive, nothing on the board.** Persistence is not configured, or
@@ -199,7 +199,7 @@ not match. `config.api.bodyParser` must stay `false`.
 
 **Reminders never send.** `CRON_SECRET` unset (the job answers 503), or
 persistence is off (there is nothing to query), or every candidate is
-suppressed — the run logs what it skipped.
+suppressed - the run logs what it skipped.
 
 **Two records for one person.** A resume link could not be verified, so the
 server refused to trust a client-supplied reference and created a new record.

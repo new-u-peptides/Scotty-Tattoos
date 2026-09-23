@@ -1,4 +1,4 @@
-# Image assets — scottymassa.com
+# Image assets - scottymassa.com
 
 Photographs that back the site, organised by category. All images are
 optimised to ≤ 1600 px on the long edge at ~q82.
@@ -7,7 +7,7 @@ optimised to ≤ 1600 px on the long edge at ~q82.
 assets/images/
 ├── tattoos/    Finished tattoo work (backs .ph-1 … .ph-14)
 ├── artist/     Scotty portraits, lifestyle, working shots
-└── studio/     Studio interior — entrance, reception, treatment room, etc.
+└── studio/     Studio interior - entrance, reception, treatment room, etc.
 ```
 
 ## Where each is used
