@@ -7,8 +7,10 @@
   <title>Scotty Massa - Geometric &amp; Ornamental Tattoo Artist, Malta</title>
   <meta name="description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
   <link rel="canonical" href="https://www.scottymassa.com/" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/assets/seo/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/seo/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <meta property="og:title" content="Scotty Massa - Geometric &amp; Ornamental Tattoo Artist, Malta" />
   <meta property="og:description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
   <meta property="og:url" content="https://www.scottymassa.com/" />
@@ -23,20 +25,30 @@
   <meta name="twitter:description" content="Large-scale custom geometric and ornamental tattoos by Scotty Massa - sixteen years in, working one-to-one from Massa Tattoo Social Club in Birkirkara, Malta." />
   <meta name="twitter:image" content="https://www.scottymassa.com/assets/seo/og-default.png" />
   <meta name="theme-color" content="#0a0706" />
+  <!-- The LCP element. It is a CSS background three levels deep
+       (HTML -> stylesheet -> .hero__bg), so without this the browser
+       cannot discover it until the CSS has parsed. It is listed first:
+       same-priority preloads fetch in document order, and behind the
+       fonts it measured ~800ms worse on LCP. -->
+  <link rel="preload" as="image" href="assets/images/artist/portrait-bw-chair.webp" fetchpriority="high" />
+  <!-- Vendored; see assets/fonts/README.md. font-display: swap paints
+       text immediately, with fallback metrics matching the serif until
+       the loaded font applies. Cinzel is a serif (Scotty's script accents,
+       the about page quote); Inter is sans-serif (everything else). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.min.css?v=222d0a7a" />
+  <link rel="stylesheet" href="assets/css/styles.min.css?v=8c6ee73a" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": ["LocalBusiness", "TattooParlor"],
-        "@id": "https://www.scottymassa.com/#studio",
+        "@id": "https://scottymassa.com/#studio",
         "name": "Massa Tattoo Social Club",
-        "url": "https://www.scottymassa.com/",
-        "image": "https://www.scottymassa.com/assets/seo/og-default.png",
+        "url": "https://scottymassa.com/",
+        "image": "https://scottymassa.com/assets/seo/og-default.png",
         "telephone": "+35699685949",
         "email": "studio@scottymassa.com",
         "priceRange": "€€",
@@ -114,12 +126,12 @@
       },
       {
         "@type": "Person",
-        "@id": "https://www.scottymassa.com/#scotty",
+        "@id": "https://scottymassa.com/#scotty",
         "name": "Scotty Massa",
         "jobTitle": "Tattoo Artist",
         "description": "Geometric and ornamental tattoo artist with sixteen years' experience, working one-to-one on large-scale custom pieces from Massa Tattoo Social Club in Birkirkara, Malta.",
-        "url": "https://www.scottymassa.com/about.html",
-        "worksFor": { "@id": "https://www.scottymassa.com/#studio" },
+        "url": "https://scottymassa.com/about.html",
+        "worksFor": { "@id": "https://scottymassa.com/#studio" },
         "sameAs": [
           "https://www.instagram.com/scottymassa",
           "https://www.facebook.com/scottymassa"
@@ -127,12 +139,12 @@
       },
       {
         "@type": "Course",
-        "@id": "https://www.scottymassa.com/#mentorship",
+        "@id": "https://scottymassa.com/#mentorship",
         "name": "Massa Tattoo Social Club - Online Tattoo Mentorship",
         "description": "A 9-phase online tattoo mentorship from Scotty Massa - from portfolio audit to studio placement, with group mentorship, direct feedback, community and lifetime access.",
-        "provider": { "@id": "https://www.scottymassa.com/#studio" },
-        "instructor": { "@id": "https://www.scottymassa.com/#scotty" },
-        "url": "https://www.scottymassa.com/course.html",
+        "provider": { "@id": "https://scottymassa.com/#studio" },
+        "instructor": { "@id": "https://scottymassa.com/#scotty" },
+        "url": "https://scottymassa.com/course.html",
         "offers": {
           "@type": "Offer",
           "price": "497",
@@ -174,8 +186,6 @@
              and 1180px, where seven items used to overflow the viewport. -->
         <li class="nav__menu-extra"><a href="/" data-nav="home">Home</a></li>
         <li class="nav__menu-extra"><a href="/travel.html" data-nav="travel">Travel</a></li>
-        <li class="nav__menu-extra"><a href="/tattoos-malta.html" data-nav="malta">Malta</a></li>
-        <li class="nav__menu-extra"><a href="/custom-tattoos.html" data-nav="custom">Custom</a></li>
         <li class="nav__menu-extra"><a href="/reviews.html" data-nav="reviews">Reviews</a></li>
         <li class="nav__menu-extra"><a href="/journal.html" data-nav="journal">Journal</a></li>
         <li class="nav__menu-extra"><a href="/aftercare.html" data-nav="aftercare">Aftercare</a></li>
@@ -696,15 +706,13 @@
         </p>
       </div>
       <div>
-        <h2 class="h4">Explore</h2>
+        <h4>Explore</h4>
         <!-- The desktop nav carries four items, so every other destination has
              to be reachable from here or it is orphaned for both visitors and
              crawlers. SEO.md's internal link graph depends on this list. -->
         <ul>
           <li><a href="/portfolio.html">Portfolio</a></li>
           <li><a href="/geometric-tattoos.html">Geometric</a></li>
-          <li><a href="/tattoos-malta.html">Tattoos in Malta</a></li>
-          <li><a href="/custom-tattoos.html">Custom Tattoos</a></li>
           <li><a href="/mandala-tattoos.html">Mandala Tattoos</a></li>
           <li><a href="/travel.html">Travel &amp; Guest Spots</a></li>
           <li><a href="/reviews.html">Reviews</a></li>
@@ -716,7 +724,7 @@
         </ul>
       </div>
       <div>
-        <h2 class="h4">Studio</h2>
+        <h4>Studio</h4>
         <ul>
           <li>11 Triq Il-Knisja Il-Qadima</li>
           <li>Birkirkara, Malta</li>
@@ -725,7 +733,7 @@
         </ul>
       </div>
       <div>
-        <h2 class="h4">Contact</h2>
+        <h4>Contact</h4>
         <ul>
           <li><a href="mailto:studio@scottymassa.com">studio@scottymassa.com</a></li>
           <li><a href="tel:+35699685949">+356 9968 5949</a></li>
