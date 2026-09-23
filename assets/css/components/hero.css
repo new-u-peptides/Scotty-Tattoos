@@ -157,7 +157,7 @@
   line-height: 1;
   text-transform: uppercase;
   color: var(--gold);
-  animation: wordmark-in 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+  animation: wordmark-in 1.7s cubic-bezier(0.22, 1, 0.36, 1) 2.4s both;
   will-change: opacity;
 }
 
@@ -186,7 +186,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   transform-origin: 50% 50%;
-  animation: wordmark-tracking 1.7s cubic-bezier(0.22, 1, 0.36, 1) 4.3s both;
+  animation: wordmark-tracking 1.7s cubic-bezier(0.22, 1, 0.36, 1) 2.4s both;
   will-change: transform;
 }
 
