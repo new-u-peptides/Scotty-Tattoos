@@ -13,32 +13,68 @@
   text-transform: uppercase;
   color: var(--bone-2);
 }
-.field input,
+/* Text-like controls carry a visible well.
+   These used to be transparent with a single hairline underneath. On a
+   near-black page that left nothing on screen but a label and a faint rule:
+   the area you actually type into was indistinguishable from the page, so an
+   empty field read as decoration rather than an input. The heavier bottom
+   border keeps the underline character the design was after; the fill is what
+   makes the control legible as a control.
+   Checkboxes and file inputs are excluded — they have their own treatments
+   below and a padded well would break both. */
+.field input:not([type="checkbox"]):not([type="file"]),
 .field select,
 .field textarea {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(var(--bone-rgb), 0.25);
+  background: rgba(var(--bone-rgb), 0.04);
+  border: 1px solid rgba(var(--bone-rgb), 0.10);
+  border-bottom-color: rgba(var(--bone-rgb), 0.30);
   color: var(--bone);
-  padding: 0.8rem 0;
+  padding: 0.85rem 0.9rem;
   font: inherit;
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.field input:focus,
+.field input:not([type="checkbox"]):not([type="file"])::placeholder,
+.field textarea::placeholder {
+  color: rgba(var(--bone-rgb), 0.42);
+  opacity: 1;               /* Firefox dims placeholders by default */
+}
+.field input:not([type="checkbox"]):not([type="file"]):hover,
+.field select:hover,
+.field textarea:hover {
+  background: rgba(var(--bone-rgb), 0.06);
+  border-color: rgba(var(--bone-rgb), 0.18);
+  border-bottom-color: rgba(var(--bone-rgb), 0.40);
+}
+/* outline:none removes the only focus cue the browser gives, so it is
+   replaced rather than dropped: a full rust border plus a ring, which reads
+   at a glance and satisfies the 3:1 contrast a focus indicator needs. */
+.field input:not([type="checkbox"]):not([type="file"]):focus,
 .field select:focus,
 .field textarea:focus {
   outline: none;
+  background: rgba(var(--bone-rgb), 0.07);
   border-color: var(--rust-soft);
+  box-shadow: 0 0 0 2px rgba(var(--red-rgb), 0.28);
+}
+.field--check input:focus-visible {
+  outline: 2px solid var(--rust-soft);
+  outline-offset: 2px;
 }
 .field textarea { resize: vertical; min-height: 120px; }
 .field select option { background: var(--ink-2); }
 
-.section--bone .field input,
+.section--bone .field input:not([type="checkbox"]):not([type="file"]),
 .section--bone .field select,
 .section--bone .field textarea {
-  border-bottom-color: rgba(var(--ink-rgb), 0.20);
+  background: rgba(var(--ink-rgb), 0.04);
+  border-color: rgba(var(--ink-rgb), 0.12);
+  border-bottom-color: rgba(var(--ink-rgb), 0.28);
   color: var(--ink);
+}
+.section--bone .field input:not([type="checkbox"]):not([type="file"])::placeholder,
+.section--bone .field textarea::placeholder {
+  color: rgba(var(--ink-rgb), 0.50);
 }
 .section--bone .field label { color: var(--ink); }
 
@@ -47,7 +83,7 @@
   align-items: flex-start;
   gap: 0.6rem;
 }
-.field--check input { width: 18px; height: 18px; margin-top: 0.2rem; flex-shrink: 0; }
+.field--check input { width: 18px; height: 18px; margin-top: 0.2rem; flex-shrink: 0; accent-color: var(--rust); }
 .field--check label {
   text-transform: none;
   letter-spacing: 0;
